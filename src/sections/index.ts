@@ -1,0 +1,18 @@
+export { default as Hero } from './Hero';
+export { default as ScrollStorytelling } from './ScrollStorytelling';
+export { default as Countdown } from './Countdown';
+export { default as About } from './About';
+export { default as EventHighlights } from './EventHighlights';
+export { default as WhyAttend } from './WhyAttend';
+export { default as Speakers } from './Speakers';
+export { default as StartupExpo } from './StartupExpo';
+export { default as PitchingArena } from './PitchingArena';
+export { default as Schedule } from './Schedule';
+export { default as Gallery } from './Gallery';
+export { default as Sponsors } from './Sponsors';
+export { default as Team } from './Team';
+export { Registration } from './Registration';
+export { Venue } from './Venue';
+export { FAQ } from './FAQ';
+export { Contact } from './Contact';
+export { Footer } from './Footer';
