@@ -35,7 +35,7 @@ const Hero = () => {
   });
 
   return (
-    <section className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-dark">
+    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-dark">
       {/* Background Elements */}
       <MeshGradient />
       <GridPattern />
@@ -98,10 +98,16 @@ const Hero = () => {
               className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
               variants={itemVariants}
             >
-              <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-accent text-white font-medium text-lg transition-all hover:shadow-[0_0_20px_rgba(255,122,0,0.4)] hover:-translate-y-1">
+              <button 
+                onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-accent text-white font-medium text-lg transition-all hover:shadow-[0_0_20px_rgba(255,122,0,0.4)] hover:-translate-y-1"
+              >
                 Register Now
               </button>
-              <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-lg backdrop-blur-sm transition-all hover:bg-white/10 hover:-translate-y-1">
+              <button 
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-lg backdrop-blur-sm transition-all hover:bg-white/10 hover:-translate-y-1"
+              >
                 Explore Experience
               </button>
             </motion.div>

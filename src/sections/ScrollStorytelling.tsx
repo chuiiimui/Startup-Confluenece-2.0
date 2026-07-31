@@ -68,7 +68,7 @@ export default function ScrollStorytelling() {
               className="absolute inset-0 flex flex-col items-center justify-center text-center p-6"
               style={{ opacity, scale, y }}
             >
-              <h2 className="font-heading font-extrabold text-[5rem] md:text-[8rem] lg:text-[12rem] text-white leading-none tracking-tighter mb-4">
+              <h2 className="font-heading font-extrabold text-[5rem] md:text-[8rem] lg:text-[12rem] text-white leading-none tracking-tighter mb-8 md:mb-12">
                 {scene.value}
               </h2>
               <p className="font-body text-2xl md:text-4xl text-[#FF7A00] font-medium tracking-wide uppercase">

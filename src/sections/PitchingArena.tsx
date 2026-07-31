@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Award, Briefcase, GraduationCap, Coins } from 'lucide-react';
+import { Award, Briefcase, GraduationCap, Coins, FileText, Search, Mic, Users, Trophy } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import { pitchSteps } from '../data/pitchSteps';
 
@@ -10,6 +10,8 @@ const rewards = [
   { id: 3, title: 'Funding Opportunities', desc: 'Seed capital & investor access', icon: Coins },
   { id: 4, title: 'Certificates & Recognition', desc: 'Validation and media coverage', icon: Award },
 ];
+
+const stepIcons = [FileText, Search, Mic, Users, Trophy];
 
 export default function PitchingArena() {
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -35,6 +37,7 @@ export default function PitchingArena() {
           <div className="space-y-16 md:space-y-32 relative z-10">
             {pitchSteps.map((step: any, index: number) => {
               const isEven = index % 2 !== 0;
+              const StepIcon = stepIcons[index];
               return (
                 <div key={step.id} className={`flex flex-col md:flex-row items-start md:items-center ${isEven ? 'md:flex-row-reverse' : ''}`}>
                   
@@ -46,9 +49,17 @@ export default function PitchingArena() {
                     transition={{ duration: 0.7, delay: 0.3 }}
                     className={`pl-24 md:pl-0 md:w-1/2 ${isEven ? 'md:pl-20' : 'md:pr-20 text-left md:text-right'}`}
                   >
-                    <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-8 rounded-3xl hover:border-accent/40 hover:bg-white/[0.05] transition-all duration-300 shadow-xl">
-                      <h4 className="text-2xl font-heading font-bold text-white mb-3 tracking-tight">{step.title}</h4>
-                      <p className="text-gray-400 text-base leading-relaxed">{step.description}</p>
+                    <div className="bg-white/[0.03] border border-white/10 backdrop-blur-xl p-8 rounded-3xl hover:border-accent/40 hover:bg-white/[0.05] transition-all duration-300 shadow-xl relative overflow-hidden group">
+                      {/* Large background SVG */}
+                      <StepIcon className={`absolute -bottom-4 -right-4 w-32 h-32 text-white/[0.03] group-hover:text-accent/[0.05] transition-colors duration-500 transform group-hover:scale-110 ${isEven ? 'md:-left-4 md:right-auto' : ''}`} />
+                      
+                      <div className={`flex items-center gap-4 mb-4 ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                        <div className="p-3 bg-white/5 rounded-xl border border-white/10 group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300">
+                          <StepIcon className="w-6 h-6 text-accent" />
+                        </div>
+                        <h4 className="text-2xl font-heading font-bold text-white tracking-tight">{step.title}</h4>
+                      </div>
+                      <p className="text-gray-400 text-base leading-relaxed relative z-10">{step.description}</p>
                     </div>
                   </motion.div>
 

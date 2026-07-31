@@ -11,6 +11,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Expo', href: '#expo' },
   { label: 'Sponsors', href: '#sponsors' },
   { label: 'FAQ', href: '#faq' },
+  { label: 'Contact', href: '#contact' },
 ];
 
 export const SOCIAL_LINKS = {

@@ -1,6 +1,12 @@
 import React from 'react';
-import CountUp from 'react-countup';
+import ReactCountUp from 'react-countup';
 import { useInView } from 'framer-motion';
+
+let CountUpComponent: any = ReactCountUp;
+while (CountUpComponent && typeof CountUpComponent === 'object' && CountUpComponent.default) {
+  CountUpComponent = CountUpComponent.default;
+}
+const CountUp = CountUpComponent;
 
 export interface AnimatedCounterProps {
   end: number;
