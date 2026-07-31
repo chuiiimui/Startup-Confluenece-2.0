@@ -11,7 +11,7 @@ function App() {
   return (
     <HelmetProvider>
       <SEO />
-      <div className="bg-dark min-h-screen text-white overflow-x-hidden font-inter">
+      <div className="bg-dark min-h-screen text-white overflow-clip font-inter">
         <CursorGlow />
         <ScrollProgress />
         <Navbar />
