@@ -8,10 +8,18 @@ const iconMap: Record<string, React.ElementType> = {
   Cpu, HeartPulse, Leaf, ShoppingCart, ShieldCheck, Zap, Globe, Coins, Layers, Smartphone, Code
 };
 
+type ExpoCategoryWithHighlights = {
+  id: string;
+  icon: string;
+  name: string;
+  description: string;
+  highlights?: string[];
+};
+
 export default function StartupExpo() {
   const [activeCategoryId, setActiveCategoryId] = useState(expoCategories[0]?.id || '1');
 
-  const activeCategory = expoCategories.find((c: any) => c.id === activeCategoryId) || expoCategories[0];
+  const activeCategory = (expoCategories.find((c: any) => c.id === activeCategoryId) || expoCategories[0]) as ExpoCategoryWithHighlights | undefined;
   const ActiveIcon = activeCategory ? (iconMap[activeCategory.icon] || Cpu) : Cpu;
 
   return (
