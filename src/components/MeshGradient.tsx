@@ -1,11 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useTheme } from '../context/ThemeContext';
 
 const MeshGradient: React.FC = () => {
-  const { theme } = useTheme();
-  const isDark = theme === 'dark';
-
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden -z-50" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Primary blob */}
@@ -50,37 +46,19 @@ const MeshGradient: React.FC = () => {
           ease: 'easeInOut',
         }}
       />
-      {/* Light mode: extra ambient glow */}
-      {!isDark && (
-        <motion.div
-          className="absolute top-0 left-1/3 w-2/3 h-1/2 rounded-full blur-[150px]"
-          style={{ background: 'rgba(224, 236, 255, 0.5)' }}
-          animate={{
-            opacity: [0.3, 0.6, 0.3],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      )}
-      {/* Dark mode: subtle neon ray */}
-      {isDark && (
-        <motion.div
-          className="absolute top-1/4 right-0 w-1/3 h-1/4 rounded-full blur-[100px]"
-          style={{ background: 'rgba(255, 122, 0, 0.06)' }}
-          animate={{
-            opacity: [0.3, 0.6, 0.3],
-            x: ['0%', '-10%', '0%'],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      )}
+      {/* Ambient white-blue glow */}
+      <motion.div
+        className="absolute top-0 left-1/3 w-2/3 h-1/2 rounded-full blur-[150px]"
+        style={{ background: 'rgba(224, 236, 255, 0.5)' }}
+        animate={{
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
     </div>
   );
 };

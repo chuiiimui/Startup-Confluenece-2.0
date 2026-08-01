@@ -9,5 +9,3 @@ export { default as AnimatedCounter } from './AnimatedCounter';
 export { default as ParticleField } from './ParticleField';
 export { default as GridPattern } from './GridPattern';
 export { default as MeshGradient } from './MeshGradient';
-export { default as ThemeToggle } from './ThemeToggle';
-export { default as ThemeTransition } from './ThemeTransition';

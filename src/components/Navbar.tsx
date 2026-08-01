@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
-import ThemeToggle from './ThemeToggle';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,9 +123,8 @@ export const Navbar = () => {
               })}
             </div>
 
-            {/* Desktop: Theme Toggle + Action Button */}
-            <div className="hidden lg:flex items-center gap-3">
-              <ThemeToggle />
+            {/* Desktop: Action Button */}
+            <div className="hidden lg:flex items-center">
               <button 
                 onClick={() => handleNavClick('register')}
                 className="bg-accent hover:bg-[#E66E00] text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:shadow-[0_0_30px_rgba(255,122,0,0.5)] transform hover:-translate-y-0.5"
@@ -157,12 +155,7 @@ export const Navbar = () => {
                 className="w-full px-6 pb-6"
                 layout
               >
-                {/* Mobile Theme Toggle */}
-                <div className="flex justify-center mb-4 mt-2">
-                  <ThemeToggle />
-                </div>
-                
-                <div className="flex flex-col space-y-2">
+                <div className="flex flex-col space-y-2 mt-4">
                   {NAV_ITEMS.map((item, index) => {
                     const itemId = item.href.replace('#', '');
                     return (

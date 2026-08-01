@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#050505" />
+    <meta name="theme-color" content="#F7F9FC" />
     
     <title>Startup Confluence 2.0 | India's Premier Startup Summit</title>
     <meta name="description" content="Join India's premier startup summit. Connect with founders, investors, and innovators at Startup Confluence 2.0." />
@@ -12,19 +12,6 @@
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Prevent FOUC: apply theme before first paint -->
-    <script>
-      (function() {
-        var theme = localStorage.getItem('startup-confluence-theme');
-        if (!theme) {
-          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-        }
-        document.documentElement.setAttribute('data-theme', theme);
-        document.documentElement.style.backgroundColor = theme === 'dark' ? '#050505' : '#F7F9FC';
-        document.documentElement.style.colorScheme = theme;
-      })();
-    </script>
   </head>
   <body class="antialiased" style="background-color: var(--bg); color: var(--text-primary);">
     <div id="root"></div>
