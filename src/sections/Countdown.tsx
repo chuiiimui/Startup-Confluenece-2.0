@@ -32,7 +32,7 @@ function FlipCard({ value, label }: { value: number; label: string }) {
         {/* Ambient glow */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#FF7A00]/10 to-transparent opacity-50" />
       </div>
-      <span className="mt-4 text-sm md:text-base font-body uppercase tracking-widest font-medium" style={{ color: 'var(--text-secondary)' }}>
+      <span className="mt-2 md:mt-4 text-sm md:text-base font-body uppercase tracking-widest font-medium" style={{ color: 'var(--text-secondary)' }}>
         {label}
       </span>
     </div>
@@ -43,12 +43,12 @@ export default function Countdown() {
   const { days, hours, minutes, seconds } = useCountdown(EVENT_DATE);
 
   return (
-    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section className="py-12 md:py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-[#0B2A6B]/20 blur-[120px] rounded-full pointer-events-none" />
 
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="flex flex-col items-center mb-16">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="flex flex-col items-center mb-8 md:mb-16">
           <SectionHeading 
             badge="Mark Your Calendar"
             title="The Countdown Begins"
@@ -56,7 +56,7 @@ export default function Countdown() {
           />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto">
           <FlipCard value={days} label="Days" />
           <FlipCard value={hours} label="Hours" />
           <FlipCard value={minutes} label="Minutes" />

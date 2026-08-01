@@ -69,11 +69,14 @@ export const Navbar = () => {
             isOpen ? 'rounded-[32px] w-full max-w-md' : 'rounded-full w-fit max-w-[1100px]'
           }`}
           style={{
-            background: 'var(--surface)',
-            backdropFilter: 'blur(30px)',
-            WebkitBackdropFilter: 'blur(30px)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-card)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.4))',
+            backdropFilter: 'blur(40px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+            borderTop: '1px solid rgba(255,255,255,0.8)',
+            borderLeft: '1px solid rgba(255,255,255,0.6)',
+            borderRight: '1px solid rgba(255,255,255,0.4)',
+            borderBottom: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.08), inset 0 4px 10px rgba(255,255,255,0.5), inset 0 -4px 10px rgba(255,255,255,0.1)',
           }}
           layout
         >
@@ -125,12 +128,24 @@ export const Navbar = () => {
 
             {/* Desktop: Action Button */}
             <div className="hidden lg:flex items-center">
-              <button 
+              <motion.button 
                 onClick={() => handleNavClick('register')}
-                className="bg-accent hover:bg-[#E66E00] text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:shadow-[0_0_30px_rgba(255,122,0,0.5)] transform hover:-translate-y-0.5"
+                className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-semibold relative overflow-hidden"
+                whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(255,122,0,0.5)' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                Register Now
-              </button>
+                <motion.div
+                  className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)'
+                  }}
+                />
+                <span className="relative z-10">Register Now</span>
+              </motion.button>
             </div>
 
             {/* Mobile Menu Toggle */}

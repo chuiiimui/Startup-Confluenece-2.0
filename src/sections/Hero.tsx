@@ -1,15 +1,38 @@
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, animate } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import { useCountdown } from '../hooks/useCountdown';
 import { EVENT_DATE } from '../constants';
 import GridPattern from '../components/GridPattern';
 
-const StatBlock = ({ value, label }: { value: string, label: string }) => (
-  <div className="flex flex-col">
-    <span className="text-3xl font-extrabold text-primary">{value}</span>
-    <span className="text-sm font-medium text-text-secondary mt-1">{label}</span>
-  </div>
-);
+const StatBlock = ({ value, label }: { value: string, label: string }) => {
+  // Extract number and suffix from string like "1000+"
+  const match = value.match(/(\d+)(.*)/);
+  const targetNumber = match ? parseInt(match[1], 10) : 0;
+  const suffix = match ? match[2] : '';
+
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const controls = animate(0, targetNumber, {
+      duration: 2,
+      ease: "easeOut",
+      onUpdate(val) {
+        setCount(Math.floor(val));
+      }
+    });
+    return () => controls.stop();
+  }, [targetNumber]);
+
+  return (
+    <div className="flex flex-col">
+      <span className="text-3xl font-extrabold text-primary">
+        {count}{suffix}
+      </span>
+      <span className="text-sm font-medium text-text-secondary mt-1">{label}</span>
+    </div>
+  );
+};
 
 const Hero = () => {
   const { days, hours, minutes, seconds } = useCountdown(EVENT_DATE);
@@ -134,20 +157,36 @@ const Hero = () => {
               className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
               variants={wordVariants}
             >
-              <button 
+              <motion.button 
                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg transition-all hover:shadow-[0_0_30px_rgba(11,42,107,0.3)] hover:-translate-y-1 flex items-center justify-center gap-3"
+                className="group relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center gap-3"
+                whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px -10px rgba(11,42,107,0.4)' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                <span>Register Now</span>
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-              <button 
+                <motion.div
+                  className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay"
+                  initial={{ x: '-100%' }}
+                  whileHover={{ x: '100%' }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  style={{
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)'
+                  }}
+                />
+                <span className="relative z-10">Register Now</span>
+                <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+              
+              <motion.button 
                 onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto px-8 py-4 rounded-full border-2 font-semibold text-lg backdrop-blur-sm transition-all hover:-translate-y-1 hover:bg-gray-50/50"
+                className="w-full sm:w-auto px-8 py-4 rounded-full border-2 font-semibold text-lg backdrop-blur-sm"
                 style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+                whileHover={{ scale: 1.05, y: -4, backgroundColor: 'rgba(0,0,0,0.03)' }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
                 Explore Event
-              </button>
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -159,10 +198,16 @@ const Hero = () => {
             animate="animate"
           >
             <motion.div 
-              className="glass-card rounded-[2rem] p-5 md:p-6 lg:p-8 relative overflow-hidden border border-white/40"
+              className="glass-card rounded-[2rem] p-5 md:p-6 lg:p-8 relative overflow-hidden border border-white/40 cursor-pointer"
               initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
               animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{
+                y: -15,
+                scale: 1.02,
+                boxShadow: '0 40px 80px -20px rgba(11, 42, 107, 0.2), 0 0 0 1px rgba(255, 122, 0, 0.3) inset',
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,255,255,0.8))'
+              }}
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7))',
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 40px rgba(11, 42, 107, 0.05)',
@@ -192,11 +237,11 @@ const Hero = () => {
                   ].map((item, idx) => (
                     <div key={idx} className="flex flex-col items-center">
                       <div className="w-full aspect-square rounded-xl md:rounded-2xl bg-white border shadow-sm flex items-center justify-center mb-2" style={{ borderColor: 'var(--border)' }}>
-                        <span className="text-2xl md:text-4xl font-heading font-bold text-primary">
+                        <span className="text-2xl md:text-4xl font-heading font-bold text-black">
                           {formatTime(item.value)}
                         </span>
                       </div>
-                      <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{item.label}</span>
+                      <span className="text-xs font-semibold text-black uppercase tracking-wider">{item.label}</span>
                     </div>
                   ))}
                 </div>

@@ -83,9 +83,51 @@ const VisionCard: React.FC<VisionCardProps> = ({ children, className = '' }) => 
           rotateX,
           rotateY,
           background: 'var(--surface)',
-          borderColor: isHovered ? '#E66E00' : 'var(--border)',
+          borderColor: 'var(--border)',
         }}
       >
+        {/* Animated Border Draw (Two-Way) */}
+        <svg 
+          className="absolute inset-0 w-full h-full pointer-events-none rounded-3xl z-50" 
+          style={{ padding: '1px' }} // Accommodate the 2px stroke
+        >
+          {/* Line 1: Starts Top-Left, draws clockwise to Bottom-Right */}
+          <motion.rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            rx="23"
+            fill="none"
+            stroke="#E66E00"
+            strokeWidth="3"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ 
+              pathLength: isHovered ? 0.51 : 0, 
+              opacity: isHovered ? 1 : 0 
+            }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          />
+          {/* Line 2: Starts Bottom-Right, draws clockwise to Top-Left */}
+          <motion.rect
+            x="0"
+            y="0"
+            width="100%"
+            height="100%"
+            rx="23"
+            fill="none"
+            stroke="#E66E00"
+            strokeWidth="3"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{ 
+              pathLength: isHovered ? 0.51 : 0, 
+              opacity: isHovered ? 1 : 0 
+            }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            style={{ originX: "50%", originY: "50%", rotate: 180 }}
+          />
+        </svg>
+
         {/* Dynamic Spotlight Layer */}
         <motion.div
           className="pointer-events-none absolute inset-0 z-0 rounded-3xl transition-opacity duration-300"
@@ -93,7 +135,7 @@ const VisionCard: React.FC<VisionCardProps> = ({ children, className = '' }) => 
             opacity: smoothOpacity,
             background: useTransform(
               [spotlightX, spotlightY],
-              ([x, y]) => `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.25), transparent 40%)`
+              ([x, y]) => `radial-gradient(circle at ${x}% ${y}%, rgba(255,122,0,0.15), transparent 40%)`
             )
           }}
         />
