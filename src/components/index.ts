@@ -9,3 +9,7 @@ export { default as AnimatedCounter } from './AnimatedCounter';
 export { default as ParticleField } from './ParticleField';
 export { default as GridPattern } from './GridPattern';
 export { default as MeshGradient } from './MeshGradient';
+export { default as VisionCard } from './VisionCard';
+export { default as SpeakerRevealCard } from './SpeakerRevealCard';
+export { default as RewardCard } from './RewardCard';
+export { default as ScheduleEventCard } from './ScheduleEventCard';

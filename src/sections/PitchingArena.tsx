@@ -1,14 +1,45 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { Award, Briefcase, GraduationCap, Coins, FileText, Search, Mic, Users, Trophy } from 'lucide-react';
+import { FileText, Search, Mic, Users, Trophy } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
+import VisionCard from '../components/VisionCard';
+import RewardCard from '../components/RewardCard';
 import { pitchSteps } from '../data/pitchSteps';
 
+const MentorshipIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M12 3L4 7v10l8 4 8-4V7l-8-4z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 7v10M8 10l4-3 4 3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+const IncubationIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <circle cx="12" cy="11" r="3" stroke="currentColor" strokeWidth="1.5"/>
+  </svg>
+);
+
+const FundingIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <rect x="3" y="6" width="18" height="12" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M3 10h18M3 14h18" stroke="currentColor" strokeWidth="1.5" opacity="0.3"/>
+  </svg>
+);
+
+const RecognitionIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <path d="M12 15l-3 2 1-4-3-3 4-.5L12 6l1.5 3.5 4 .5-3 3 1 4-3-2z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 3v2M12 19v2M5 5l1.5 1.5M17.5 17.5L19 19M3 12h2M19 12h2M5 19l1.5-1.5M17.5 6.5L19 5" stroke="currentColor" strokeWidth="1.5" opacity="0.5" strokeLinecap="round"/>
+  </svg>
+);
+
 const rewards = [
-  { id: 1, title: 'Mentorship', desc: 'Guidance from industry veterans', icon: GraduationCap },
-  { id: 2, title: 'Incubation Support', desc: 'Space & resources to grow', icon: Briefcase },
-  { id: 3, title: 'Funding Opportunities', desc: 'Seed capital & investor access', icon: Coins },
-  { id: 4, title: 'Certificates & Recognition', desc: 'Validation and media coverage', icon: Award },
+  { id: 1, title: 'Mentorship', desc: 'Guidance from industry veterans', icon: MentorshipIcon },
+  { id: 2, title: 'Incubation Support', desc: 'Space & resources to grow', icon: IncubationIcon },
+  { id: 3, title: 'Funding Opportunities', desc: 'Seed capital & investor access', icon: FundingIcon },
+  { id: 4, title: 'Certificates & Recognition', desc: 'Validation and media coverage', icon: RecognitionIcon },
 ];
 
 const stepIcons = [FileText, Search, Mic, Users, Trophy];
@@ -49,18 +80,31 @@ export default function PitchingArena() {
                     transition={{ duration: 0.7, delay: 0.3 }}
                     className={`pl-24 md:pl-0 md:w-1/2 ${isEven ? 'md:pl-20' : 'md:pr-20 text-left md:text-right'}`}
                   >
-                    <div className="border backdrop-blur-xl p-8 rounded-3xl transition-all duration-300 shadow-xl relative overflow-hidden group hover:border-accent/40 hover:bg-white/[0.05]" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                      {/* Large background SVG */}
-                      <StepIcon className={`absolute -bottom-4 -right-4 w-32 h-32 text-white/[0.03] group-hover:text-accent/[0.05] transition-colors duration-500 transform group-hover:scale-110 ${isEven ? 'md:-left-4 md:right-auto' : ''}`} />
-                      
-                      <div className={`flex items-center gap-4 mb-4 ${isEven ? 'md:flex-row-reverse' : ''}`}>
-                        <div className="p-3 rounded-xl border group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                          <StepIcon className="w-6 h-6 text-accent" />
-                        </div>
-                        <h4 className="text-2xl font-heading font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>{step.title}</h4>
+                    <VisionCard className="p-8 group hover:border-accent/40 hover:bg-white/[0.05] transition-colors duration-300">
+                      {/* Decorative Background Icon (Layer Z = 10px) */}
+                      <div className="absolute inset-0 overflow-hidden rounded-3xl" style={{ transform: 'translateZ(10px)' }}>
+                        <StepIcon className={`absolute -bottom-4 -right-4 w-32 h-32 text-black/[0.03] group-hover:text-accent/[0.05] transition-colors duration-500 transform group-hover:scale-110 ${isEven ? 'md:-left-4 md:right-auto' : ''}`} />
                       </div>
-                      <p className="text-base leading-relaxed relative z-10" style={{ color: 'var(--text-muted)' }}>{step.description}</p>
-                    </div>
+                      
+                      {/* Main Content (Layer Z = 40px) */}
+                      <div className="relative z-10" style={{ transform: 'translateZ(40px)' }}>
+                        <div className={`flex items-center gap-4 mb-4 ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                          {/* Inner Icon Box (Layer Z = 50px for pop) */}
+                          <div 
+                            className="p-3 rounded-xl border group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300 shadow-sm" 
+                            style={{ background: 'var(--bg-alt)', borderColor: 'var(--border)', transform: 'translateZ(50px)' }}
+                          >
+                            <StepIcon className="w-6 h-6 text-accent" />
+                          </div>
+                          <h4 className="text-2xl font-heading font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                            {step.title}
+                          </h4>
+                        </div>
+                        <p className="text-base leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                          {step.description}
+                        </p>
+                      </div>
+                    </VisionCard>
                   </motion.div>
 
                   {/* Number Badge */}
@@ -96,14 +140,9 @@ export default function PitchingArena() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.15, duration: 0.6 }}
-                className="border backdrop-blur-md rounded-3xl p-8 text-center hover:border-accent/30 transition-all duration-300 group hover:-translate-y-2 hover:bg-white/[0.05]"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+                className="h-full"
               >
-                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-[#0B2A6B] to-accent/20 border rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg" style={{ borderColor: 'var(--border)' }}>
-                  <reward.icon className="w-8 h-8 text-accent" />
-                </div>
-                <h4 className="text-xl font-heading font-bold mb-3" style={{ color: 'var(--text-primary)' }}>{reward.title}</h4>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>{reward.desc}</p>
+                <RewardCard reward={reward} />
               </motion.div>
             ))}
           </div>
