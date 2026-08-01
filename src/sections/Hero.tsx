@@ -1,218 +1,219 @@
 import { motion } from 'framer-motion';
-import { MapPin, Calendar, Building2, Rocket, Lightbulb, TrendingUp, Zap, Target } from 'lucide-react';
-import MeshGradient from '../components/MeshGradient';
+import { Calendar, MapPin, ArrowRight } from 'lucide-react';
+import { useCountdown } from '../hooks/useCountdown';
+import { EVENT_DATE } from '../constants';
 import GridPattern from '../components/GridPattern';
-import ParticleField from '../components/ParticleField';
+
+const StatBlock = ({ value, label }: { value: string, label: string }) => (
+  <div className="flex flex-col">
+    <span className="text-3xl font-extrabold text-primary">{value}</span>
+    <span className="text-sm font-medium text-text-secondary mt-1">{label}</span>
+  </div>
+);
 
 const Hero = () => {
+  const { days, hours, minutes, seconds } = useCountdown(EVENT_DATE);
+
+  // Text reveal animation variants
+  const wordVariants = {
+    hidden: { opacity: 0, y: 100 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
+  const scaleFadeVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { 
+      opacity: 1, 
+      scale: 1, 
+      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } 
+    },
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
+        staggerChildren: 0.15,
+        delayChildren: 0.1,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
-  };
-
-  const floatingVariants = (delay: number) => ({
+  const floatAnimation = {
     initial: { y: 0 },
     animate: {
-      y: [0, -15, 0],
+      y: [-10, 10, -10],
       transition: {
-        duration: 4,
+        duration: 8,
         repeat: Infinity,
         ease: "easeInOut",
-        delay: delay,
       }
     }
-  });
+  };
+
+  // Format countdown
+  const formatTime = (time: number) => time < 10 ? `0${time}` : time;
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="home" className="relative h-[100dvh] w-full flex items-center pt-32 lg:pt-32 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
-      <MeshGradient />
-      <GridPattern />
-      <ParticleField />
+      <GridPattern parallax={true} />
       
-      {/* Gradient fade at bottom */}
+      {/* Ambient Glows */}
+      <div className="absolute -top-40 -left-40 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-accent/10 blur-[150px] rounded-full pointer-events-none" />
+
+      {/* Gradient fade at bottom for smooth transition to next section */}
       <div className="absolute bottom-0 left-0 w-full h-32 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }} />
 
       <div className="container mx-auto px-6 lg:px-12 relative z-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[65%_35%] gap-12 lg:gap-8 items-center h-full">
           
-          {/* Left Column (Text) */}
+          {/* Left Column (Typography) */}
           <motion.div
-            className="flex flex-col items-center text-center lg:items-start lg:text-left"
+            className="flex flex-col items-start text-left"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* Badge */}
-            <motion.div variants={itemVariants} className="mb-6">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border backdrop-blur-md" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-                </span>
-                <span className="text-xs sm:text-sm font-medium tracking-wide uppercase" style={{ color: 'var(--text-secondary)' }}>
-                  23-24 October 2026 · Prayagraj
-                </span>
+            {/* Massive Headline */}
+            <div 
+              className="font-heading tracking-[-0.08em] leading-[0.85] flex flex-col uppercase mt-8 lg:mt-0"
+              style={{ fontWeight: 900, fontSize: "clamp(2.75rem, 7vw, 7.5rem)" }}
+            >
+              <div className="overflow-hidden">
+                <motion.div variants={wordVariants} className="text-primary">
+                  STARTUP
+                </motion.div>
               </div>
-            </motion.div>
+              <div className="overflow-hidden flex flex-wrap items-end gap-x-4 lg:gap-x-8">
+                <motion.div variants={wordVariants} className="text-primary">
+                  CONFLUENCE
+                </motion.div>
+                <motion.div variants={scaleFadeVariants} className="text-accent">
+                  2.0
+                </motion.div>
+              </div>
+            </div>
 
-            {/* Headline */}
-            <motion.h1 
-              className="font-heading font-extrabold text-transparent bg-clip-text tracking-tighter leading-[0.9]"
-              style={{ 
-                fontSize: "clamp(3rem, 10vw, 7.5rem)",
-                backgroundImage: 'linear-gradient(to bottom right, var(--text-primary), var(--text-primary), var(--text-muted))'
-              }}
-              variants={itemVariants}
-            >
-              STARTUP<br/>
-              CONFLUENCE 2.0
-            </motion.h1>
-
-            {/* Subheading */}
-            <motion.h2 
-              className="mt-6 text-xl md:text-3xl font-medium text-accent tracking-tight"
-              variants={itemVariants}
-            >
-              Innovate. Collaborate. Elevate.
-            </motion.h2>
-
-            {/* Description */}
-            <motion.p 
-              className="mt-4 text-lg md:text-xl max-w-lg"
-              style={{ color: 'var(--text-muted)' }}
-              variants={itemVariants}
-            >
-              The Flagship Startup & Innovation Summit of Uttar Pradesh
-            </motion.p>
-
-            {/* Buttons Row */}
-            <motion.div 
-              className="mt-10 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
-              variants={itemVariants}
-            >
-              <button 
-                onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-accent font-medium text-lg transition-all hover:shadow-[0_0_20px_rgba(255,122,0,0.4)] hover:-translate-y-1"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                Register Now
-              </button>
-              <button 
-                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto px-8 py-4 rounded-full border font-medium text-lg backdrop-blur-sm transition-all hover:-translate-y-1"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'var(--surface)'}
-              >
-                Explore Experience
-              </button>
+            {/* Value Proposition */}
+            <motion.div variants={wordVariants} className="mt-8 flex flex-col space-y-1">
+              <p className="text-2xl md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+                Fostering Collaboration.
+              </p>
+              <p className="text-2xl md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+                Driving Innovation.
+              </p>
+              <p className="text-2xl md:text-3xl font-medium tracking-tight text-primary">
+                Fueling Growth.
+              </p>
             </motion.div>
 
             {/* Event Details Pills */}
             <motion.div 
-              className="mt-12 flex flex-wrap justify-center lg:justify-start gap-3"
-              variants={itemVariants}
+              className="mt-6 flex flex-wrap gap-4"
+              variants={wordVariants}
             >
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <Building2 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>United Incubation Hub</span>
+              <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <Calendar className="w-5 h-5 text-accent" />
+                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <Calendar className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>23-24 Oct 2026</span>
+              <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <MapPin className="w-5 h-5 text-primary" />
+                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <MapPin className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Prayagraj, UP</span>
-              </div>
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div 
+              className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+              variants={wordVariants}
+            >
+              <button 
+                onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
+                className="group relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg transition-all hover:shadow-[0_0_30px_rgba(11,42,107,0.3)] hover:-translate-y-1 flex items-center justify-center gap-3"
+              >
+                <span>Register Now</span>
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button 
+                onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
+                className="w-full sm:w-auto px-8 py-4 rounded-full border-2 font-semibold text-lg backdrop-blur-sm transition-all hover:-translate-y-1 hover:bg-gray-50/50"
+                style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+              >
+                Explore Event
+              </button>
             </motion.div>
           </motion.div>
 
-          {/* Right Column (Visual) */}
-          <div className="hidden lg:block relative w-full h-[600px]">
-            {/* Core Glow */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-primary/40 rounded-full blur-[100px]" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-accent/30 rounded-full blur-[80px]" />
-            
-            {/* Concentric Circles */}
+          {/* Right Column (Floating Info Panel) */}
+          <motion.div 
+            className="hidden lg:block w-full relative z-30"
+            variants={floatAnimation}
+            initial="initial"
+            animate="animate"
+          >
             <motion.div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-dashed"
-              style={{ borderColor: 'var(--border)' }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-dashed"
-              style={{ borderColor: 'var(--border)' }}
-              animate={{ rotate: -360 }}
-              transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
-            />
-
-            {/* Central Element */}
-            <motion.div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full bg-gradient-to-br from-primary to-accent p-1 shadow-[0_0_50px_rgba(255,122,0,0.3)]"
-              variants={floatingVariants(0)}
-              initial="initial"
-              animate="animate"
+              className="glass-card rounded-[2rem] p-5 md:p-6 lg:p-8 relative overflow-hidden border border-white/40"
+              initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
+              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
+              transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.7))',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1), 0 0 40px rgba(11, 42, 107, 0.05)',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)'
+              }}
             >
-              <div className="w-full h-full backdrop-blur-md rounded-full flex items-center justify-center border" style={{ backgroundColor: 'var(--bg)', opacity: 0.9, borderColor: 'var(--border)' }}>
-                <Rocket className="w-12 h-12" style={{ color: 'var(--text-primary)' }} />
+              {/* Internal subtle glow */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-accent/10 rounded-full blur-2xl" />
+
+              {/* Countdown Section */}
+              <div className="mb-6 relative z-10">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="relative flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-accent"></span>
+                  </span>
+                  <h3 className="text-lg font-bold tracking-wide uppercase text-text-secondary">Event Begins In</h3>
+                </div>
+
+                <div className="grid grid-cols-4 gap-2 md:gap-4">
+                  {[
+                    { value: days, label: 'Days' },
+                    { value: hours, label: 'Hours' },
+                    { value: minutes, label: 'Mins' },
+                    { value: seconds, label: 'Secs' },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex flex-col items-center">
+                      <div className="w-full aspect-square rounded-xl md:rounded-2xl bg-white border shadow-sm flex items-center justify-center mb-2" style={{ borderColor: 'var(--border)' }}>
+                        <span className="text-2xl md:text-4xl font-heading font-bold text-primary">
+                          {formatTime(item.value)}
+                        </span>
+                      </div>
+                      <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Divider */}
+              <div className="w-full h-px mb-6" style={{ background: 'linear-gradient(90deg, transparent, var(--border), transparent)' }} />
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4 relative z-10">
+                <StatBlock value="50+" label="Startups" />
+                <StatBlock value="1000+" label="Attendees" />
+                <StatBlock value="20+" label="Speakers" />
+                <StatBlock value="10+" label="Investors" />
               </div>
             </motion.div>
-
-            {/* Floating Icons */}
-            <motion.div 
-              className="absolute top-1/4 left-1/4 w-16 h-16 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-              variants={floatingVariants(0.5)}
-              initial="initial"
-              animate="animate"
-            >
-              <Lightbulb className="w-7 h-7 text-yellow-400" />
-            </motion.div>
-
-            <motion.div 
-              className="absolute bottom-1/4 left-1/3 w-14 h-14 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-              variants={floatingVariants(1)}
-              initial="initial"
-              animate="animate"
-            >
-              <TrendingUp className="w-6 h-6 text-green-400" />
-            </motion.div>
-
-            <motion.div 
-              className="absolute top-1/3 right-1/4 w-20 h-20 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-              variants={floatingVariants(1.5)}
-              initial="initial"
-              animate="animate"
-            >
-              <Zap className="w-10 h-10 text-accent" />
-            </motion.div>
-
-            <motion.div 
-              className="absolute bottom-1/3 right-1/3 w-16 h-16 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-              variants={floatingVariants(2)}
-              initial="initial"
-              animate="animate"
-            >
-              <Target className="w-8 h-8 text-red-400" />
-            </motion.div>
-          </div>
+          </motion.div>
           
         </div>
       </div>
