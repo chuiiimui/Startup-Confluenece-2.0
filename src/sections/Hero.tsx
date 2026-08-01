@@ -35,14 +35,14 @@ const Hero = () => {
   });
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden bg-dark">
+    <section id="home" className="relative min-h-screen flex items-center pt-24 pb-12 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
       <MeshGradient />
       <GridPattern />
       <ParticleField />
       
       {/* Gradient fade at bottom */}
-      <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-dark to-transparent z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-full h-32 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }} />
 
       <div className="container mx-auto px-6 lg:px-12 relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
@@ -56,12 +56,12 @@ const Hero = () => {
           >
             {/* Badge */}
             <motion.div variants={itemVariants} className="mb-6">
-              <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
+              <div className="inline-flex items-center space-x-2 px-4 py-2 rounded-full border backdrop-blur-md" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
                 </span>
-                <span className="text-xs sm:text-sm font-medium text-gray-300 tracking-wide uppercase">
+                <span className="text-xs sm:text-sm font-medium tracking-wide uppercase" style={{ color: 'var(--text-secondary)' }}>
                   23-24 October 2026 · Prayagraj
                 </span>
               </div>
@@ -69,8 +69,11 @@ const Hero = () => {
 
             {/* Headline */}
             <motion.h1 
-              className="font-heading font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-white via-white to-gray-400 tracking-tighter leading-[0.9]"
-              style={{ fontSize: "clamp(3rem, 10vw, 7.5rem)" }}
+              className="font-heading font-extrabold text-transparent bg-clip-text tracking-tighter leading-[0.9]"
+              style={{ 
+                fontSize: "clamp(3rem, 10vw, 7.5rem)",
+                backgroundImage: 'linear-gradient(to bottom right, var(--text-primary), var(--text-primary), var(--text-muted))'
+              }}
               variants={itemVariants}
             >
               STARTUP<br/>
@@ -87,7 +90,8 @@ const Hero = () => {
 
             {/* Description */}
             <motion.p 
-              className="mt-4 text-lg md:text-xl text-gray-400 max-w-lg"
+              className="mt-4 text-lg md:text-xl max-w-lg"
+              style={{ color: 'var(--text-muted)' }}
               variants={itemVariants}
             >
               The Flagship Startup & Innovation Summit of Uttar Pradesh
@@ -100,13 +104,17 @@ const Hero = () => {
             >
               <button 
                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-accent text-white font-medium text-lg transition-all hover:shadow-[0_0_20px_rgba(255,122,0,0.4)] hover:-translate-y-1"
+                className="w-full sm:w-auto px-8 py-4 rounded-full bg-accent font-medium text-lg transition-all hover:shadow-[0_0_20px_rgba(255,122,0,0.4)] hover:-translate-y-1"
+                style={{ color: 'var(--text-primary)' }}
               >
                 Register Now
               </button>
               <button 
                 onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })}
-                className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-medium text-lg backdrop-blur-sm transition-all hover:bg-white/10 hover:-translate-y-1"
+                className="w-full sm:w-auto px-8 py-4 rounded-full border font-medium text-lg backdrop-blur-sm transition-all hover:-translate-y-1"
+                style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--surface-hover)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'var(--surface)'}
               >
                 Explore Experience
               </button>
@@ -117,17 +125,17 @@ const Hero = () => {
               className="mt-12 flex flex-wrap justify-center lg:justify-start gap-3"
               variants={itemVariants}
             >
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 backdrop-blur-sm">
-                <Building2 className="w-4 h-4 text-gray-400" />
-                <span className="text-sm font-medium text-gray-300">United Incubation Hub</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                <Building2 className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>United Incubation Hub</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 backdrop-blur-sm">
-                <Calendar className="w-4 h-4 text-gray-400" />
-                <span className="text-sm font-medium text-gray-300">23-24 Oct 2026</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                <Calendar className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>23-24 Oct 2026</span>
               </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-white/5 border border-white/10 backdrop-blur-sm">
-                <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-sm font-medium text-gray-300">Prayagraj, UP</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-md border backdrop-blur-sm" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                <MapPin className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>Prayagraj, UP</span>
               </div>
             </motion.div>
           </motion.div>
@@ -140,12 +148,14 @@ const Hero = () => {
             
             {/* Concentric Circles */}
             <motion.div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-white/10 border-dashed"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full border border-dashed"
+              style={{ borderColor: 'var(--border)' }}
               animate={{ rotate: 360 }}
               transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
             />
             <motion.div 
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-white/5 border-dashed"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full border border-dashed"
+              style={{ borderColor: 'var(--border)' }}
               animate={{ rotate: -360 }}
               transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
             />
@@ -157,14 +167,15 @@ const Hero = () => {
               initial="initial"
               animate="animate"
             >
-              <div className="w-full h-full bg-dark/80 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10">
-                <Rocket className="w-12 h-12 text-white" />
+              <div className="w-full h-full backdrop-blur-md rounded-full flex items-center justify-center border" style={{ backgroundColor: 'var(--bg)', opacity: 0.9, borderColor: 'var(--border)' }}>
+                <Rocket className="w-12 h-12" style={{ color: 'var(--text-primary)' }} />
               </div>
             </motion.div>
 
             {/* Floating Icons */}
             <motion.div 
-              className="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-lg"
+              className="absolute top-1/4 left-1/4 w-16 h-16 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               variants={floatingVariants(0.5)}
               initial="initial"
               animate="animate"
@@ -173,7 +184,8 @@ const Hero = () => {
             </motion.div>
 
             <motion.div 
-              className="absolute bottom-1/4 left-1/3 w-14 h-14 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-lg"
+              className="absolute bottom-1/4 left-1/3 w-14 h-14 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               variants={floatingVariants(1)}
               initial="initial"
               animate="animate"
@@ -182,7 +194,8 @@ const Hero = () => {
             </motion.div>
 
             <motion.div 
-              className="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-lg"
+              className="absolute top-1/3 right-1/4 w-20 h-20 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               variants={floatingVariants(1.5)}
               initial="initial"
               animate="animate"
@@ -191,7 +204,8 @@ const Hero = () => {
             </motion.div>
 
             <motion.div 
-              className="absolute bottom-1/3 right-1/3 w-16 h-16 rounded-full bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-lg"
+              className="absolute bottom-1/3 right-1/3 w-16 h-16 rounded-full border backdrop-blur-md flex items-center justify-center shadow-lg"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               variants={floatingVariants(2)}
               initial="initial"
               animate="animate"

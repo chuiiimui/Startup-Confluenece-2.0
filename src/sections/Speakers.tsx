@@ -37,20 +37,21 @@ export default function Speakers() {
     return (
       <motion.div
         variants={itemVariants}
-        className="group bg-white/[0.02] border border-white/10 backdrop-blur-xl rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-accent/20"
+        className="group border backdrop-blur-xl rounded-2xl overflow-hidden hover:scale-[1.02] transition-all duration-300 shadow-xl shadow-black/20 hover:shadow-2xl hover:shadow-accent/20"
+        style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
       >
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-[#0B2A6B]/50 to-accent/20 flex items-center justify-center group-hover:bg-accent/10 transition-colors duration-500">
-          <div className="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/40 to-transparent z-10" />
+          <div className="absolute inset-0 z-10" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }} />
           
-          <span className="text-7xl font-heading font-bold text-white/10 group-hover:scale-110 transition-transform duration-500 z-0">
+          <span className="text-7xl font-heading font-bold group-hover:scale-110 transition-transform duration-500 z-0" style={{ color: 'var(--text-primary)', opacity: 0.1 }}>
             {initials}
           </span>
           
           <div className="absolute bottom-0 left-0 w-full p-6 z-20">
-            <h3 className="text-xl font-heading font-semibold text-white mb-1 group-hover:text-accent transition-colors">
+            <h3 className="text-xl font-heading font-semibold mb-1 group-hover:text-accent transition-colors" style={{ color: 'var(--text-primary)' }}>
               {speaker.name}
             </h3>
-            <p className="text-sm text-gray-400 font-medium">{speaker.role}</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{speaker.role}</p>
             <p className="text-xs text-accent mt-2 tracking-wider uppercase font-semibold">{speaker.company}</p>
           </div>
         </div>
@@ -59,7 +60,7 @@ export default function Speakers() {
   };
 
   return (
-    <section id="speakers" className="py-24 bg-dark relative z-10 overflow-hidden">
+    <section id="speakers" className="py-24 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="container mx-auto px-4 max-w-7xl">
         <SectionHeading badge="Speakers" title="Featured Speakers" />
         

@@ -26,7 +26,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       setPosition({ x: 0, y: 0 });
     };
 
-    const baseClasses = "relative inline-flex items-center justify-center font-medium transition-colors overflow-hidden rounded-full";
+    const baseClasses = "relative inline-flex items-center justify-center font-medium overflow-hidden rounded-full";
     
     const sizeClasses = {
       sm: "px-4 py-2 text-sm",
@@ -34,10 +34,26 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       lg: "px-8 py-4 text-lg"
     };
 
+    // Primary always uses accent color with white text (works in both themes)
+    // Secondary + Ghost now use CSS variables for theme adaptation
+    const variantStyles: Record<string, React.CSSProperties> = {
+      primary: {},
+      secondary: {
+        background: 'var(--surface)',
+        color: 'var(--text-primary)',
+        border: '1px solid var(--border)',
+        backdropFilter: 'blur(24px)',
+      },
+      ghost: {
+        background: 'transparent',
+        color: 'var(--text-primary)',
+      },
+    };
+
     const variantClasses = {
       primary: "bg-accent text-white hover:bg-[#FF8C20] shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:shadow-[0_0_30px_rgba(255,122,0,0.5)] border border-transparent",
-      secondary: "bg-white/[0.08] text-white border border-white/[0.15] backdrop-blur-xl hover:bg-white/[0.12] hover:border-white/[0.3]",
-      ghost: "bg-transparent text-white hover:bg-white/[0.08]"
+      secondary: "",
+      ghost: ""
     };
 
     const disabledClasses = disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : "cursor-pointer";
@@ -51,6 +67,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
       onMouseMove: handleMouseMove,
       onMouseLeave: handleMouseLeave,
       className: `${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${disabledClasses} ${className}`,
+      style: variantStyles[variant],
       animate: { x: position.x, y: position.y },
       transition: { type: "spring", stiffness: 150, damping: 15, mass: 0.1 },
       whileHover: { scale: disabled ? 1 : 1.05 },

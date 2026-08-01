@@ -28,7 +28,7 @@ const Schedule = () => {
   };
 
   return (
-    <section id="schedule" className="py-24 relative overflow-hidden bg-dark">
+    <section id="schedule" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="absolute top-0 right-0 w-1/3 h-[500px] bg-accent/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
@@ -53,7 +53,7 @@ const Schedule = () => {
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
-              <span className={`relative z-10 ${activeDay === day.id ? 'text-white' : 'text-gray-400 hover:text-white'}`}>
+              <span className={`relative z-10`} style={{ color: activeDay === day.id ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                 {day.title} - {day.date}
               </span>
             </button>
@@ -81,8 +81,8 @@ const Schedule = () => {
                 >
                   {/* Desktop Timeline */}
                   <div className="hidden md:flex flex-col items-end w-48 shrink-0 pr-8 py-6 relative">
-                    <div className="absolute right-0 top-0 bottom-0 w-px bg-white/10 group-last:bottom-auto group-last:h-full" />
-                    <div className="absolute right-[-4px] top-8 w-2 h-2 rounded-full bg-accent ring-4 ring-dark" />
+                    <div className="absolute right-0 top-0 bottom-0 w-px group-last:bottom-auto group-last:h-full" style={{ backgroundColor: 'var(--border)' }} />
+                    <div className="absolute right-[-4px] top-8 w-2 h-2 rounded-full bg-accent ring-4" style={{ '--tw-ring-color': 'var(--bg)' } as React.CSSProperties} />
                     <span className="text-accent font-mono font-medium text-lg">{event.time}</span>
                   </div>
 
@@ -90,7 +90,8 @@ const Schedule = () => {
                   <div className="flex-1 md:pl-8 pb-6 md:pb-8">
                     {/* Mobile View / Accordion */}
                     <div 
-                      className="md:hidden glass rounded-xl p-5 border border-white/10 cursor-pointer"
+                      className="md:hidden glass rounded-xl p-5 border cursor-pointer"
+                      style={{ borderColor: 'var(--border)' }}
                       onClick={() => setExpandedItem(expandedItem === event.id ? null : event.id)}
                     >
                       <div className="flex justify-between items-start mb-3">
@@ -99,16 +100,16 @@ const Schedule = () => {
                           animate={{ rotate: expandedItem === event.id ? 180 : 0 }}
                           transition={{ duration: 0.2 }}
                         >
-                          <FiChevronDown className="text-gray-400" />
+                          <FiChevronDown style={{ color: 'var(--text-muted)' }} />
                         </motion.div>
                       </div>
-                      <h3 className="text-lg font-heading font-semibold text-white mb-2">{event.title}</h3>
+                      <h3 className="text-lg font-heading font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{event.title}</h3>
                       <div className="flex items-center gap-2 mb-3">
                         <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${getBadgeColor(event.type)}`}>
                           {event.type}
                         </span>
                         {event.location && (
-                          <span className="flex items-center text-xs text-gray-400">
+                          <span className="flex items-center text-xs" style={{ color: 'var(--text-muted)' }}>
                             <FiMapPin className="mr-1" /> {event.location}
                           </span>
                         )}
@@ -122,12 +123,12 @@ const Schedule = () => {
                             exit={{ height: 0, opacity: 0 }}
                             className="overflow-hidden"
                           >
-                            <p className="text-gray-400 text-sm mt-3 pt-3 border-t border-white/5">
+                            <p className="text-sm mt-3 pt-3 border-t" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>
                               {event.description}
                             </p>
                             {event.speaker && (
-                              <p className="text-sm text-gray-300 mt-2 font-medium">
-                                Speaker: <span className="text-white">{event.speaker}</span>
+                              <p className="text-sm mt-2 font-medium" style={{ color: 'var(--text-secondary)' }}>
+                                Speaker: <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
                               </p>
                             )}
                           </motion.div>
@@ -136,24 +137,24 @@ const Schedule = () => {
                     </div>
 
                     {/* Desktop View */}
-                    <div className="hidden md:block glass rounded-xl p-6 border border-white/10 hover:border-white/20 transition-colors duration-300">
+                    <div className="hidden md:block glass rounded-xl p-6 border transition-colors duration-300" style={{ borderColor: 'var(--border)' }}>
                       <div className="flex justify-between items-start mb-2">
-                        <h3 className="text-xl font-heading font-semibold text-white group-hover:text-accent transition-colors duration-300">{event.title}</h3>
+                        <h3 className="text-xl font-heading font-semibold group-hover:text-accent transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>{event.title}</h3>
                         <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getBadgeColor(event.type)}`}>
                           {event.type}
                         </span>
                       </div>
                       
                       {event.speaker && (
-                        <p className="text-sm font-medium text-gray-300 mb-3">
-                          By <span className="text-white">{event.speaker}</span>
+                        <p className="text-sm font-medium mb-3" style={{ color: 'var(--text-secondary)' }}>
+                          By <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
                         </p>
                       )}
                       
-                      <p className="text-gray-400 mb-4">{event.description}</p>
+                      <p className="mb-4" style={{ color: 'var(--text-muted)' }}>{event.description}</p>
                       
                       {event.location && (
-                        <div className="flex items-center text-sm text-gray-500">
+                        <div className="flex items-center text-sm" style={{ color: 'var(--text-muted)' }}>
                           <FiMapPin className="mr-1.5" />
                           {event.location}
                         </div>

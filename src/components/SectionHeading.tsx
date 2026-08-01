@@ -46,7 +46,11 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       {badge && (
         <motion.div
           variants={itemVariants}
-          className="mb-4 inline-flex items-center rounded-full border border-accent/50 bg-accent/10 px-3 py-1"
+          className="mb-4 inline-flex items-center rounded-full px-3 py-1"
+          style={{
+            background: 'var(--badge-bg)',
+            border: '1px solid var(--badge-border)',
+          }}
         >
           <span className="text-xs font-semibold uppercase tracking-widest text-accent">
             {badge}
@@ -56,7 +60,8 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       
       <motion.h2
         variants={itemVariants}
-        className="mb-6 font-heading text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl"
+        className="mb-6 font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+        style={{ color: 'var(--text-primary)' }}
       >
         {title}
       </motion.h2>
@@ -64,7 +69,8 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       {subtitle && (
         <motion.p
           variants={itemVariants}
-          className="max-w-2xl text-lg text-gray-400"
+          className="max-w-2xl text-lg"
+          style={{ color: 'var(--text-muted)' }}
         >
           {subtitle}
         </motion.p>

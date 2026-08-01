@@ -29,7 +29,7 @@ const Gallery = () => {
   };
 
   return (
-    <section id="gallery" className="py-24 relative overflow-hidden bg-dark">
+    <section id="gallery" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="absolute bottom-0 left-0 w-1/2 h-[400px] bg-primary/5 rounded-full blur-[150px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
@@ -50,11 +50,12 @@ const Gallery = () => {
               {activeCategory === category && (
                 <motion.div
                   layoutId="activeGalleryTab"
-                  className="absolute inset-0 bg-white/10 border border-white/20 rounded-full -z-10"
+                  className="absolute inset-0 rounded-full -z-10 border"
+                  style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
-              <span className={`relative z-10 ${activeCategory === category ? 'text-white' : 'text-gray-400 hover:text-white'}`}>
+              <span className={`relative z-10`} style={{ color: activeCategory === category ? 'var(--text-primary)' : 'var(--text-muted)' }}>
                 {category}
               </span>
             </button>
@@ -75,7 +76,8 @@ const Gallery = () => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
                 key={image.id}
-                className="relative break-inside-avoid group cursor-pointer rounded-2xl overflow-hidden glass border border-white/10"
+                className="relative break-inside-avoid group cursor-pointer rounded-2xl overflow-hidden glass border"
+                style={{ borderColor: 'var(--border)' }}
                 onClick={() => setSelectedImage(image)}
               >
                 {/* Fallback placeholder since actual image src might not exist or be reachable */}
@@ -89,13 +91,14 @@ const Gallery = () => {
                       className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay group-hover:scale-110 transition-transform duration-700 ease-in-out"
                     />
                   ) : null}
-                  <div className="absolute inset-0 bg-dark/40 group-hover:bg-dark/20 transition-colors duration-500" />
+                  <div className="absolute inset-0 transition-colors duration-500" style={{ backgroundColor: 'var(--bg)', opacity: 0.4 }} />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: 'var(--bg)', opacity: 0.2 }} />
                   
                   {/* Overlay content */}
-                  <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-dark/90 via-dark/40 to-transparent">
+                  <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'linear-gradient(to top, var(--bg) 10%, transparent 100%)' }}>
                     <span className="text-accent text-xs font-semibold mb-1 uppercase tracking-wider">{image.category}</span>
-                    <h4 className="text-white font-heading font-medium text-lg leading-tight">{image.title}</h4>
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                    <h4 className="font-heading font-medium text-lg leading-tight" style={{ color: 'var(--text-primary)' }}>{image.title}</h4>
+                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center translate-y-4 group-hover:translate-y-0 transition-transform duration-300" style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}>
                       <FiZoomIn size={18} />
                     </div>
                   </div>
@@ -113,11 +116,13 @@ const Gallery = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-dark/90 backdrop-blur-xl"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 backdrop-blur-xl"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }} // Kept dark for lightbox
             onClick={() => setSelectedImage(null)}
           >
             <button 
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors z-50"
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full transition-colors z-50"
+              style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
               onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
             >
               <FiX size={24} />
@@ -128,7 +133,8 @@ const Gallery = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-5xl aspect-video max-h-[85vh] rounded-2xl overflow-hidden glass border border-white/20 flex flex-col"
+              className="relative w-full max-w-5xl aspect-video max-h-[85vh] rounded-2xl overflow-hidden glass border flex flex-col"
+              style={{ borderColor: 'var(--border)' }}
               onClick={(e) => e.stopPropagation()}
             >
                <div className={`w-full h-full bg-gradient-to-br ${getGradient(selectedImage.id)} relative flex items-center justify-center`}>
@@ -139,12 +145,12 @@ const Gallery = () => {
                       className="absolute inset-0 w-full h-full object-contain"
                     />
                   ) : (
-                    <span className="text-white/30 font-heading text-4xl">Image Placeholder</span>
+                    <span className="font-heading text-4xl" style={{ color: 'var(--text-muted)' }}>Image Placeholder</span>
                   )}
                </div>
-               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-dark to-transparent">
+               <div className="absolute bottom-0 left-0 right-0 p-6" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }}>
                  <span className="text-accent text-sm font-semibold mb-2 block">{selectedImage.category}</span>
-                 <h3 className="text-2xl font-heading font-semibold text-white">{selectedImage.title}</h3>
+                 <h3 className="text-2xl font-heading font-semibold" style={{ color: 'var(--text-primary)' }}>{selectedImage.title}</h3>
                </div>
             </motion.div>
           </motion.div>

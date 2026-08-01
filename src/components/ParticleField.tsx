@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 export interface ParticleFieldProps {
   count?: number;
@@ -7,6 +8,9 @@ export interface ParticleFieldProps {
 }
 
 const ParticleField: React.FC<ParticleFieldProps> = ({ count = 50, className = '' }) => {
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+
   const particles = useMemo(() => {
     return Array.from({ length: count }).map((_, i) => ({
       id: i,
@@ -23,16 +27,19 @@ const ParticleField: React.FC<ParticleFieldProps> = ({ count = 50, className = '
       {particles.map((p) => (
         <motion.div
           key={p.id}
-          className="absolute rounded-full bg-white opacity-20"
+          className="absolute rounded-full"
           style={{
             left: `${p.x}%`,
             top: `${p.y}%`,
             width: p.size,
             height: p.size,
+            backgroundColor: isDark
+              ? `rgba(255, 255, 255, 0.2)`
+              : `rgba(11, 42, 107, 0.15)`,
           }}
           animate={{
             y: ['-20px', '20px', '-20px'],
-            opacity: [0.1, 0.4, 0.1],
+            opacity: [0.1, isDark ? 0.4 : 0.3, 0.1],
           }}
           transition={{
             duration: p.duration,

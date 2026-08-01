@@ -6,7 +6,10 @@ export interface GridPatternProps {
 
 const GridPattern: React.FC<GridPatternProps> = ({ className = '' }) => {
   return (
-    <div className={`pointer-events-none absolute inset-0 opacity-[0.03] ${className}`}>
+    <div
+      className={`pointer-events-none absolute inset-0 ${className}`}
+      style={{ opacity: 'var(--grid-opacity)' }}
+    >
       <svg
         className="h-full w-full"
         xmlns="http://www.w3.org/2000/svg"
@@ -21,7 +24,7 @@ const GridPattern: React.FC<GridPatternProps> = ({ className = '' }) => {
             <path
               d="M 40 0 L 0 0 0 40"
               fill="none"
-              stroke="white"
+              stroke="var(--grid-line)"
               strokeWidth="1"
             />
           </pattern>

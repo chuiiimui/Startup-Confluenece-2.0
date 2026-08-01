@@ -39,12 +39,13 @@ export const Contact: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: card.delay }}
-              className="bg-white/5 backdrop-blur-xl border border-white/10 hover:border-accent/50 rounded-3xl p-8 flex flex-col items-center text-center group transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,122,0,0.1)] hover:-translate-y-2"
+              className="backdrop-blur-xl border hover:border-accent/50 rounded-3xl p-8 flex flex-col items-center text-center group transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,122,0,0.1)] hover:-translate-y-2"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
             >
-              <div className="w-16 h-16 bg-white/5 group-hover:bg-accent/10 rounded-2xl flex items-center justify-center mb-6 transition-colors">
+              <div className="w-16 h-16 group-hover:bg-accent/10 rounded-2xl flex items-center justify-center mb-6 transition-colors" style={{ background: 'var(--surface)' }}>
                 {card.icon}
               </div>
-              <h4 className="text-xl font-semibold text-white mb-2">{card.title}</h4>
+              <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{card.title}</h4>
               <p className="text-text">{card.value}</p>
             </motion.div>
           ))}
@@ -66,7 +67,8 @@ export const Contact: React.FC = () => {
             <a 
               key={i}
               href={social.href}
-              className="w-12 h-12 bg-white/5 hover:bg-accent hover:text-white text-text border border-white/10 hover:border-accent rounded-full flex items-center justify-center transition-all duration-300"
+              className="w-12 h-12 hover:bg-accent text-text border hover:border-accent rounded-full flex items-center justify-center transition-all duration-300 hover:text-[var(--text-primary)]"
+              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
             >
               {social.icon}
             </a>

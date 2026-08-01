@@ -8,9 +8,12 @@ function FlipCard({ value, label }: { value: number; label: string }) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-24 h-32 md:w-32 md:h-40 rounded-2xl bg-[rgba(255,255,255,0.08)] backdrop-blur-md border border-[rgba(255,255,255,0.15)] flex items-center justify-center overflow-hidden [perspective:1000px] shadow-lg">
+      <div 
+        className="relative w-24 h-32 md:w-32 md:h-40 rounded-2xl backdrop-blur-md border flex items-center justify-center overflow-hidden [perspective:1000px] shadow-lg"
+        style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+      >
         {/* Top half */}
-        <div className="absolute top-0 left-0 w-full h-1/2 bg-black/20 border-b border-white/5 z-10" />
+        <div className="absolute top-0 left-0 w-full h-1/2 z-10" style={{ backgroundColor: 'var(--bg)', opacity: 0.2, borderBottom: '1px solid var(--border)' }} />
         
         <AnimatePresence mode="popLayout">
           <motion.span
@@ -19,8 +22,8 @@ function FlipCard({ value, label }: { value: number; label: string }) {
             animate={{ rotateX: 0, opacity: 1 }}
             exit={{ rotateX: -90, opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="font-heading font-bold text-5xl md:text-7xl text-white z-20"
-            style={{ transformOrigin: 'bottom center' }}
+            className="font-heading font-bold text-5xl md:text-7xl z-20"
+            style={{ transformOrigin: 'bottom center', color: 'var(--text-primary)' }}
           >
             {formattedValue}
           </motion.span>
@@ -29,7 +32,7 @@ function FlipCard({ value, label }: { value: number; label: string }) {
         {/* Ambient glow */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#FF7A00]/10 to-transparent opacity-50" />
       </div>
-      <span className="mt-4 text-sm md:text-base font-body text-[#D1D1D1] uppercase tracking-widest font-medium">
+      <span className="mt-4 text-sm md:text-base font-body uppercase tracking-widest font-medium" style={{ color: 'var(--text-secondary)' }}>
         {label}
       </span>
     </div>
@@ -40,7 +43,7 @@ export default function Countdown() {
   const { days, hours, minutes, seconds } = useCountdown(EVENT_DATE);
 
   return (
-    <section className="py-24 relative overflow-hidden bg-[#050505]">
+    <section className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background elements */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-[#0B2A6B]/20 blur-[120px] rounded-full pointer-events-none" />
 

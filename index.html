@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
@@ -12,8 +12,21 @@
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Prevent FOUC: apply theme before first paint -->
+    <script>
+      (function() {
+        var theme = localStorage.getItem('startup-confluence-theme');
+        if (!theme) {
+          theme = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.style.backgroundColor = theme === 'dark' ? '#050505' : '#F7F9FC';
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
   </head>
-  <body class="bg-[#050505] text-white antialiased">
+  <body class="antialiased" style="background-color: var(--bg); color: var(--text-primary);">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

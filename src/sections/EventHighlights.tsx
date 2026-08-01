@@ -22,7 +22,7 @@ export default function EventHighlights() {
   };
 
   return (
-    <section className="py-24 bg-[#050505] relative" id="highlights">
+    <section className="py-24 relative" id="highlights" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="container mx-auto px-6">
         <div className="mb-16">
           <SectionHeading 
@@ -52,18 +52,19 @@ export default function EventHighlights() {
                   y: -5,
                   boxShadow: '0 20px 40px -15px rgba(255, 122, 0, 0.2)'
                 }}
-                className="relative flex flex-col p-8 rounded-3xl bg-[rgba(255,255,255,0.08)] backdrop-blur-md border border-[rgba(255,255,255,0.15)] overflow-hidden group transition-colors duration-300 hover:border-[#FF7A00]/50"
+                className="relative flex flex-col p-8 rounded-3xl backdrop-blur-md border overflow-hidden group transition-colors duration-300 hover:border-[#FF7A00]/50"
+                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               >
                 {/* Icon Container */}
                 <div className="w-14 h-14 rounded-2xl bg-[#0B2A6B]/20 flex items-center justify-center mb-6 group-hover:bg-[#FF7A00]/20 transition-colors duration-300">
                   <Icon className="w-7 h-7 text-[#FF7A00]" />
                 </div>
 
-                <h3 className="font-heading font-bold text-xl text-white mb-3">
+                <h3 className="font-heading font-bold text-xl mb-3" style={{ color: 'var(--text-primary)' }}>
                   {highlight.title}
                 </h3>
                 
-                <p className="font-body text-[#D1D1D1] text-sm leading-relaxed flex-grow">
+                <p className="font-body text-sm leading-relaxed flex-grow" style={{ color: 'var(--text-secondary)' }}>
                   {highlight.description}
                 </p>
 

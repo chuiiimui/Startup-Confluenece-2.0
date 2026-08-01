@@ -23,7 +23,7 @@ const itemVariants = {
 
 export default function WhyAttend() {
   return (
-    <section id="why-attend" className="py-24 bg-dark relative z-10 overflow-hidden">
+    <section id="why-attend" className="py-24 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="container mx-auto px-4 max-w-7xl">
         <SectionHeading badge="Why Attend" title="Why You Should Be There" />
         
@@ -40,17 +40,18 @@ export default function WhyAttend() {
               <motion.div
                 key={benefit.id}
                 variants={itemVariants}
-                className="group relative p-8 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-md overflow-hidden hover:scale-[1.03] transition-transform duration-300"
+                className="group relative p-8 rounded-2xl border backdrop-blur-md overflow-hidden hover:scale-[1.03] transition-transform duration-300"
+                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
               >
                 <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/[0.05] transition-colors duration-500 z-0" />
                 <div className="relative z-10">
                   <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-6 group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
                     <IconComponent className="w-7 h-7 text-accent" />
                   </div>
-                  <h3 className="text-xl font-heading font-semibold text-white mb-3 group-hover:text-accent transition-colors">
+                  <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-accent transition-colors" style={{ color: 'var(--text-primary)' }}>
                     {benefit.title}
                   </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed">
+                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
                     {benefit.description}
                   </p>
                 </div>

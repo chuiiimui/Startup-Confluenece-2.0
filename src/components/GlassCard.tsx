@@ -13,9 +13,14 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
     return (
       <motion.div
         ref={ref}
-        className={`relative rounded-2xl border border-white/[0.15] bg-white/[0.08] p-6 backdrop-blur-xl transition-colors ${
-          glow ? 'hover:border-accent/[0.5] hover:bg-white/[0.12]' : ''
+        className={`relative rounded-2xl p-6 backdrop-blur-xl transition-colors ${
+          glow ? 'hover:border-accent/[0.5]' : ''
         } ${className}`}
+        style={{
+          background: 'var(--surface)',
+          border: '1px solid var(--border)',
+          boxShadow: 'var(--shadow-card)',
+        }}
         whileHover={hover ? { scale: 1.02, y: -5 } : undefined}
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         {...props}

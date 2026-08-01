@@ -17,7 +17,7 @@ export default function ScrollStorytelling() {
   });
 
   return (
-    <div ref={containerRef} className="relative h-[500vh] w-full bg-[#050505]">
+    <div ref={containerRef} className="relative h-[500vh] w-full" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background orbs */}
       <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
         <motion.div
@@ -68,7 +68,7 @@ export default function ScrollStorytelling() {
               className="absolute inset-0 flex flex-col items-center justify-center text-center p-6"
               style={{ opacity, scale, y }}
             >
-              <h2 className="font-heading font-extrabold text-[5rem] md:text-[8rem] lg:text-[12rem] text-white leading-none tracking-tighter mb-8 md:mb-12">
+              <h2 className="font-heading font-extrabold text-[5rem] md:text-[8rem] lg:text-[12rem] leading-none tracking-tighter mb-8 md:mb-12" style={{ color: 'var(--text-primary)' }}>
                 {scene.value}
               </h2>
               <p className="font-body text-2xl md:text-4xl text-[#FF7A00] font-medium tracking-wide uppercase">

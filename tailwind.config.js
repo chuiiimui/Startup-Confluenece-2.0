@@ -19,14 +19,14 @@ export default {
         light: '#F7F9FC',
         dark: '#050505',
         surface: {
-          glass: 'rgba(255, 255, 255, 0.08)',
-          glassBorder: 'rgba(255, 255, 255, 0.15)'
+          glass: 'var(--surface)',
+          glassBorder: 'var(--border)',
         },
         text: {
-          main: '#FFFFFF',
-          muted: '#D1D1D1'
+          main: 'var(--text-primary)',
+          muted: 'var(--text-muted)',
         },
-        success: '#22C55E'
+        success: '#22C55E',
       },
       fontFamily: {
         heading: ['"Space Grotesk"', 'sans-serif'],

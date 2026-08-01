@@ -4,9 +4,149 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   THEME DESIGN TOKENS
+   VisionOS Day / Night Environment
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Default: Dark Theme (VisionOS Night) */
+:root,
+[data-theme="dark"] {
+  --bg: #050505;
+  --bg-alt: #0A0A0A;
+  --bg-elevated: #111111;
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-hover: rgba(255, 255, 255, 0.12);
+  --surface-active: rgba(255, 255, 255, 0.16);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.20);
+  --text-primary: #FFFFFF;
+  --text-secondary: #D1D5DB;
+  --text-muted: #9CA3AF;
+  --text-inverse: #111827;
+  --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(255, 122, 0, 0.3);
+  --glass-blur: 30px;
+  --particle-color: rgba(255, 255, 255, 0.2);
+  --particle-glow: rgba(255, 122, 0, 0.15);
+  --gradient-mesh-1: rgba(11, 42, 107, 0.30);
+  --gradient-mesh-2: rgba(255, 122, 0, 0.20);
+  --gradient-mesh-3: rgba(37, 99, 235, 0.20);
+  --gradient-hero-from: #0A0A0A;
+  --gradient-hero-to: transparent;
+  --cursor-glow: rgba(255, 122, 0, 0.10);
+  --grid-line: white;
+  --grid-opacity: 0.03;
+  --scrollbar-track: #050505;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+  --overlay-bg: rgba(5, 5, 5, 0.60);
+  --heading-gradient-from: #FFFFFF;
+  --heading-gradient-via: #FFFFFF;
+  --heading-gradient-to: #9CA3AF;
+  --badge-bg: rgba(255, 122, 0, 0.10);
+  --badge-border: rgba(255, 122, 0, 0.50);
+
+  /* Toggle specific */
+  --toggle-bg: rgba(255, 255, 255, 0.08);
+  --toggle-border: rgba(255, 255, 255, 0.12);
+  --toggle-thumb-bg: rgba(255, 255, 255, 0.15);
+  --toggle-thumb-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --toggle-active-text: #FFFFFF;
+  --toggle-inactive-text: rgba(255, 255, 255, 0.45);
+}
+
+/* Light Theme (VisionOS Day) */
+[data-theme="light"] {
+  --bg: #F7F9FC;
+  --bg-alt: #FFFFFF;
+  --bg-elevated: #F3F6FB;
+  --surface: rgba(255, 255, 255, 0.80);
+  --surface-hover: rgba(255, 255, 255, 0.90);
+  --surface-active: rgba(255, 255, 255, 0.95);
+  --border: rgba(0, 0, 0, 0.06);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-muted: #6B7280;
+  --text-inverse: #FFFFFF;
+  --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.08);
+  --shadow-glow: 0 0 20px rgba(11, 42, 107, 0.15);
+  --glass-blur: 24px;
+  --particle-color: rgba(11, 42, 107, 0.12);
+  --particle-glow: rgba(11, 42, 107, 0.08);
+  --gradient-mesh-1: rgba(11, 42, 107, 0.12);
+  --gradient-mesh-2: rgba(255, 122, 0, 0.08);
+  --gradient-mesh-3: rgba(37, 99, 235, 0.10);
+  --gradient-hero-from: #F7F9FC;
+  --gradient-hero-to: transparent;
+  --cursor-glow: rgba(11, 42, 107, 0.06);
+  --grid-line: #111827;
+  --grid-opacity: 0.03;
+  --scrollbar-track: #F7F9FC;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.3);
+  --overlay-bg: rgba(247, 249, 252, 0.60);
+  --heading-gradient-from: #111827;
+  --heading-gradient-via: #1F2937;
+  --heading-gradient-to: #6B7280;
+  --badge-bg: rgba(255, 122, 0, 0.08);
+  --badge-border: rgba(255, 122, 0, 0.40);
+
+  /* Toggle specific */
+  --toggle-bg: rgba(0, 0, 0, 0.06);
+  --toggle-border: rgba(0, 0, 0, 0.08);
+  --toggle-thumb-bg: #FFFFFF;
+  --toggle-thumb-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  --toggle-active-text: #111827;
+  --toggle-inactive-text: rgba(0, 0, 0, 0.40);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   THEME TRANSITIONS
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 0.7s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Exclude elements that manage their own transitions */
+[data-no-theme-transition],
+[data-no-theme-transition] *,
+.framer-motion-animate,
+motion *,
+[style*="transform"] {
+  transition-property: none !important;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   BASE STYLES
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 @layer base {
   body {
-    @apply font-body bg-dark text-text-main antialiased selection:bg-accent/30 selection:text-white;
+    @apply font-body antialiased;
+    background-color: var(--bg);
+    color: var(--text-primary);
+  }
+  
+  body::selection,
+  body *::selection {
+    background-color: rgba(255, 122, 0, 0.30);
+    color: var(--text-primary);
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -24,18 +164,28 @@
     scrollbar-width: none;
   }
   
-  /* Text gradients */
+  /* Text gradients - theme aware */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent;
   }
 
   .text-gradient-light {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-light to-muted;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, var(--text-secondary), var(--text-muted));
   }
 
-  /* Glassmorphism */
+  /* Theme-aware glass card */
   .glass-card {
-    @apply bg-surface-glass backdrop-blur-md border border-surface-glassBorder shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+    background: var(--surface);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-card);
+  }
+
+  .glass-card:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-strong);
   }
 
   /* Safe area padding */
@@ -45,22 +195,51 @@
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
   }
+
+  /* Theme background utility */
+  .theme-bg {
+    background-color: var(--bg);
+  }
+  .theme-bg-alt {
+    background-color: var(--bg-alt);
+  }
+  .theme-bg-elevated {
+    background-color: var(--bg-elevated);
+  }
+  .theme-surface {
+    background: var(--surface);
+  }
+  .theme-text {
+    color: var(--text-primary);
+  }
+  .theme-text-secondary {
+    color: var(--text-secondary);
+  }
+  .theme-text-muted {
+    color: var(--text-muted);
+  }
+  .theme-border {
+    border-color: var(--border);
+  }
 }
 
-/* Custom thin scrollbar for dark theme */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   SCROLLBAR
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #050505;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Smooth scroll */
@@ -71,6 +250,6 @@ html {
 /* Grid Pattern Background */
 .bg-grid-pattern {
   background-size: 40px 40px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+                    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
 }

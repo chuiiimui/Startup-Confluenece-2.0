@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
+import ThemeToggle from './ThemeToggle';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,9 +66,16 @@ export const Navbar = () => {
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className={`pointer-events-auto flex flex-col items-center bg-white/[0.08] backdrop-blur-[30px] border border-white/[0.15] shadow-[0_8px_40px_rgba(0,0,0,0.08)] overflow-hidden ${
+          className={`pointer-events-auto flex flex-col items-center overflow-hidden ${
             isOpen ? 'rounded-[32px] w-full max-w-md' : 'rounded-full w-fit max-w-[1100px]'
           }`}
+          style={{
+            background: 'var(--surface)',
+            backdropFilter: 'blur(30px)',
+            WebkitBackdropFilter: 'blur(30px)',
+            border: '1px solid var(--border)',
+            boxShadow: 'var(--shadow-card)',
+          }}
           layout
         >
           {/* Main Navbar Row */}
@@ -83,7 +91,7 @@ export const Navbar = () => {
           >
             {/* Logo */}
             <div className="flex-shrink-0 cursor-pointer" onClick={() => handleNavClick('home')}>
-              <span className="text-xl font-bold font-heading text-white tracking-tight">
+              <span className="text-xl font-bold font-heading tracking-tight" style={{ color: 'var(--text-primary)' }}>
                 UIH<span className="text-accent">.</span>
               </span>
             </div>
@@ -97,14 +105,16 @@ export const Navbar = () => {
                   <button
                     key={itemId}
                     onClick={() => handleNavClick(itemId)}
-                    className={`relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300 ${
-                      isActive ? 'text-white' : 'text-white/70 hover:text-white'
-                    }`}
+                    className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300"
+                    style={{
+                      color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
+                    }}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="activeNav"
-                        className="absolute inset-0 bg-white/10 rounded-full"
+                        className="absolute inset-0 rounded-full"
+                        style={{ background: 'var(--surface-hover)' }}
                         transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                       />
                     )}
@@ -114,8 +124,9 @@ export const Navbar = () => {
               })}
             </div>
 
-            {/* Desktop Action Button */}
-            <div className="hidden lg:flex items-center">
+            {/* Desktop: Theme Toggle + Action Button */}
+            <div className="hidden lg:flex items-center gap-3">
+              <ThemeToggle />
               <button 
                 onClick={() => handleNavClick('register')}
                 className="bg-accent hover:bg-[#E66E00] text-white px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:shadow-[0_0_30px_rgba(255,122,0,0.5)] transform hover:-translate-y-0.5"
@@ -126,7 +137,8 @@ export const Navbar = () => {
 
             {/* Mobile Menu Toggle */}
             <button
-              className="lg:hidden p-2 -mr-2 text-white/80 hover:text-white rounded-full transition-colors"
+              className="lg:hidden p-2 -mr-2 rounded-full transition-colors"
+              style={{ color: 'var(--text-muted)' }}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -145,7 +157,12 @@ export const Navbar = () => {
                 className="w-full px-6 pb-6"
                 layout
               >
-                <div className="flex flex-col space-y-2 mt-4">
+                {/* Mobile Theme Toggle */}
+                <div className="flex justify-center mb-4 mt-2">
+                  <ThemeToggle />
+                </div>
+                
+                <div className="flex flex-col space-y-2">
                   {NAV_ITEMS.map((item, index) => {
                     const itemId = item.href.replace('#', '');
                     return (
@@ -156,14 +173,14 @@ export const Navbar = () => {
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ delay: index * 0.05, duration: 0.3 }}
                       onClick={() => handleNavClick(itemId)}
-                      className={`flex items-center justify-between w-full p-3 rounded-2xl transition-all ${
-                        activeSection === itemId 
-                          ? 'bg-white/10 text-white' 
-                          : 'text-white/70 hover:bg-white/5 hover:text-white'
-                      }`}
+                      className="flex items-center justify-between w-full p-3 rounded-2xl transition-all"
+                      style={{
+                        background: activeSection === itemId ? 'var(--surface-hover)' : 'transparent',
+                        color: activeSection === itemId ? 'var(--text-primary)' : 'var(--text-muted)',
+                      }}
                     >
                       <span className="text-lg font-medium">{item.label}</span>
-                      <ChevronRight size={18} className="opacity-50" />
+                      <ChevronRight size={18} style={{ opacity: 0.5 }} />
                     </motion.button>
                   );
                   })}
@@ -192,7 +209,8 @@ export const Navbar = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-dark/60 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 backdrop-blur-sm lg:hidden"
+            style={{ backgroundColor: 'var(--overlay-bg)' }}
             onClick={() => setIsOpen(false)}
           />
         )}

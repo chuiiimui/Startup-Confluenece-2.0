@@ -26,19 +26,21 @@ export const FAQ: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`bg-white/5 backdrop-blur-xl border ${isActive ? 'border-accent/50' : 'border-white/10'} rounded-2xl overflow-hidden transition-colors`}
+                className={`backdrop-blur-xl border rounded-2xl overflow-hidden transition-colors ${isActive ? 'border-accent/50' : ''}`}
+                style={{ background: 'var(--surface)', borderColor: isActive ? undefined : 'var(--border)' }}
               >
                 <button
                   onClick={() => toggleAccordion(index)}
                   className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                 >
-                  <span className={`font-medium pr-4 ${isActive ? 'text-accent' : 'text-white'}`}>
+                  <span className={`font-medium pr-4 ${isActive ? 'text-accent' : ''}`} style={{ color: isActive ? undefined : 'var(--text-primary)' }}>
                     {faq.question}
                   </span>
                   <motion.div
                     animate={{ rotate: isActive ? 180 : 0 }}
                     transition={{ duration: 0.2 }}
-                    className={`shrink-0 ${isActive ? 'text-accent' : 'text-white/50'}`}
+                    className={`shrink-0 ${isActive ? 'text-accent' : ''}`}
+                    style={{ color: isActive ? undefined : 'var(--text-muted)' }}
                   >
                     <ChevronDown className="w-5 h-5" />
                   </motion.div>
@@ -52,7 +54,7 @@ export const FAQ: React.FC = () => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                     >
-                      <div className="px-6 pb-5 text-text border-t border-white/5 pt-4">
+                      <div className="px-6 pb-5 text-text border-t pt-4" style={{ borderColor: 'var(--border)' }}>
                         {faq.answer}
                       </div>
                     </motion.div>

@@ -47,7 +47,7 @@ export default function About() {
   };
 
   return (
-    <section className="py-24 bg-[#050505] relative" id="about">
+    <section className="py-24 relative" id="about" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
@@ -64,7 +64,7 @@ export default function About() {
               align="left"
             />
             
-            <motion.p variants={itemVariants} className="text-[#D1D1D1] font-body text-lg mb-8 leading-relaxed">
+            <motion.p variants={itemVariants} className="font-body text-lg mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
               Startup Confluence 2.0 is the premier gathering for innovators, entrepreneurs, and investors. 
               Join us for two days of groundbreaking ideas, transformative networking, and unparalleled opportunities to accelerate your startup journey.
             </motion.p>
@@ -73,7 +73,7 @@ export default function About() {
               {purposes.map((purpose, index) => (
                 <motion.div key={index} variants={itemVariants} className="flex items-center space-x-3">
                   <CheckCircle2 className="text-[#22C55E] w-6 h-6 flex-shrink-0" />
-                  <span className="text-white font-body">{purpose}</span>
+                  <span className="font-body" style={{ color: 'var(--text-primary)' }}>{purpose}</span>
                 </motion.div>
               ))}
             </div>
@@ -82,7 +82,7 @@ export default function About() {
               <h3 className="text-[#FF7A00] font-heading font-bold text-xl mb-4">Organized By</h3>
               <div className="flex flex-wrap gap-4">
                 {organizers.map((org, index) => (
-                  <div key={index} className="px-4 py-2 rounded-full bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.15)] text-sm font-medium text-[#D1D1D1]">
+                  <div key={index} className="px-4 py-2 rounded-full border text-sm font-medium" style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
                     {org}
                   </div>
                 ))}
@@ -104,11 +104,12 @@ export default function About() {
                   <div className="flex items-baseline mb-2">
                     <AnimatedCounter 
                       value={stat.value} 
-                      className="font-heading font-extrabold text-4xl text-white"
+                      className="font-heading font-extrabold text-4xl"
+                      style={{ color: 'var(--text-primary)' }}
                     />
                     <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>
                   </div>
-                  <p className="font-body text-sm text-[#D1D1D1] uppercase tracking-wider">{stat.label}</p>
+                  <p className="font-body text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>{stat.label}</p>
                 </GlassCard>
               </motion.div>
             ))}

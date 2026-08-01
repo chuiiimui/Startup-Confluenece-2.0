@@ -14,9 +14,10 @@ export const Registration: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl inline-block max-w-xl w-full"
+            className="backdrop-blur-xl border rounded-3xl p-8 md:p-12 shadow-2xl inline-block max-w-xl w-full"
+            style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
           >
-            <h3 className="text-2xl font-heading font-bold text-white mb-4">Ready to accelerate your startup journey?</h3>
+            <h3 className="text-2xl font-heading font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Ready to accelerate your startup journey?</h3>
             <p className="text-text mb-8">Secure your spot at India's premier startup summit. Connect with investors, founders, and industry leaders.</p>
             
             <a 

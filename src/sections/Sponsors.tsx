@@ -10,7 +10,7 @@ const MarqueeRow = ({ sponsors, speed, direction = 'left', tierClass, name }: { 
   return (
     <div className="relative mb-16 w-full">
       <div className="text-center mb-6">
-        <span className={`inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest border border-white/10 glass ${tierClass}`}>
+        <span className={`inline-block px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest border glass ${tierClass}`} style={{ borderColor: 'var(--border)' }}>
           {name}
         </span>
       </div>
@@ -31,14 +31,15 @@ const MarqueeRow = ({ sponsors, speed, direction = 'left', tierClass, name }: { 
           {duplicatedSponsors.map((sponsor, index) => (
             <div
               key={`${sponsor.id}-${index}`}
-              className="w-48 sm:w-64 h-32 shrink-0 glass rounded-2xl border border-white/10 hover:border-white/30 transition-colors flex items-center justify-center relative overflow-hidden"
+              className="w-48 sm:w-64 h-32 shrink-0 glass rounded-2xl border hover:border-white/30 transition-colors flex items-center justify-center relative overflow-hidden"
+              style={{ borderColor: 'var(--border)' }}
             >
               {/* Fallback styling for sponsor logo */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-50" />
+              <div className="absolute inset-0 opacity-50" style={{ background: 'linear-gradient(to bottom right, var(--surface), transparent)' }} />
               {sponsor.logo ? (
                 <img src={sponsor.logo} alt={sponsor.name} className="max-w-[70%] max-h-[60%] object-contain opacity-70 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-300" />
               ) : (
-                <span className="font-heading font-bold text-xl text-white/70 tracking-wide">{sponsor.name}</span>
+                <span className="font-heading font-bold text-xl tracking-wide" style={{ color: 'var(--text-secondary)' }}>{sponsor.name}</span>
               )}
             </div>
           ))}
@@ -58,7 +59,7 @@ const Sponsors = () => {
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
 
   return (
-    <section id="sponsors" className="py-24 relative overflow-hidden bg-dark" ref={containerRef}>
+    <section id="sponsors" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }} ref={containerRef}>
       {/* Background Elements */}
       <motion.div style={{ y }} className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary rounded-full blur-[120px] mix-blend-screen" />
@@ -94,7 +95,7 @@ const Sponsors = () => {
             sponsors={sponsors.filter(s => s.tier === 'silver' || s.tier === 'partner' || s.tier === 'community')} 
             speed={40} 
             direction="left"
-            tierClass="text-gray-300 bg-gray-500/10 border-gray-500/20"
+            tierClass="bg-gray-500/10 border-gray-500/20 text-[var(--text-secondary)]"
           />
         </div>
       </div>
