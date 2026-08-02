@@ -22,12 +22,12 @@ const Schedule = () => {
         />
 
         {/* Day Tabs */}
-        <div className="flex justify-center items-center gap-4 mb-16">
+        <div className="flex flex-nowrap justify-center items-center gap-2 mb-12 max-w-fit mx-auto p-1.5 rounded-full border bg-surface/30 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
           {schedule.map((day) => (
             <button
               key={day.id}
               onClick={() => setActiveDay(day.id)}
-              className="relative px-6 py-3 rounded-full text-sm font-semibold transition-colors duration-300 z-10"
+              className="relative flex-1 px-4 py-2.5 md:px-8 md:py-3 rounded-full text-xs md:text-sm font-semibold transition-colors duration-300 z-10 whitespace-nowrap text-center"
             >
               {activeDay === day.id && (
                 <motion.div
@@ -36,8 +36,8 @@ const Schedule = () => {
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
-              <span className={`relative z-10`} style={{ color: activeDay === day.id ? 'var(--text-primary)' : 'var(--text-muted)' }}>
-                {day.title} - {day.date}
+              <span className={`relative z-10 block`} style={{ color: activeDay === day.id ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                {day.title} <span className="hidden sm:inline">- {day.date}</span>
               </span>
             </button>
           ))}

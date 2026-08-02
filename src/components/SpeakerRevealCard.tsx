@@ -11,10 +11,12 @@ interface SpeakerRevealCardProps {
     image: string;
     bio: string;
   };
+  isMobile?: boolean;
 }
 
-export default function SpeakerRevealCard({ speaker }: SpeakerRevealCardProps) {
-  const [isRevealed, setIsRevealed] = useState(false);
+export default function SpeakerRevealCard({ speaker, isMobile = false }: SpeakerRevealCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+  const isRevealed = isMobile || isHovered;
 
   // Custom cinematic easing
   const cinematicEase = [0.77, 0, 0.18, 1];
@@ -29,9 +31,9 @@ export default function SpeakerRevealCard({ speaker }: SpeakerRevealCardProps) {
     <motion.div
       className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer shadow-xl border"
       style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
-      onHoverStart={() => setIsRevealed(true)}
-      onHoverEnd={() => setIsRevealed(false)}
-      onClick={() => setIsRevealed(!isRevealed)}
+      onHoverStart={() => !isMobile && setIsHovered(true)}
+      onHoverEnd={() => !isMobile && setIsHovered(false)}
+      onClick={() => !isMobile && setIsHovered(!isHovered)}
     >
       {/* 
         ==================================================
@@ -115,27 +117,31 @@ export default function SpeakerRevealCard({ speaker }: SpeakerRevealCardProps) {
         DEFAULT STATE (Sliding Panels Layer)
         ==================================================
       */}
-      {/* Left Panel */}
-      <motion.div
-        className="absolute top-0 left-0 w-1/2 h-full z-20 border-r"
-        style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
-        initial={{ x: 0 }}
-        animate={{ x: isRevealed ? '-100%' : 0 }}
-        transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
-      >
-        <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
-      </motion.div>
+      {/* Left Panel - Only render if not mobile to save performance since it's always open on mobile */}
+      {!isMobile && (
+        <motion.div
+          className="absolute top-0 left-0 w-1/2 h-full z-20 border-r"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
+          initial={{ x: 0 }}
+          animate={{ x: isRevealed ? '-100%' : 0 }}
+          transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
+        >
+          <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
+        </motion.div>
+      )}
 
       {/* Right Panel */}
-      <motion.div
-        className="absolute top-0 right-0 w-1/2 h-full z-20 border-l"
-        style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
-        initial={{ x: 0 }}
-        animate={{ x: isRevealed ? '100%' : 0 }}
-        transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
-      >
-        <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
-      </motion.div>
+      {!isMobile && (
+        <motion.div
+          className="absolute top-0 right-0 w-1/2 h-full z-20 border-l"
+          style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
+          initial={{ x: 0 }}
+          animate={{ x: isRevealed ? '100%' : 0 }}
+          transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
+        >
+          <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
+        </motion.div>
+      )}
 
       {/* Center Seam Glow */}
       <motion.div
@@ -147,27 +153,29 @@ export default function SpeakerRevealCard({ speaker }: SpeakerRevealCardProps) {
       />
 
       {/* Default State Content (Typography) */}
-      <motion.div
-        className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none"
-        initial={{ opacity: 1 }}
-        animate={{ opacity: isRevealed ? 0 : 1, scale: isRevealed ? 1.1 : 1 }}
-        transition={{ duration: 0.4, ease: "easeInOut" }}
-      >
-        <div className="border border-accent/20 px-6 py-3 rounded-full mb-6 bg-accent/5 backdrop-blur-md">
-          <span className="text-accent font-bold tracking-widest uppercase text-xs">Featured</span>
-        </div>
-        
-        <h3 className="text-3xl md:text-4xl font-heading font-bold text-center tracking-tight leading-tight mb-8" style={{ color: 'var(--text-primary)' }}>
-          KEYNOTE<br />SPEAKER
-        </h3>
+      {!isMobile && (
+        <motion.div
+          className="absolute inset-0 z-40 flex flex-col items-center justify-center pointer-events-none"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: isRevealed ? 0 : 1, scale: isRevealed ? 1.1 : 1 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+        >
+          <div className="border border-accent/20 px-6 py-3 rounded-full mb-6 bg-accent/5 backdrop-blur-md">
+            <span className="text-accent font-bold tracking-widest uppercase text-xs">Featured</span>
+          </div>
+          
+          <h3 className="text-3xl md:text-4xl font-heading font-bold text-center tracking-tight leading-tight mb-8" style={{ color: 'var(--text-primary)' }}>
+            KEYNOTE<br />SPEAKER
+          </h3>
 
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-px h-8 bg-gradient-to-b from-accent to-transparent" />
-          <span className="text-xs uppercase tracking-[0.2em] font-medium" style={{ color: 'var(--text-muted)' }}>
-            Hover To Reveal
-          </span>
-        </div>
-      </motion.div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-px h-8 bg-gradient-to-b from-accent to-transparent" />
+            <span className="text-xs uppercase tracking-[0.2em] font-medium" style={{ color: 'var(--text-muted)' }}>
+              Hover To Reveal
+            </span>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }

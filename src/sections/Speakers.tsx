@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination } from 'swiper/modules';
+import { Pagination, Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import SectionHeading from '../components/SectionHeading';
@@ -31,7 +31,7 @@ export default function Speakers() {
   const renderSpeaker = (speaker: any) => {
     return (
       <motion.div variants={itemVariants}>
-        <SpeakerRevealCard speaker={speaker} />
+        <SpeakerRevealCard speaker={speaker} isMobile={isMobile} />
       </motion.div>
     );
   };
@@ -44,11 +44,12 @@ export default function Speakers() {
         {isMobile ? (
           <div className="mt-16 -mx-4">
             <Swiper
-              modules={[Pagination]}
+              modules={[Pagination, Autoplay]}
               slidesPerView={1.2}
               spaceBetween={20}
               centeredSlides={true}
               pagination={{ clickable: true }}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
               className="pb-16 px-4"
             >
               {speakers.map((speaker: any) => (

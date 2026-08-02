@@ -111,29 +111,37 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
       */}
       <div className="flex-1 md:pl-8 pb-6 md:pb-8">
         
-        {/* MOBILE VIEW (Unchanged logic, just styled) */}
+        {/* MOBILE VIEW (Fluid Editorial Timeline) */}
         <div 
-          className="md:hidden glass rounded-xl p-5 border cursor-pointer"
-          style={{ borderColor: 'var(--border)' }}
+          className="md:hidden relative pl-6 py-4 cursor-pointer group"
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="flex justify-between items-start mb-3">
-            <span className="text-accent font-mono font-medium">{event.time}</span>
+          {/* Mobile Timeline Line */}
+          <div className="absolute left-[7px] top-0 bottom-0 w-[2px] bg-gradient-to-b from-accent/30 to-transparent" />
+          {/* Mobile Node Dot */}
+          <div className="absolute left-0 top-[26px] w-4 h-4 rounded-full bg-accent/20 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-accent" />
+          </div>
+
+          <div className="flex justify-between items-start mb-1">
+            <span className="text-accent font-mono font-bold text-sm tracking-widest">{event.time}</span>
             <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
               <FiChevronDown style={{ color: 'var(--text-muted)' }} />
             </motion.div>
           </div>
-          <h3 className="text-lg font-heading font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{event.title}</h3>
-          <div className="flex items-center gap-2 mb-3">
+          <h3 className="text-xl font-heading font-semibold mb-3 leading-tight" style={{ color: 'var(--text-primary)' }}>{event.title}</h3>
+          
+          <div className="flex flex-wrap items-center gap-2 mb-2">
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${getBadgeColor(event.type)}`}>
               {event.type}
             </span>
             {event.location && (
-              <span className="flex items-center text-xs" style={{ color: 'var(--text-muted)' }}>
+              <span className="flex items-center text-xs font-medium" style={{ color: 'var(--text-muted)' }}>
                 <FiMapPin className="mr-1" /> {event.location}
               </span>
             )}
           </div>
+
           <AnimatePresence>
             {isExpanded && (
               <motion.div
@@ -142,11 +150,11 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
                 exit={{ height: 0, opacity: 0 }}
                 className="overflow-hidden"
               >
-                <p className="text-sm mt-3 pt-3 border-t" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>
+                <p className="text-sm mt-3" style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>
                   {event.description}
                 </p>
                 {event.speaker && (
-                  <p className="text-sm mt-2 font-medium" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm mt-3 font-medium bg-surface/50 inline-block px-3 py-1.5 rounded-lg" style={{ color: 'var(--text-secondary)' }}>
                     Speaker: <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
                   </p>
                 )}
