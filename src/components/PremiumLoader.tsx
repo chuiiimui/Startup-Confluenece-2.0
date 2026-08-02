@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../assets/logo.png';
 
 export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [step, setStep] = useState(0);
@@ -114,13 +115,13 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
                   animate={{ 
                     scale: 1, 
                     opacity: 1,
-                    y: step >= 3 ? -140 : 0
+                    y: step >= 3 ? -180 : 0
                   }}
                   transition={{ duration: 1, ease }}
                   className="absolute"
                 >
-                  <div className="w-16 h-16 border border-primary/20 rounded-2xl flex items-center justify-center relative bg-white/60 backdrop-blur-md shadow-2xl z-10">
-                    <span className="font-heading font-bold text-2xl text-primary tracking-tighter">UIH</span>
+                  <div className="w-32 h-32 border border-primary/20 rounded-3xl flex items-center justify-center relative bg-white/80 backdrop-blur-md shadow-2xl z-10">
+                    <img src={logo} alt="UIH Logo" className="w-24 h-24 object-contain" />
                   </div>
                   <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-150" />
                 </motion.div>
@@ -132,7 +133,7 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
               {step >= 1 && step < 3 && (
                 <motion.div
                   key="uih-text"
-                  className="absolute flex flex-col items-center text-center mt-32"
+                  className="absolute flex flex-col items-center text-center mt-48"
                   initial={{ opacity: 0, filter: "blur(12px)" }}
                   animate={{ opacity: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, filter: "blur(12px)", y: -20 }}

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
+import logo from '../assets/logo.png';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -92,10 +93,8 @@ export const Navbar = () => {
             layout
           >
             {/* Logo */}
-            <div className="flex-shrink-0 cursor-pointer" onClick={() => handleNavClick('home')}>
-              <span className="text-xl font-bold font-heading tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                UIH<span className="text-accent">.</span>
-              </span>
+            <div className="flex-shrink-0 cursor-pointer flex items-center" onClick={() => handleNavClick('home')}>
+              <img src={logo} alt="UIH Logo" className="h-8 w-auto object-contain" />
             </div>
 
             {/* Desktop Navigation */}
