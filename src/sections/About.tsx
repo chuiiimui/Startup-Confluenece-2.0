@@ -104,8 +104,7 @@ export default function About() {
                   <div className="flex items-baseline mb-2">
                     <AnimatedCounter 
                       value={stat.value} 
-                      className="font-heading font-extrabold text-4xl"
-                      style={{ color: 'var(--text-primary)' }}
+                      className="font-heading font-extrabold text-4xl text-black"
                     />
                     <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>
                   </div>

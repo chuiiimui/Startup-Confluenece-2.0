@@ -9,7 +9,8 @@ while (CountUpComponent && typeof CountUpComponent === 'object' && CountUpCompon
 const CountUp = CountUpComponent;
 
 export interface AnimatedCounterProps {
-  end: number;
+  end?: number;
+  value?: number;
   suffix?: string;
   duration?: number;
   className?: string;
@@ -17,17 +18,20 @@ export interface AnimatedCounterProps {
 
 const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   end,
+  value,
   suffix = '',
   duration = 2.5,
   className = '',
 }) => {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-50px' });
+  
+  const targetNumber = end ?? value ?? 0;
 
   return (
-    <div ref={ref} className={`font-heading font-bold text-white ${className}`}>
+    <div ref={ref} className={`font-heading font-bold ${className}`}>
       {isInView ? (
-        <CountUp end={end} duration={duration} separator="," />
+        <CountUp end={targetNumber} duration={duration} separator="," />
       ) : (
         <span>0</span>
       )}
