@@ -55,8 +55,11 @@ export const Navbar = () => {
 
   const handleNavClick = (id: string) => {
     setActiveSection(id);
-    scrollToSection(id);
     setIsOpen(false);
+    // Delay scroll to prevent iOS Safari from cancelling it during layout animation
+    setTimeout(() => {
+      scrollToSection(id);
+    }, 300);
   };
 
   return (
@@ -179,7 +182,10 @@ export const Navbar = () => {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
                       transition={{ delay: index * 0.05, duration: 0.3 }}
-                      onClick={() => handleNavClick(itemId)}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleNavClick(itemId);
+                      }}
                       className="flex items-center justify-between w-full p-3 rounded-2xl transition-all"
                       style={{
                         background: activeSection === itemId ? 'var(--surface-hover)' : 'transparent',
@@ -196,7 +202,10 @@ export const Navbar = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
                     transition={{ delay: NAV_ITEMS.length * 0.05, duration: 0.3 }}
-                    onClick={() => handleNavClick('register')}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick('register');
+                    }}
                     className="mt-4 w-full bg-accent hover:bg-[#E66E00] text-white py-4 rounded-2xl text-lg font-semibold transition-colors flex items-center justify-center space-x-2"
                   >
                     <span>Register Now</span>
