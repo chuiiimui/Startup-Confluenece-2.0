@@ -19,7 +19,6 @@ function App() {
         style={{ backgroundColor: 'var(--bg)', color: 'var(--text-primary)' }}
       >
         <CursorGlow />
-        <ScrollProgress />
         <Navbar />
         
         <main>
