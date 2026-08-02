@@ -83,7 +83,7 @@ const Hero = () => {
   const formatTime = (time: number) => time < 10 ? `0${time}` : time;
 
   return (
-    <section id="home" className="relative h-[100dvh] w-full flex items-center pt-32 lg:pt-32 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="home" className="relative h-[100dvh] w-full flex items-center pt-20 lg:pt-20 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
       <GridPattern parallax={true} />
       
