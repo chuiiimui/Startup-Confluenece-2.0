@@ -1,6 +1,6 @@
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
-import { SEO, CursorGlow, ScrollProgress, Navbar } from './components';
+import { SEO, CursorGlow, ScrollProgress, Navbar, PremiumLoader } from './components';
 import { 
   Hero, ScrollStorytelling, Countdown, About, EventHighlights, 
   WhyAttend, Speakers, StartupExpo, PitchingArena, Schedule, 
@@ -8,10 +8,16 @@ import {
 } from './sections';
 
 function App() {
+  const [isLoading, setIsLoading] = React.useState(true);
+
   return (
     <HelmetProvider>
       <SEO />
-      <div className="min-h-screen overflow-clip font-inter" style={{ backgroundColor: 'var(--bg)', color: 'var(--text-primary)' }}>
+      {isLoading && <PremiumLoader onComplete={() => setIsLoading(false)} />}
+      <div 
+        className={`min-h-screen font-inter ${isLoading ? 'h-screen overflow-hidden' : 'overflow-clip'}`} 
+        style={{ backgroundColor: 'var(--bg)', color: 'var(--text-primary)' }}
+      >
         <CursorGlow />
         <ScrollProgress />
         <Navbar />

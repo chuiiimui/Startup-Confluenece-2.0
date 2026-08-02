@@ -13,3 +13,4 @@ export { default as VisionCard } from './VisionCard';
 export { default as SpeakerRevealCard } from './SpeakerRevealCard';
 export { default as RewardCard } from './RewardCard';
 export { default as ScheduleEventCard } from './ScheduleEventCard';
+export { PremiumLoader } from './PremiumLoader';
