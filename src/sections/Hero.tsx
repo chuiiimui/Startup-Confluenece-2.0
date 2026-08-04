@@ -38,7 +38,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-[80px] overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-20 lg:pt-28 pb-12 lg:pb-20 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
       <GridPattern parallax={true} />
       
@@ -60,30 +60,30 @@ const Hero = () => {
           >
             {/* Monumental Headline */}
             <div 
-              className="font-heading tracking-[-0.04em] leading-[0.95] flex flex-col uppercase mt-8 lg:mt-0 items-center"
+              className="font-heading tracking-[-0.04em] leading-[0.9] md:leading-[0.95] flex flex-col uppercase mt-4 lg:mt-0 items-center"
               style={{ fontWeight: 900 }}
             >
-              <div className="overflow-hidden pb-2 md:pb-4 w-full">
+              <div className="overflow-hidden pb-1 md:pb-4 w-full">
                 <motion.div 
                   variants={wordVariants} 
                   className="text-primary drop-shadow-sm"
-                  style={{ fontSize: "clamp(2rem, 8vw, 8rem)" }}
+                  style={{ fontSize: "clamp(2.5rem, 10vw, 8rem)" }}
                 >
                   STARTUP
                 </motion.div>
               </div>
-              <div className="overflow-hidden pb-4 md:pb-6 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
+              <div className="overflow-hidden pb-2 md:pb-6 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
                 <motion.div 
                   variants={wordVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
-                  style={{ fontSize: "clamp(2.5rem, 10vw, 10rem)" }}
+                  style={{ fontSize: "clamp(3rem, 12vw, 10rem)" }}
                 >
                   CONFLUENCE
                 </motion.div>
                 <motion.div 
                   variants={scaleFadeVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-0 md:mt-0"
-                  style={{ fontSize: "clamp(1.875rem, 7.5vw, 7.5rem)" }}
+                  style={{ fontSize: "clamp(2rem, 8vw, 7.5rem)" }}
                 >
                   2.0
                 </motion.div>
@@ -91,44 +91,43 @@ const Hero = () => {
             </div>
 
             {/* Value Proposition */}
-            <motion.div variants={wordVariants} className="mt-4 md:mt-8 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 flex-wrap">
-              <p className="text-lg md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+            <motion.div variants={wordVariants} className="mt-4 flex flex-col md:flex-row items-center justify-center gap-1.5 md:gap-4 flex-wrap">
+              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Fostering Collaboration.
               </p>
               <p className="hidden md:block text-2xl" style={{ color: 'var(--text-muted)' }}>•</p>
-              <p className="text-lg md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Driving Innovation.
-
               </p>
               <p className="hidden md:block text-2xl" style={{ color: 'var(--text-muted)' }}>•</p>
-              <p className="text-lg md:text-3xl font-medium tracking-tight text-primary">
+              <p className="text-base md:text-3xl font-medium tracking-tight text-primary">
                 Fueling Growth.
               </p>
             </motion.div>
 
             {/* Event Details Pills */}
             <motion.div 
-              className="mt-8 flex flex-wrap justify-center gap-4"
+              className="mt-6 flex flex-wrap justify-center gap-2 md:gap-4"
               variants={wordVariants}
             >
-              <div className="flex items-center gap-2.5 px-6 py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <Calendar className="w-5 h-5 text-accent" />
-                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
+              <div className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <Calendar className="w-4 h-4 md:w-5 md:h-5 text-accent" />
+                <span className="text-sm md:text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
               </div>
-              <div className="flex items-center gap-2.5 px-6 py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <MapPin className="w-5 h-5 text-primary" />
-                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
+              <div className="flex items-center gap-2 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary" />
+                <span className="text-sm md:text-base font-semibold" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
               </div>
             </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
-              className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+              className="mt-6 md:mt-8 flex justify-center w-full"
               variants={wordVariants}
             >
               <motion.button 
                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center gap-3"
+                className="group relative overflow-hidden w-auto px-6 md:px-8 h-12 md:h-14 rounded-full bg-primary text-white font-semibold text-base md:text-lg flex items-center justify-center gap-2 md:gap-3"
                 whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px -10px rgba(11,42,107,0.4)' }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -143,7 +142,7 @@ const Hero = () => {
                   }}
                 />
                 <span className="relative z-10">Register Now</span>
-                <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </motion.div>
           </motion.div>

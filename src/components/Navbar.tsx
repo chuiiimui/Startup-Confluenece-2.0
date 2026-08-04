@@ -64,7 +64,7 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="fixed top-5 left-0 right-0 z-50 flex justify-center px-4 w-full pointer-events-none">
+      <div className="fixed top-3 lg:top-5 left-0 right-0 z-50 flex justify-center px-4 w-full pointer-events-none">
         <motion.nav
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -90,14 +90,16 @@ export const Navbar = () => {
             animate={{
               padding: isOpen 
                 ? '24px' 
-                : isScrolled ? '12px 24px' : '16px 32px',
+                : isScrolled 
+                  ? window.innerWidth < 1024 ? '8px 16px' : '12px 24px'
+                  : window.innerWidth < 1024 ? '12px 20px' : '16px 32px',
             }}
             transition={{ duration: 0.3 }}
             layout
           >
             {/* Logo */}
             <div className="flex-shrink-0 cursor-pointer flex items-center" onClick={() => handleNavClick('home')}>
-              <img src={logo} alt="UIH Logo" className="h-8 w-auto object-contain" />
+              <img src={logo} alt="UIH Logo" className="h-7 lg:h-8 w-auto object-contain" />
             </div>
 
             {/* Desktop Navigation */}
