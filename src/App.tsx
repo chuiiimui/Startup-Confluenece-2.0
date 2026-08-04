@@ -27,8 +27,8 @@ function App() {
           <EventHighlights />
           <WhyAttend />
           <Speakers />
-          <StartupExpo />
           <PitchingArena />
+          <StartupExpo />
           <Schedule />
           <Gallery />
           <Sponsors />
