@@ -67,7 +67,7 @@ const Hero = () => {
                 <motion.div 
                   variants={wordVariants} 
                   className="text-primary drop-shadow-sm"
-                  style={{ fontSize: "clamp(2.8rem, 8vw, 8rem)" }}
+                  style={{ fontSize: "clamp(2.4rem, 8vw, 8rem)" }}
                 >
                   STARTUP
                 </motion.div>
@@ -76,14 +76,14 @@ const Hero = () => {
                 <motion.div 
                   variants={wordVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
-                  style={{ fontSize: "clamp(3.5rem, 10vw, 10rem)" }}
+                  style={{ fontSize: "clamp(3rem, 10vw, 10rem)" }}
                 >
                   CONFLUENCE
                 </motion.div>
                 <motion.div 
                   variants={scaleFadeVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-0 md:mt-0"
-                  style={{ fontSize: "clamp(2.6rem, 7.5vw, 7.5rem)" }}
+                  style={{ fontSize: "clamp(2.2rem, 7.5vw, 7.5rem)" }}
                 >
                   2.0
                 </motion.div>
@@ -92,16 +92,13 @@ const Hero = () => {
 
             {/* Value Proposition */}
             <motion.div variants={wordVariants} className="mt-4 md:mt-8 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 flex-wrap">
-              <p className="text-lg md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Fostering Collaboration.
               </p>
-              <p className="hidden md:block text-2xl" style={{ color: 'var(--text-muted)' }}>•</p>
-              <p className="text-lg md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Driving Innovation.
-
               </p>
-              <p className="hidden md:block text-2xl" style={{ color: 'var(--text-muted)' }}>•</p>
-              <p className="text-lg md:text-3xl font-medium tracking-tight text-primary">
+              <p className="text-base md:text-3xl font-medium tracking-tight text-primary">
                 Fueling Growth.
               </p>
             </motion.div>
