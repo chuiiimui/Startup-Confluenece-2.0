@@ -40,15 +40,15 @@ export default function WhyAttend() {
               <motion.div
                 key={benefit.id}
                 variants={itemVariants}
-                className="group relative p-8 rounded-2xl border backdrop-blur-md overflow-hidden hover:scale-[1.03] transition-transform duration-300"
-                style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+                className="group relative p-8 rounded-[2rem] border backdrop-blur-xl overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-lg hover:shadow-[0_20px_40px_rgba(255,122,0,0.15)]"
+                style={{ background: 'linear-gradient(145deg, var(--surface) 0%, rgba(255,255,255,0.02) 100%)', borderColor: 'var(--border)' }}
               >
-                <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/[0.05] transition-colors duration-500 z-0" />
+                <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/[0.03] transition-colors duration-500 z-0" />
                 <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center mb-6 group-hover:rotate-6 group-hover:scale-110 transition-all duration-300">
-                    <IconComponent className="w-7 h-7 text-accent" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-transparent border border-accent/20 flex items-center justify-center mb-6 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 shadow-[inset_0_0_20px_rgba(255,122,0,0.1)]">
+                    <IconComponent className="w-8 h-8 text-accent drop-shadow-[0_0_10px_rgba(255,122,0,0.5)]" />
                   </div>
-                  <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-accent transition-colors" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-accent transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
                     {benefit.title}
                   </h3>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>

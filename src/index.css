@@ -167,3 +167,18 @@ html {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
                     linear-gradient(to bottom, var(--border) 1px, transparent 1px);
 }
+/* Swiper Customizations */
+.swiper-pagination-bullet {
+  background: var(--text-primary) !important;
+  opacity: 0.2 !important;
+  transition: all 0.3s ease;
+}
+.swiper-pagination-bullet-active {
+  background: #FF7A00 !important;
+  opacity: 1 !important;
+  width: 24px !important;
+  border-radius: 4px !important;
+}
+.swiper-wrapper {
+  padding-bottom: 3rem;
+}

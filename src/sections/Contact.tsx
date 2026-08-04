@@ -14,8 +14,13 @@ export const Contact: React.FC = () => {
     },
     {
       icon: <Mail className="w-8 h-8 text-accent" />,
-      title: 'Email',
-      value: 'startupconfluence@united.ac.in',
+      title: 'Email Us',
+      value: (
+        <div className="flex flex-col gap-2 text-sm mt-1">
+          <div><span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Participants Queries:</span><br/>startupconfluence@ugi.edu.in</div>
+          <div><span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Administration:</span><br/>incubation@united.edu.in</div>
+        </div>
+      ),
       delay: 0.2
     },
     {
@@ -27,7 +32,7 @@ export const Contact: React.FC = () => {
   ];
 
   return (
-    <section id="contact" className="py-24 relative overflow-hidden">
+    <section id="contact" className="hidden md:block pt-24 pb-12 md:pb-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading badge="Contact" title="Get In Touch" />
         
@@ -51,29 +56,6 @@ export const Contact: React.FC = () => {
           ))}
         </div>
 
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 flex justify-center space-x-6"
-        >
-          {[
-            { icon: <FaLinkedin className="w-6 h-6" />, href: "#" },
-            { icon: <FaInstagram className="w-6 h-6" />, href: "#" },
-            { icon: <FaFacebook className="w-6 h-6" />, href: "#" },
-            { icon: <FaYoutube className="w-6 h-6" />, href: "#" },
-          ].map((social, i) => (
-            <a 
-              key={i}
-              href={social.href}
-              className="w-12 h-12 hover:bg-accent text-text border hover:border-accent rounded-full flex items-center justify-center transition-all duration-300 hover:text-[var(--text-primary)]"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-            >
-              {social.icon}
-            </a>
-          ))}
-        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { FileText, Search, Mic, Users, Trophy } from 'lucide-react';
+import { FileText, Search, CheckCircle, Mic, Users, Star, Trophy } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import VisionCard from '../components/VisionCard';
 import RewardCard from '../components/RewardCard';
@@ -42,7 +42,7 @@ const rewards = [
   { id: 4, title: 'Certificates & Recognition', desc: 'Validation and media coverage', icon: RecognitionIcon },
 ];
 
-const stepIcons = [FileText, Search, Mic, Users, Trophy];
+const stepIcons = [FileText, Search, CheckCircle, Mic, Users, Star, Trophy];
 
 export default function PitchingArena() {
   const timelineRef = useRef<HTMLDivElement>(null);

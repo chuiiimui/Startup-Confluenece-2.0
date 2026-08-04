@@ -4,55 +4,55 @@ export const sponsors: Sponsor[] = [
   {
     id: 'sp-1',
     name: 'TechCorp India',
-    tier: 'title',
+    tier: 'incubation',
     logo: '/sponsors/techcorp-india.svg'
   },
   {
     id: 'sp-2',
     name: 'Innova Capital',
-    tier: 'title',
+    tier: 'incubation',
     logo: '/sponsors/innova-capital.svg'
   },
   {
     id: 'sp-3',
     name: 'CloudNine Systems',
-    tier: 'gold',
+    tier: 'technology',
     logo: '/sponsors/cloudnine-systems.svg'
   },
   {
     id: 'sp-4',
     name: 'DataVerse AI',
-    tier: 'gold',
+    tier: 'technology',
     logo: '/sponsors/dataverse-ai.svg'
   },
   {
     id: 'sp-5',
     name: 'FinEdge Technologies',
-    tier: 'gold',
+    tier: 'technology',
     logo: '/sponsors/finedge-technologies.svg'
   },
   {
     id: 'sp-6',
     name: 'StartHub',
-    tier: 'silver',
+    tier: 'media',
     logo: '/sponsors/starthub.svg'
   },
   {
     id: 'sp-7',
     name: 'DevStack',
-    tier: 'silver',
+    tier: 'media',
     logo: '/sponsors/devstack.svg'
   },
   {
     id: 'sp-8',
     name: 'GreenTech Solutions',
-    tier: 'silver',
+    tier: 'ecosystem',
     logo: '/sponsors/greentech-solutions.svg'
   },
   {
     id: 'sp-9',
     name: 'CyberShield',
-    tier: 'silver',
+    tier: 'ecosystem',
     logo: '/sponsors/cybershield.svg'
   },
   {

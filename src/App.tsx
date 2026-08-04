@@ -2,7 +2,7 @@ import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { SEO, CursorGlow, ScrollProgress, Navbar, PremiumLoader } from './components';
 import { 
-  Hero, ScrollStorytelling, Countdown, About, EventHighlights, 
+  Hero, About, EventHighlights, 
   WhyAttend, Speakers, StartupExpo, PitchingArena, Schedule, 
   Gallery, Sponsors, Team, Registration, Venue, FAQ, Contact, Footer 
 } from './sections';
@@ -23,8 +23,6 @@ function App() {
         
         <main>
           <Hero />
-          <ScrollStorytelling />
-          <Countdown />
           <About />
           <EventHighlights />
           <WhyAttend />

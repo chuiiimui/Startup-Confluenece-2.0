@@ -75,24 +75,24 @@ const Sponsors = () => {
 
         <div className="mt-16 relative">
           <MarqueeRow 
-            name="Title Sponsors" 
-            sponsors={sponsors.filter(s => s.tier === 'title' || s.tier === 'diamond')} 
+            name="Incubation & Technology Partners" 
+            sponsors={sponsors.filter(s => s.tier === 'incubation' || s.tier === 'technology')} 
             speed={35} 
             direction="left"
             tierClass="text-purple-400 bg-purple-500/10 border-purple-500/20"
           />
           
           <MarqueeRow 
-            name="Gold Sponsors" 
-            sponsors={sponsors.filter(s => s.tier === 'gold')} 
+            name="Media & Ecosystem Partners" 
+            sponsors={sponsors.filter(s => s.tier === 'media' || s.tier === 'ecosystem')} 
             speed={45} 
             direction="right"
-            tierClass="text-yellow-400 bg-yellow-500/10 border-yellow-500/20"
+            tierClass="text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
           />
           
           <MarqueeRow 
-            name="Silver & Partners" 
-            sponsors={sponsors.filter(s => s.tier === 'silver' || s.tier === 'partner' || s.tier === 'community')} 
+            name="Community Partners" 
+            sponsors={sponsors.filter(s => s.tier === 'community')} 
             speed={40} 
             direction="left"
             tierClass="bg-gray-500/10 border-gray-500/20 text-[var(--text-secondary)]"

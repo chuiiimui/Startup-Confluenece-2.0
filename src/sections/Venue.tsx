@@ -6,8 +6,8 @@ import { Building, MapPin, ExternalLink } from 'lucide-react';
 export const Venue: React.FC = () => {
   return (
     <section id="venue" className="py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
-        <SectionHeading badge="Venue" title="Event Venue" />
+      <div className="container mx-auto px-4 relative z-10">
+        <SectionHeading badge="Venue" title="Join Us At" />
         
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -59,7 +59,7 @@ export const Venue: React.FC = () => {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="h-[500px] w-full rounded-3xl overflow-hidden border relative"
+            className="hidden lg:block h-[500px] w-full rounded-3xl overflow-hidden border relative"
             style={{ borderColor: 'var(--border)' }}
           >
             <div className="absolute inset-0 backdrop-blur-sm pointer-events-none" style={{ background: 'var(--surface)' }}></div>

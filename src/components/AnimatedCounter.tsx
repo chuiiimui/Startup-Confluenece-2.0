@@ -11,6 +11,7 @@ const CountUp = CountUpComponent;
 export interface AnimatedCounterProps {
   end?: number;
   value?: number;
+  prefix?: string;
   suffix?: string;
   duration?: number;
   className?: string;
@@ -19,6 +20,7 @@ export interface AnimatedCounterProps {
 const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
   end,
   value,
+  prefix = '',
   suffix = '',
   duration = 2.5,
   className = '',
@@ -30,6 +32,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
 
   return (
     <div ref={ref} className={`font-heading font-bold ${className}`}>
+      {prefix}
       {isInView ? (
         <CountUp end={targetNumber} duration={duration} separator="," />
       ) : (

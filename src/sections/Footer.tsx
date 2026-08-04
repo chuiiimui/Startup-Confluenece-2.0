@@ -17,76 +17,159 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="backdrop-blur-xl border-t pt-20 pb-10" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          <div className="space-y-6">
-            <h2 className="text-2xl font-space font-bold" style={{ color: 'var(--text-primary)' }}>Startup Confluence <span className="text-accent">2.0</span></h2>
-            <p className="text-text leading-relaxed">
-              India's premier startup summit bridging the gap between innovative ideas and extraordinary execution.
-            </p>
+    <footer className="relative overflow-hidden pt-0 md:pt-24 pb-6 md:pb-12 mt-0 md:mt-20" style={{ background: 'var(--surface)' }}>
+      {/* Top glowing separator */}
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-30"></div>
+      
+      {/* Large watermark background text */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[6rem] md:text-[10rem] lg:text-[15rem] font-heading font-black opacity-[0.02] whitespace-nowrap pointer-events-none select-none">
+        CONFLUENCE
+      </div>
+
+      {/* Mobile Background Orbs */}
+      <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 w-[120%] h-[80%] bg-accent/5 blur-[120px] rounded-full pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        
+        {/* DESKTOP FOOTER */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
+          {/* Brand & UIH Bio Column */}
+          <div className="lg:col-span-6 space-y-8">
+            <div>
+              <h2 className="text-3xl font-heading font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                Startup <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#FF9F43]">Confluence</span> 2.0
+              </h2>
+            </div>
+            
+            <div className="p-6 rounded-[1.5rem] border backdrop-blur-xl shadow-2xl relative overflow-hidden group" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <h3 className="text-lg font-bold text-accent flex items-center gap-2 mb-3">
+                <span className="text-2xl">✨🚀</span> UIH – Nurturing Innovators
+              </h3>
+              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                United Incubation Hub (UIH) is a premier startup incubator, officially authorised by <strong>StartinUP</strong> under the UP Startup Policy of the Government of Uttar Pradesh. We are dedicated to bridging the gap between innovative ideas and extraordinary execution.
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>Quick Links</h3>
+          {/* Quick Links */}
+          <div className="lg:col-span-3 lg:pl-10">
+            <h3 className="text-lg font-heading font-bold mb-8 uppercase tracking-widest" style={{ color: 'var(--text-primary)' }}>Explore</h3>
             <ul className="space-y-4">
-              {quickLinks.map(link => (
+              {quickLinks.map((link, idx) => (
                 <li key={link.id}>
                   <button 
                     onClick={() => handleScroll(link.id)}
-                    className="text-text hover:text-accent transition-colors"
+                    className="group flex items-center text-sm font-medium transition-colors"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
-                    {link.name}
+                    <span className="w-4 h-[1px] bg-accent mr-3 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+                    <span className="group-hover:text-accent transition-colors">{link.name}</span>
                   </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>Connect</h3>
-            <div className="flex space-x-4">
+          {/* Connect & Socials */}
+          <div className="lg:col-span-3">
+            <h3 className="text-lg font-heading font-bold mb-8 uppercase tracking-widest" style={{ color: 'var(--text-primary)' }}>Connect</h3>
+            <p className="text-sm mb-6" style={{ color: 'var(--text-secondary)' }}>Follow the official page links for regular updates.</p>
+            
+            <div className="flex flex-wrap gap-3">
               {[
-                { icon: <FaLinkedin className="w-5 h-5" />, href: "#" },
-                { icon: <FaInstagram className="w-5 h-5" />, href: "#" },
-                { icon: <FaFacebook className="w-5 h-5" />, href: "#" },
-                { icon: <FaYoutube className="w-5 h-5" />, href: "#" },
+                { icon: <FaLinkedin className="w-5 h-5" />, href: "https://www.linkedin.com/company/united-incubation-hub/", color: "#0077b5" },
+                { icon: <FaInstagram className="w-5 h-5" />, href: "https://www.instagram.com/united_incubationhub?igsh=dGNxdTl6amwxbWJy", color: "#E1306C" },
+                { icon: <FaFacebook className="w-5 h-5" />, href: "https://www.facebook.com/share/1B7u65PANq/", color: "#1877F2" },
+                { icon: <FaYoutube className="w-5 h-5" />, href: "https://youtube.com/@unitedincubationhub?si=phJkowpp_LhV8pGu", color: "#FF0000" },
               ].map((social, i) => (
                 <a 
                   key={i}
                   href={social.href}
-                  className="w-10 h-10 hover:bg-accent rounded-xl flex items-center justify-center transition-all border hover:border-accent hover:text-[var(--text-primary)]"
-                  style={{ background: 'var(--surface)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(255,122,0,0.2)] hover:border-accent hover:bg-accent hover:text-white"
+                  style={{ background: 'var(--surface)', color: social.color, borderColor: 'var(--border)' }}
                 >
                   {social.icon}
                 </a>
               ))}
             </div>
           </div>
+        </div>
 
-          <div>
-            <h3 className="text-lg font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>Newsletter</h3>
-            <p className="text-text mb-4">Subscribe for updates on speakers and schedule.</p>
-            <form className="flex" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
-                className="border rounded-l-xl px-4 py-3 w-full focus:outline-none focus:border-accent"
-                style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)', color: 'var(--text-primary)' }}
-              />
-              <button 
-                type="submit"
-                className="bg-accent hover:bg-accent/90 text-white px-4 py-3 rounded-r-xl transition-colors flex items-center justify-center"
-              >
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </form>
+        {/* MOBILE FOOTER (PREMIUM REDESIGN) */}
+        <div className="md:hidden flex flex-col items-center text-center space-y-16 mt-16 mb-0 px-2">
+          
+          {/* Get In Touch */}
+          <div className="flex flex-col items-center space-y-8">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>Get In Touch</h3>
+            
+            <div className="space-y-6">
+              <div className="flex flex-col items-center">
+                <span className="text-xs text-accent mb-1">Phone</span>
+                <a href="tel:+919876543210" className="text-sm font-medium transition-all active:scale-95" style={{ color: 'var(--text-primary)' }}>
+                  +91 98765 43210
+                </a>
+              </div>
+              
+              <div className="flex flex-col items-center">
+                <span className="text-xs text-accent mb-1">Email</span>
+                <a href="mailto:startupconfluence@ugi.edu.in" className="text-sm font-medium mb-1 transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
+                  startupconfluence@ugi.edu.in
+                </a>
+                <a href="mailto:incubation@united.edu.in" className="text-sm font-medium transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
+                  incubation@united.edu.in
+                </a>
+              </div>
+
+              <div className="flex flex-col items-center">
+                <span className="text-xs text-accent mb-1">Location</span>
+                <a href="https://maps.google.com/?q=United+Institute+of+Technology,+Prayagraj" target="_blank" rel="noopener noreferrer" className="text-sm font-medium leading-tight max-w-[200px] transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
+                  United Institute of Technology<br/>Prayagraj
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Follow Us */}
+          <div className="flex flex-col items-center space-y-8">
+            <h3 className="text-[12px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>Follow Us</h3>
+            
+            <div className="flex flex-row justify-center gap-4">
+              {[
+                { icon: <FaLinkedin className="w-6 h-6" />, href: "https://www.linkedin.com/company/united-incubation-hub/", color: "#0077b5" },
+                { icon: <FaInstagram className="w-6 h-6" />, href: "https://www.instagram.com/united_incubationhub?igsh=dGNxdTl6amwxbWJy", color: "#E1306C" },
+                { icon: <FaFacebook className="w-6 h-6" />, href: "https://www.facebook.com/share/1B7u65PANq/", color: "#1877F2" },
+                { icon: <FaYoutube className="w-6 h-6" />, href: "https://youtube.com/@unitedincubationhub?si=phJkowpp_LhV8pGu", color: "#FF0000" },
+              ].map((social, i) => (
+                <a 
+                  key={i}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-300 border border-white/5 active:scale-95 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:border-accent/30"
+                  style={{ 
+                    background: 'rgba(255,255,255,0.03)', 
+                    backdropFilter: 'blur(20px)',
+                    WebkitBackdropFilter: 'blur(20px)',
+                    color: social.color
+                  }}
+                >
+                  {social.icon}
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t text-center md:flex md:justify-between md:text-left text-sm text-text" style={{ borderColor: 'var(--border)' }}>
-          <p>© 2026 Startup Confluence 2.0 · United Incubation Hub</p>
-          <p className="mt-2 md:mt-0">All Rights Reserved</p>
+        {/* Copyright Section (Unified for both) */}
+        <div className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium tracking-wide" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+          <p>© {new Date().getFullYear()} Startup Confluence 2.0</p>
+          <div className="flex items-center gap-2">
+            <span>Powered by</span>
+            <strong className="text-accent">United Incubation Hub</strong>
+          </div>
         </div>
       </div>
     </footer>

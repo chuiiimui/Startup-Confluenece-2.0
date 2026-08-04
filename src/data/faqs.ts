@@ -30,5 +30,10 @@ export const faqs: FAQ[] = [
     id: 'faq-6',
     question: 'What should I bring?',
     answer: 'Bring your student/professional ID, business cards if available, and a laptop for workshops.'
+  },
+  {
+    id: 'faq-7',
+    question: 'Will accommodation be provided?',
+    answer: 'Yes, accommodation is available for out-station participants. Please mention your requirement during registration so we can assist you with the arrangements.'
   }
 ];

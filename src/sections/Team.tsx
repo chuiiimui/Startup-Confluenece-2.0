@@ -1,4 +1,8 @@
 import { motion } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 import { teamMembers } from '../data/team';
 import SectionHeading from '../components/SectionHeading';
 import { FiLinkedin, FiTwitter } from 'react-icons/fi';
@@ -35,12 +39,13 @@ const Team = () => {
           alignment="center"
         />
 
+        {/* DESKTOP GRID */}
         <motion.div 
           variants={containerVariants}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"
+          className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16"
         >
           {teamMembers.map((member) => (
             <motion.div 
@@ -88,6 +93,70 @@ const Team = () => {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* MOBILE SWIPER (INFINITE + MANUAL) */}
+        <div className="md:hidden mt-16 overflow-hidden relative w-full pb-8">
+          {/* Fade edges */}
+          <div className="absolute top-0 left-0 w-8 h-[calc(100%-3rem)] bg-gradient-to-r from-[var(--bg)] to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-8 h-[calc(100%-3rem)] bg-gradient-to-l from-[var(--bg)] to-transparent z-10 pointer-events-none"></div>
+          
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            spaceBetween={24}
+            slidesPerView="auto"
+            loop={true}
+            centeredSlides={true}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            pagination={{ clickable: true }}
+            className="w-full"
+          >
+            {teamMembers.map((member) => (
+              <SwiperSlide key={member.id} className="!w-[280px]">
+                <div 
+                  className="glass rounded-2xl p-8 border group flex flex-col items-center text-center relative overflow-hidden"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
+                  
+                  <div className="relative mb-6">
+                    <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-accent p-1">
+                      <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden relative" style={{ backgroundColor: 'var(--bg)' }}>
+                        {member.image ? (
+                          <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-3xl font-heading font-bold" style={{ color: 'var(--text-muted)' }}>{getInitials(member.name)}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 className="text-xl font-heading font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>{member.name}</h3>
+                  <p className="text-accent font-medium text-sm mb-4">{member.role}</p>
+                  
+                  {member.bio && (
+                    <p className="text-sm mb-6 line-clamp-2" style={{ color: 'var(--text-muted)' }}>{member.bio}</p>
+                  )}
+
+                  <div className="flex items-center gap-4 mt-auto">
+                    {member.linkedin && (
+                      <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full glass border flex items-center justify-center text-[var(--text-primary)] border-white/30 bg-white/10" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>
+                        <FiLinkedin size={18} />
+                      </a>
+                    )}
+                    {member.twitter && (
+                      <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full glass border flex items-center justify-center text-[var(--text-primary)] border-white/30 bg-white/10" style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}>
+                        <FiTwitter size={18} />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </section>
   );

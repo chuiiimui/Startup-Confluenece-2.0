@@ -5,12 +5,12 @@ import AnimatedCounter from '../components/AnimatedCounter';
 import GlassCard from '../components/GlassCard';
 
 const stats = [
-  { value: 1000, suffix: '+', label: 'Attendees' },
+  { value: 1000, suffix: '+', label: 'Expected Attendees' },
   { value: 50, suffix: '+', label: 'Startups' },
-  { value: 20, suffix: '+', label: 'Speakers' },
-  { value: 10, suffix: '+', label: 'Investors' },
+  { value: 5, suffix: '+', label: 'Keynote Speakers' },
+  { value: 5, suffix: '+', label: 'Investors' },
   { value: 2, suffix: '', label: 'Days' },
-  { value: 5, suffix: '+', label: 'Events' },
+  { value: 4, suffix: '', label: 'Events' },
 ];
 
 const purposes = [
@@ -23,9 +23,7 @@ const purposes = [
 
 const organizers = [
   'United Incubation Hub',
-  'IIC',
-  'StartInUP',
-  'United Group of Institutions'
+  'United Institute of Technology'
 ];
 
 export default function About() {
@@ -47,8 +45,8 @@ export default function About() {
   };
 
   return (
-    <section className="py-24 relative" id="about" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="container mx-auto px-6">
+    <section className="py-24 relative min-h-[100dvh] flex items-center justify-center" id="about" style={{ backgroundColor: 'var(--bg)' }}>
+      <div className="container mx-auto px-6 w-full">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Column - Text */}
@@ -104,6 +102,7 @@ export default function About() {
                   <div className="flex items-baseline mb-2">
                     <AnimatedCounter 
                       value={stat.value} 
+                      prefix={stat.prefix}
                       className="font-heading font-extrabold text-4xl text-black"
                     />
                     <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>

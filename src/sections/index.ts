@@ -1,6 +1,4 @@
 export { default as Hero } from './Hero';
-export { default as ScrollStorytelling } from './ScrollStorytelling';
-export { default as Countdown } from './Countdown';
 export { default as About } from './About';
 export { default as EventHighlights } from './EventHighlights';
 export { default as WhyAttend } from './WhyAttend';
