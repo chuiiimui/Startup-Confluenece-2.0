@@ -67,7 +67,7 @@ const Hero = () => {
                 <motion.div 
                   variants={wordVariants} 
                   className="text-primary drop-shadow-sm"
-                  style={{ fontSize: "clamp(2rem, 8vw, 8rem)" }}
+                  style={{ fontSize: "clamp(2.8rem, 8vw, 8rem)" }}
                 >
                   STARTUP
                 </motion.div>
@@ -76,14 +76,14 @@ const Hero = () => {
                 <motion.div 
                   variants={wordVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
-                  style={{ fontSize: "clamp(2.5rem, 10vw, 10rem)" }}
+                  style={{ fontSize: "clamp(3.5rem, 10vw, 10rem)" }}
                 >
                   CONFLUENCE
                 </motion.div>
                 <motion.div 
                   variants={scaleFadeVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-0 md:mt-0"
-                  style={{ fontSize: "clamp(1.875rem, 7.5vw, 7.5rem)" }}
+                  style={{ fontSize: "clamp(2.6rem, 7.5vw, 7.5rem)" }}
                 >
                   2.0
                 </motion.div>
@@ -108,27 +108,27 @@ const Hero = () => {
 
             {/* Event Details Pills */}
             <motion.div 
-              className="mt-8 flex flex-wrap justify-center gap-4"
+              className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-4 w-full"
               variants={wordVariants}
             >
-              <div className="flex items-center gap-2.5 px-6 py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <Calendar className="w-5 h-5 text-accent" />
-                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
+              <div className="flex items-center gap-2 md:gap-2.5 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <Calendar className="w-4 h-4 md:w-5 md:h-5 text-accent shrink-0" />
+                <span className="text-sm md:text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
               </div>
-              <div className="flex items-center gap-2.5 px-6 py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <MapPin className="w-5 h-5 text-primary" />
-                <span className="text-base font-semibold" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
+              <div className="flex items-center gap-2 md:gap-2.5 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary shrink-0" />
+                <span className="text-sm md:text-base font-semibold text-left leading-tight md:leading-normal" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
               </div>
             </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
-              className="mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+              className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
               variants={wordVariants}
             >
               <motion.button 
                 onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
-                className="group relative overflow-hidden w-full sm:w-auto px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg flex items-center justify-center gap-3"
+                className="group relative overflow-hidden w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 rounded-full bg-primary text-white font-semibold text-base md:text-lg flex items-center justify-center gap-2 md:gap-3"
                 whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px -10px rgba(11,42,107,0.4)' }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -143,7 +143,7 @@ const Hero = () => {
                   }}
                 />
                 <span className="relative z-10">Register Now</span>
-                <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
               </motion.button>
             </motion.div>
           </motion.div>
