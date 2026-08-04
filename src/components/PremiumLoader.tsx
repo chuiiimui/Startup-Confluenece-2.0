@@ -133,7 +133,7 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
               {step >= 1 && step < 3 && (
                 <motion.div
                   key="uih-text"
-                  className="absolute flex flex-col items-center text-center mt-48"
+                  className="absolute flex flex-col items-center text-center mt-56"
                   initial={{ opacity: 0, filter: "blur(12px)" }}
                   animate={{ opacity: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, filter: "blur(12px)", y: -20 }}
@@ -159,7 +159,7 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
               {step >= 3 && (
                 <motion.div
                    key="main-title"
-                   className="absolute flex flex-col items-center justify-center text-center px-4 mt-12 w-full"
+                   className="absolute flex flex-col items-center justify-center text-center px-4 mt-32 w-full"
                    initial={{ opacity: 0 }}
                    animate={{ opacity: 1 }}
                    transition={{ duration: 0.8, ease }}
