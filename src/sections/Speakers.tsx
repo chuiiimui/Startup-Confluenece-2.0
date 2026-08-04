@@ -98,15 +98,16 @@ export default function Speakers() {
           <div className="mt-16 -mx-4">
             <Swiper
               modules={[Pagination, Autoplay]}
-              slidesPerView={1.2}
-              spaceBetween={20}
+              slidesPerView="auto"
+              spaceBetween={24}
               centeredSlides={true}
+              loop={true}
               pagination={{ clickable: true }}
               autoplay={{ delay: 3000, disableOnInteraction: false }}
-              className="pb-16 px-4"
+              className="w-full pb-16 px-4"
             >
               {speakers.map((speaker: any) => (
-                <SwiperSlide key={speaker.id}>
+                <SwiperSlide key={speaker.id} className="!w-[280px]">
                   {renderSpeaker(speaker)}
                 </SwiperSlide>
               ))}

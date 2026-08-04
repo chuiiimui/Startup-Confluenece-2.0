@@ -38,7 +38,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative h-[100dvh] w-full flex items-center pt-20 lg:pt-20 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-[80px] overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
       <GridPattern parallax={true} />
       
@@ -53,26 +53,38 @@ const Hero = () => {
           
           {/* Main Content */}
           <motion.div
-            className="flex flex-col items-center max-w-4xl"
+            className="flex flex-col items-center max-w-[1200px]"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            {/* Massive Headline */}
+            {/* Monumental Headline */}
             <div 
-              className="font-heading tracking-[-0.08em] leading-[0.85] flex flex-col uppercase mt-8 lg:mt-0"
-              style={{ fontWeight: 900, fontSize: "clamp(2.75rem, 7vw, 7.5rem)" }}
+              className="font-heading tracking-[-0.04em] leading-[0.95] flex flex-col uppercase mt-8 lg:mt-0 items-center"
+              style={{ fontWeight: 900 }}
             >
-              <div className="overflow-hidden">
-                <motion.div variants={wordVariants} className="text-primary">
+              <div className="overflow-hidden pb-2 md:pb-4 w-full">
+                <motion.div 
+                  variants={wordVariants} 
+                  className="text-primary drop-shadow-sm"
+                  style={{ fontSize: "clamp(4rem, 8vw, 8rem)" }}
+                >
                   STARTUP
                 </motion.div>
               </div>
-              <div className="overflow-hidden flex flex-wrap items-end gap-x-4 lg:gap-x-8">
-                <motion.div variants={wordVariants} className="text-primary">
+              <div className="overflow-hidden pb-4 md:pb-6 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
+                <motion.div 
+                  variants={wordVariants} 
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
+                  style={{ fontSize: "clamp(5rem, 10vw, 10rem)" }}
+                >
                   CONFLUENCE
                 </motion.div>
-                <motion.div variants={scaleFadeVariants} className="text-accent">
+                <motion.div 
+                  variants={scaleFadeVariants} 
+                  className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-2 md:mt-0"
+                  style={{ fontSize: "clamp(3.75rem, 7.5vw, 7.5rem)" }}
+                >
                   2.0
                 </motion.div>
               </div>
