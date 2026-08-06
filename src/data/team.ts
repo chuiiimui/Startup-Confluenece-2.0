@@ -1,40 +1,41 @@
 import { TeamMember } from '../types';
+import prakharImage from '../assets/team/prakhar-pandey.jpg';
 
 export const teamMembers: TeamMember[] = [
   {
     id: 'tm-1',
-    name: 'Arjun Verma',
-    role: 'Event Coordinator',
-    image: '/team/arjun-verma.webp'
+    name: 'Prakhar Pandey',
+    role: 'Team Leader',
+    image: prakharImage
   },
   {
     id: 'tm-2',
-    name: 'Riya Gupta',
-    role: 'Creative Head',
-    image: '/team/riya-gupta.webp'
+    name: 'Reveal Soon',
+    role: 'Organizer',
+    image: ''
   },
   {
     id: 'tm-3',
-    name: 'Sahil Kumar',
-    role: 'Marketing Lead',
-    image: '/team/sahil-kumar.webp'
+    name: 'Reveal Soon',
+    role: 'Organizer',
+    image: ''
   },
   {
     id: 'tm-4',
-    name: 'Neha Agarwal',
-    role: 'Event Lead',
-    image: '/team/neha-agarwal.webp'
+    name: 'Reveal Soon',
+    role: 'Organizer',
+    image: ''
   },
   {
     id: 'tm-5',
-    name: 'Rohan Mishra',
-    role: 'Technical Head',
-    image: '/team/rohan-mishra.webp'
+    name: 'Reveal Soon',
+    role: 'Organizer',
+    image: ''
   },
   {
     id: 'tm-6',
-    name: 'Kavita Singh',
-    role: 'Startup Relations',
-    image: '/team/kavita-singh.webp'
+    name: 'Reveal Soon',
+    role: 'Organizer',
+    image: ''
   }
 ];
