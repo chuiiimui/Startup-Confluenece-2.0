@@ -60,7 +60,7 @@ export const expoBenefits: ExpoBenefit[] = [
     description: 'Immerse yourself in a thriving community of innovators.',
     icon: 'Globe',
     image: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800',
-    colSpan: 1,
+    colSpan: 2,
     rowSpan: 1,
   },
 ];
