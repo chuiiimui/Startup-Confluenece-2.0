@@ -207,11 +207,8 @@ export default function StartupExpo() {
               Join 50+ innovative startups and connect with investors, mentors, and ecosystem leaders.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-white text-accent font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
-                Apply for Expo
-              </button>
-              <button className="w-full sm:w-auto px-8 py-4 rounded-full bg-black/10 text-white font-bold text-lg border border-white/30 hover:bg-black/20 transition-colors duration-300 backdrop-blur-md">
-                Become a Partner
+              <button className="w-full sm:w-auto px-10 py-4 rounded-full bg-white text-accent font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
+                Register
               </button>
             </div>
           </div>

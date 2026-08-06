@@ -6,6 +6,35 @@ import GridPattern from '../components/GridPattern';
 
 
 const Hero = () => {
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  useEffect(() => {
+    const targetDate = new Date('2026-10-23T09:00:00').getTime();
+
+    const updateTimer = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference > 0) {
+        setTimeLeft({
+          days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((difference % (1000 * 60)) / 1000),
+        });
+      }
+    };
+
+    updateTimer();
+    const timerId = setInterval(updateTimer, 1000);
+    return () => clearInterval(timerId);
+  }, []);
+
 
   // Text reveal animation variants
   const wordVariants = {
@@ -38,7 +67,7 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-[80px] overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Background Elements */}
       <GridPattern parallax={true} />
       
@@ -60,30 +89,30 @@ const Hero = () => {
           >
             {/* Monumental Headline */}
             <div 
-              className="font-heading tracking-[-0.04em] leading-[0.95] flex flex-col uppercase mt-8 lg:mt-0 items-center"
+              className="font-heading tracking-[-0.04em] leading-[0.95] flex flex-col uppercase mt-4 lg:mt-0 items-center"
               style={{ fontWeight: 900 }}
             >
-              <div className="overflow-hidden pb-2 md:pb-4 w-full">
+              <div className="overflow-hidden pb-1 md:pb-2 w-full">
                 <motion.div 
                   variants={wordVariants} 
                   className="text-primary drop-shadow-sm"
-                  style={{ fontSize: "clamp(2.4rem, 8vw, 8rem)" }}
+                  style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
                 >
                   STARTUP
                 </motion.div>
               </div>
-              <div className="overflow-hidden pb-4 md:pb-6 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
+              <div className="overflow-hidden pb-2 md:pb-4 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
                 <motion.div 
                   variants={wordVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
-                  style={{ fontSize: "clamp(3rem, 10vw, 10rem)" }}
+                  style={{ fontSize: "clamp(2.5rem, 8vw, 8.5rem)" }}
                 >
                   CONFLUENCE
                 </motion.div>
                 <motion.div 
                   variants={scaleFadeVariants} 
                   className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-0 md:mt-0"
-                  style={{ fontSize: "clamp(2.2rem, 7.5vw, 7.5rem)" }}
+                  style={{ fontSize: "clamp(1.8rem, 6vw, 6rem)" }}
                 >
                   2.0
                 </motion.div>
@@ -91,36 +120,61 @@ const Hero = () => {
             </div>
 
             {/* Value Proposition */}
-            <motion.div variants={wordVariants} className="mt-4 md:mt-8 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 flex-wrap">
-              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+            <motion.div variants={wordVariants} className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 flex-wrap">
+              <p className="text-sm md:text-2xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Fostering Collaboration.
               </p>
-              <p className="text-base md:text-3xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
+              <p className="text-sm md:text-2xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
                 Driving Innovation.
               </p>
-              <p className="text-base md:text-3xl font-medium tracking-tight text-primary">
+              <p className="text-sm md:text-2xl font-medium tracking-tight text-primary">
                 Fueling Growth.
               </p>
             </motion.div>
 
             {/* Event Details Pills */}
             <motion.div 
-              className="mt-6 md:mt-8 flex flex-wrap justify-center gap-2 md:gap-4 w-full"
+              className="mt-4 md:mt-6 flex flex-wrap justify-center gap-2 md:gap-4 w-full"
               variants={wordVariants}
             >
-              <div className="flex items-center gap-2 md:gap-2.5 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <Calendar className="w-4 h-4 md:w-5 md:h-5 text-accent shrink-0" />
-                <span className="text-sm md:text-base font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
+              <div className="flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <Calendar className="w-4 h-4 text-accent shrink-0" />
+                <span className="text-xs md:text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
               </div>
-              <div className="flex items-center gap-2 md:gap-2.5 px-4 py-2 md:px-6 md:py-3 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <MapPin className="w-4 h-4 md:w-5 md:h-5 text-primary shrink-0" />
-                <span className="text-sm md:text-base font-semibold text-left leading-tight md:leading-normal" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
+              <div className="flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
+                <MapPin className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs md:text-sm font-semibold text-left leading-tight md:leading-normal" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
               </div>
+            </motion.div>
+
+            {/* Countdown Timer */}
+            <motion.div 
+              className="mt-4 md:mt-6 flex items-center justify-center gap-2 md:gap-4 w-full max-w-xl mx-auto"
+              variants={wordVariants}
+            >
+              {[
+                { label: 'Days', value: timeLeft.days },
+                { label: 'Hours', value: timeLeft.hours },
+                { label: 'Minutes', value: timeLeft.minutes },
+                { label: 'Seconds', value: timeLeft.seconds },
+              ].map((item) => (
+                <div key={item.label} className="flex flex-col items-center">
+                  <div className="w-14 h-14 md:w-20 md:h-20 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-primary/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/10 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
+                    <span className="text-xl md:text-3xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary to-purple-500 relative z-10">
+                      {String(item.value).padStart(2, '0')}
+                    </span>
+                  </div>
+                  <span className="text-[10px] md:text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500 uppercase tracking-widest mt-2">
+                    {item.label}
+                  </span>
+                </div>
+              ))}
             </motion.div>
 
             {/* CTA Buttons */}
             <motion.div 
-              className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto px-4 sm:px-0"
+              className="mt-4 md:mt-6 flex flex-col sm:flex-row items-center gap-3 md:gap-4 w-full sm:w-auto px-4 sm:px-0"
               variants={wordVariants}
             >
               <motion.button 

@@ -3,52 +3,51 @@ import { GalleryImage } from '../types';
 import img0 from '../assets/Previous image Gallery/DSC_7889.JPG';
 import img1 from '../assets/Previous image Gallery/DSC_7891.JPG';
 import img2 from '../assets/Previous image Gallery/DSC_7934.JPG';
-import img3 from '../assets/Previous image Gallery/DSC_7942 (1).JPG';
-import img4 from '../assets/Previous image Gallery/DSC_7942.JPG';
-import img5 from '../assets/Previous image Gallery/DSC_7943.JPG';
-import img6 from '../assets/Previous image Gallery/DSC_7967.JPG';
-import img7 from '../assets/Previous image Gallery/DSC_7975.JPG';
-import img8 from '../assets/Previous image Gallery/DSC_7976.JPG';
-import img9 from '../assets/Previous image Gallery/DSC_7998.JPG';
-import img10 from '../assets/Previous image Gallery/DSC_7999.JPG';
-import img11 from '../assets/Previous image Gallery/DSC_8069.JPG';
-import img12 from '../assets/Previous image Gallery/DSC_8082.JPG';
-import img13 from '../assets/Previous image Gallery/DSC_8084.JPG';
-import img14 from '../assets/Previous image Gallery/DSC_8085.JPG';
-import img15 from '../assets/Previous image Gallery/DSC_8165.JPG';
-import img16 from '../assets/Previous image Gallery/DSC_8169.JPG';
-import img17 from '../assets/Previous image Gallery/DSC_8175.JPG';
-import img18 from '../assets/Previous image Gallery/UBD_0266.JPG';
-import img19 from '../assets/Previous image Gallery/UBD_0273.JPG';
-import img20 from '../assets/Previous image Gallery/UBD_0275.JPG';
-import img21 from '../assets/Previous image Gallery/UBD_0277.JPG';
-import img22 from '../assets/Previous image Gallery/UBD_0280.JPG';
-import img23 from '../assets/Previous image Gallery/UBD_0281.JPG';
-import img24 from '../assets/Previous image Gallery/UBD_0282.JPG';
-import img25 from '../assets/Previous image Gallery/UBD_0286.JPG';
-import img26 from '../assets/Previous image Gallery/UBD_0313.JPG';
-import img27 from '../assets/Previous image Gallery/UBD_0315.JPG';
-import img28 from '../assets/Previous image Gallery/UBD_0320.JPG';
-import img29 from '../assets/Previous image Gallery/UBD_0331.JPG';
-import img30 from '../assets/Previous image Gallery/UBD_0339.JPG';
-import img31 from '../assets/Previous image Gallery/UBD_0340.JPG';
-import img32 from '../assets/Previous image Gallery/UBD_0341.JPG';
-import img33 from '../assets/Previous image Gallery/UBD_0352.JPG';
-import img34 from '../assets/Previous image Gallery/UBD_0355.JPG';
-import img35 from '../assets/Previous image Gallery/UBD_0359.JPG';
-import img36 from '../assets/Previous image Gallery/UBD_0360.JPG';
-import img37 from '../assets/Previous image Gallery/UBD_0362.JPG';
-import img38 from '../assets/Previous image Gallery/UBD_0415.JPG';
-import img39 from '../assets/Previous image Gallery/UBD_0420.JPG';
-import img40 from '../assets/Previous image Gallery/UBD_0424.JPG';
-import img41 from '../assets/Previous image Gallery/UBD_0425.JPG';
-import img42 from '../assets/Previous image Gallery/UBD_0427.JPG';
-import img43 from '../assets/Previous image Gallery/UBD_0428.JPG';
-import img44 from '../assets/Previous image Gallery/UBD_0432.JPG';
-import img45 from '../assets/Previous image Gallery/UBD_0433.JPG';
-import img46 from '../assets/Previous image Gallery/UBD_0446.JPG';
-import img47 from '../assets/Previous image Gallery/UBD_0448.JPG';
-import img48 from '../assets/Previous image Gallery/UBD_0457.JPG';
+import img3 from '../assets/Previous image Gallery/DSC_7942.JPG';
+import img4 from '../assets/Previous image Gallery/DSC_7943.JPG';
+import img5 from '../assets/Previous image Gallery/DSC_7967.JPG';
+import img6 from '../assets/Previous image Gallery/DSC_7975.JPG';
+import img7 from '../assets/Previous image Gallery/DSC_7976.JPG';
+import img8 from '../assets/Previous image Gallery/DSC_7998.JPG';
+import img9 from '../assets/Previous image Gallery/DSC_7999.JPG';
+import img10 from '../assets/Previous image Gallery/DSC_8069.JPG';
+import img11 from '../assets/Previous image Gallery/DSC_8082.JPG';
+import img12 from '../assets/Previous image Gallery/DSC_8084.JPG';
+import img13 from '../assets/Previous image Gallery/DSC_8085.JPG';
+import img14 from '../assets/Previous image Gallery/DSC_8165.JPG';
+import img15 from '../assets/Previous image Gallery/DSC_8169.JPG';
+import img16 from '../assets/Previous image Gallery/DSC_8175.JPG';
+import img17 from '../assets/Previous image Gallery/UBD_0266.JPG';
+import img18 from '../assets/Previous image Gallery/UBD_0273.JPG';
+import img19 from '../assets/Previous image Gallery/UBD_0275.JPG';
+import img20 from '../assets/Previous image Gallery/UBD_0277.JPG';
+import img21 from '../assets/Previous image Gallery/UBD_0280.JPG';
+import img22 from '../assets/Previous image Gallery/UBD_0281.JPG';
+import img23 from '../assets/Previous image Gallery/UBD_0282.JPG';
+import img24 from '../assets/Previous image Gallery/UBD_0286.JPG';
+import img25 from '../assets/Previous image Gallery/UBD_0313.JPG';
+import img26 from '../assets/Previous image Gallery/UBD_0315.JPG';
+import img27 from '../assets/Previous image Gallery/UBD_0320.JPG';
+import img28 from '../assets/Previous image Gallery/UBD_0331.JPG';
+import img29 from '../assets/Previous image Gallery/UBD_0339.JPG';
+import img30 from '../assets/Previous image Gallery/UBD_0340.JPG';
+import img31 from '../assets/Previous image Gallery/UBD_0341.JPG';
+import img32 from '../assets/Previous image Gallery/UBD_0352.JPG';
+import img33 from '../assets/Previous image Gallery/UBD_0355.JPG';
+import img34 from '../assets/Previous image Gallery/UBD_0359.JPG';
+import img35 from '../assets/Previous image Gallery/UBD_0360.JPG';
+import img36 from '../assets/Previous image Gallery/UBD_0362.JPG';
+import img37 from '../assets/Previous image Gallery/UBD_0415.JPG';
+import img38 from '../assets/Previous image Gallery/UBD_0420.JPG';
+import img39 from '../assets/Previous image Gallery/UBD_0424.JPG';
+import img40 from '../assets/Previous image Gallery/UBD_0425.JPG';
+import img41 from '../assets/Previous image Gallery/UBD_0427.JPG';
+import img42 from '../assets/Previous image Gallery/UBD_0428.JPG';
+import img43 from '../assets/Previous image Gallery/UBD_0432.JPG';
+import img44 from '../assets/Previous image Gallery/UBD_0433.JPG';
+import img45 from '../assets/Previous image Gallery/UBD_0446.JPG';
+import img46 from '../assets/Previous image Gallery/UBD_0448.JPG';
+import img47 from '../assets/Previous image Gallery/UBD_0457.JPG';
 
 export const gallery: GalleryImage[] = [
   {
@@ -386,12 +385,5 @@ export const gallery: GalleryImage[] = [
     title: 'Event Moment 48',
     category: 'audience',
     alt: 'Event Moment 48'
-  },
-  {
-    id: 'gal-49',
-    src: img48,
-    title: 'Event Moment 49',
-    category: 'expo',
-    alt: 'Event Moment 49'
   },
 ];
