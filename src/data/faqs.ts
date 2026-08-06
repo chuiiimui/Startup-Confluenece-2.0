@@ -34,6 +34,6 @@ export const faqs: FAQ[] = [
   {
     id: 'faq-7',
     question: 'Will accommodation be provided?',
-    answer: 'Yes, accommodation is available for out-station participants. Please mention your requirement during registration so we can assist you with the arrangements.'
+    answer: 'Yes, accommodation is available for out-station participants at a nominal fee. Please mention your requirement during registration so we can assist you with the arrangements.'
   }
 ];

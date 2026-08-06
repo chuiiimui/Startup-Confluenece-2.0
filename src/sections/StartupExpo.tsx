@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRegistration } from '../context/RegistrationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -16,17 +16,27 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 const journeySteps = [
-  { id: 1, title: 'Apply', desc: 'Submit your startup details.' },
-  { id: 2, title: 'Get Shortlisted', desc: 'Expert panel review.' },
-  { id: 3, title: 'Showcase Startup', desc: 'Exhibit at the prime venue.' },
-  { id: 4, title: 'Meet Investors', desc: 'Exclusive networking sessions.' },
-  { id: 5, title: 'Build Connections', desc: 'Interact with ecosystem leaders.' },
-  { id: 6, title: 'Funding Opportunities', desc: 'Secure potential investments.' },
+  { id: 1, title: 'Apply', desc: 'Submit your startup details.', image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=1200' },
+  { id: 2, title: 'Get Shortlisted', desc: 'Expert panel review.', image: 'https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&q=80&w=1200' },
+  { id: 3, title: 'Showcase Startup', desc: 'Exhibit at the prime venue.', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=1200' },
+  { id: 4, title: 'Meet Investors', desc: 'Exclusive networking sessions.', image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?auto=format&fit=crop&q=80&w=1200' },
+  { id: 5, title: 'Build Connections', desc: 'Interact with ecosystem leaders.', image: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?auto=format&fit=crop&q=80&w=1200' },
+  { id: 6, title: 'Funding Opportunities', desc: 'Secure potential investments.', image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=1200' },
 ];
 
 export default function StartupExpo() {
   const [activeCategoryId, setActiveCategoryId] = useState(expoCategories[0]?.id || 'cat-1');
+  const [activeStepId, setActiveStepId] = useState(1);
+  const activeStep = journeySteps.find(s => s.id === activeStepId) || journeySteps[0];
   const { openModal } = useRegistration();
+
+  // Auto-advance the Exhibitor Journey step every 4 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveStepId((prev) => (prev < journeySteps.length ? prev + 1 : 1));
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
   const activeCategory = expoCategories.find((c: any) => c.id === activeCategoryId) || expoCategories[0];
   const ActiveIcon = activeCategory ? (iconMap[activeCategory.icon] || Cpu) : Cpu;
 
@@ -115,24 +125,113 @@ export default function StartupExpo() {
         {/* Exhibitor Journey */}
         <div className="mb-32">
           <SectionHeading badge="Process" title="Exhibitor Journey" />
-          <div className="mt-16 w-full overflow-x-auto pb-8 hide-scrollbar">
-            <div className="flex items-center min-w-[1000px] relative px-4">
-              {/* Connecting Line */}
-              <div className="absolute top-1/2 left-8 right-8 h-[2px] bg-gray-200 -translate-y-1/2 z-0" />
+          
+          <div className="mt-16 max-w-5xl mx-auto px-4 md:px-8">
+            {/* Interactive Timeline */}
+            <div className="relative w-full flex justify-between items-center mb-16">
+              {/* Background Line */}
+              <div className="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 z-0 rounded-full" style={{ background: 'var(--border)' }} />
               
-              {journeySteps.map((step, idx) => (
-                <div key={step.id} className="flex-1 relative z-10 flex flex-col items-center group cursor-pointer">
-                  <motion.div 
-                    whileHover={{ scale: 1.2 }}
-                    className="w-12 h-12 rounded-full bg-white border-2 border-gray-200 shadow-sm flex items-center justify-center mb-6 group-hover:border-accent transition-colors duration-300 relative"
+              {/* Progress Line */}
+              <motion.div 
+                className="absolute top-1/2 left-0 h-1 bg-accent -translate-y-1/2 z-0 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${((activeStepId - 1) / (journeySteps.length - 1)) * 100}%` }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+              />
+              
+              {journeySteps.map((step, idx) => {
+                const isActive = step.id === activeStepId;
+                const isPast = step.id < activeStepId;
+                
+                return (
+                  <div 
+                    key={step.id} 
+                    onClick={() => setActiveStepId(step.id)}
+                    className="relative z-10 flex flex-col items-center group cursor-pointer"
                   >
-                    <span className="text-gray-500 font-medium group-hover:text-accent transition-colors">{step.id}</span>
-                    <div className="absolute inset-0 rounded-full bg-accent/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </motion.div>
-                  <h4 className="text-gray-900 font-semibold mb-2 text-center">{step.title}</h4>
-                  <p className="text-gray-500 text-sm text-center max-w-[140px] leading-relaxed">{step.desc}</p>
-                </div>
-              ))}
+                    <motion.div 
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center font-bold text-sm md:text-lg transition-all duration-300 shadow-lg ${
+                        isActive || isPast 
+                          ? 'bg-accent text-white border-none' 
+                          : 'border-2 hover:border-accent/50'
+                      }`}
+                      style={!(isActive || isPast) ? { backgroundColor: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-secondary)' } : {}}
+                    >
+                      {step.id}
+                      
+                      {/* Outer pulse ring for active step */}
+                      {isActive && (
+                        <motion.div
+                          className="absolute inset-0 rounded-full border-2 border-accent"
+                          initial={{ opacity: 0.8, scale: 1 }}
+                          animate={{ opacity: 0, scale: 1.5 }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        />
+                      )}
+                    </motion.div>
+                    
+                    {/* Step Title (visible on desktop, hidden on small screens unless active) */}
+                    <div className={`absolute top-full mt-4 text-center w-24 md:w-32 transition-all duration-300 ${isActive ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none md:opacity-60 md:translate-y-0'}`}>
+                      <h4 className={`text-xs md:text-sm font-semibold ${isActive ? 'text-accent' : ''}`} style={!isActive ? { color: 'var(--text-secondary)' } : {}}>
+                        {step.title}
+                      </h4>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* Active Step Content Card */}
+            <div className="mt-24 md:mt-20">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeStepId}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                  transition={{ duration: 0.4, type: 'spring' }}
+                  className="p-8 md:p-12 rounded-3xl border shadow-xl flex flex-col md:flex-row items-center gap-8 text-center md:text-left relative overflow-hidden group min-h-[200px]"
+                  style={{ borderColor: 'var(--border)' }}
+                >
+                  <img 
+                    src={activeStep.image} 
+                    alt={activeStep.title} 
+                    className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-all duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-900 via-gray-900/80 to-gray-900/40" />
+                  
+                  <div className="w-20 h-20 shrink-0 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white text-3xl font-bold font-heading relative z-10 shadow-lg">
+                    {activeStep.id}
+                  </div>
+                  
+                  <div className="flex-1 relative z-10">
+                    <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 text-white drop-shadow-md">
+                      {activeStep.title}
+                    </h3>
+                    <p className="text-lg text-gray-200 drop-shadow-sm font-medium">
+                      {activeStep.desc}
+                    </p>
+                  </div>
+                  
+                  <div className="hidden md:flex relative z-10 shrink-0">
+                    <button 
+                      onClick={() => {
+                        if (activeStepId < journeySteps.length) {
+                          setActiveStepId(activeStepId + 1);
+                        } else {
+                          setActiveStepId(1);
+                        }
+                      }}
+                      className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 hover:bg-accent hover:border-accent hover:text-white flex items-center justify-center transition-all shadow-sm text-white"
+                    >
+                      <ArrowRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>

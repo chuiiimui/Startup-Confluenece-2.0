@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden pt-0 md:pt-24 pb-6 md:pb-12 mt-0 md:mt-20" style={{ background: 'var(--surface)' }}>
+    <footer className="relative overflow-hidden pt-8 pb-0 mt-12" style={{ background: 'var(--surface)' }}>
       {/* Top glowing separator */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-30"></div>
       
@@ -32,7 +32,7 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         
         {/* DESKTOP FOOTER */}
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20">
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-12 gap-12 mb-8">
           {/* Brand & UIH Bio Column */}
           <div className="lg:col-span-6 space-y-8">
             <div>
@@ -99,7 +99,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* MOBILE FOOTER (PREMIUM REDESIGN) */}
-        <div className="md:hidden flex flex-col items-center text-center space-y-16 mt-16 mb-0 px-2">
+        <div className="md:hidden flex flex-col items-center text-center space-y-10 mt-8 mb-4 px-2">
           
           {/* Get In Touch */}
           <div className="flex flex-col items-center space-y-8">
@@ -164,9 +164,18 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Copyright Section (Unified for both) */}
-        <div className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium tracking-wide" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
-          <p>© {new Date().getFullYear()} Startup Confluence 2.0</p>
-          <div className="flex items-center gap-2">
+        <div className="pt-4 pb-4 mt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-medium tracking-wide" style={{ borderColor: 'var(--border)', color: 'var(--text-muted)' }}>
+          <p className="md:flex-1 text-center md:text-left">
+            © {new Date().getFullYear()} Startup Confluence 2.0
+          </p>
+          
+          <div className="md:flex-1 text-center">
+            <p className="text-sm text-gray-500">
+              Crafted with ❤️ by <a href="https://ayushyadav.dev" target="_blank" rel="noopener noreferrer" className="hover:text-accent font-medium transition-colors">Ayush Yadav</a>
+            </p>
+          </div>
+
+          <div className="md:flex-1 flex items-center justify-center md:justify-end gap-2">
             <span>Powered by</span>
             <strong className="text-accent">United Incubation Hub</strong>
           </div>
