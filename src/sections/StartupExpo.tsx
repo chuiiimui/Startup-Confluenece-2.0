@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import { expoCategories } from '../data/expoCategories';
-import { featuredStartups } from '../data/featuredStartups';
+
 import { expoBenefits } from '../data/expoBenefits';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -44,7 +44,7 @@ export default function StartupExpo() {
         {/* Expo Domains Showcase */}
         <div className="mb-32">
           <SectionHeading badge="Sectors" title="Expo Domains" />
-          <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto mt-12">
+          <div className="flex md:flex-wrap overflow-x-auto md:overflow-visible hide-scrollbar snap-x snap-mandatory justify-start md:justify-center gap-3 md:gap-4 max-w-5xl mx-auto mt-12 px-4 md:px-0 pb-4">
             {expoCategories.map((category: any) => {
               const Icon = iconMap[category.icon] || Cpu;
               const isActive = category.id === activeCategoryId;
@@ -55,7 +55,7 @@ export default function StartupExpo() {
                   onClick={() => setActiveCategoryId(category.id)}
                   whileHover={{ y: -5, scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className={`relative flex items-center gap-3 px-6 py-4 rounded-2xl border transition-all duration-300 ${
+                  className={`relative flex items-center shrink-0 snap-center gap-3 px-6 py-4 rounded-2xl border transition-all duration-300 ${
                     isActive 
                       ? 'bg-white border-accent/30 shadow-[0_10px_40px_rgba(255,122,0,0.15)]' 
                       : 'bg-white/60 border-black/5 hover:bg-white hover:border-black/10 shadow-sm'
@@ -80,7 +80,7 @@ export default function StartupExpo() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.4 }}
-                  className="rounded-3xl p-8 md:p-16 border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-end min-h-[400px] group"
+                  className="rounded-3xl p-8 md:p-16 border border-black/5 shadow-[0_20px_50px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col justify-end min-h-[280px] md:min-h-[400px] group"
                 >
                   <img 
                     src={activeCategory.image} 
@@ -165,36 +165,6 @@ export default function StartupExpo() {
             })}
           </div>
         </div>
-
-        {/* Featured Startups Carousel */}
-        <div className="mb-32 relative">
-          <SectionHeading badge="Showcase" title="Featured Startups" />
-          <div className="mt-16 w-full overflow-x-auto pb-12 snap-x snap-mandatory hide-scrollbar">
-            <div className="flex gap-6 w-max px-4">
-              {featuredStartups.map((startup, idx) => (
-                <motion.div
-                  key={startup.id}
-                  whileHover={{ y: -10 }}
-                  className="w-[320px] md:w-[400px] h-[480px] rounded-[2rem] border border-black/10 bg-white overflow-hidden shrink-0 snap-center relative group shadow-[0_20px_40px_rgb(0,0,0,0.08)]"
-                >
-                  <img src={startup.image} alt={startup.name} className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
-                  
-                  <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                    <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl mb-6 border border-white/30 shadow-sm">
-                      {startup.logo}
-                    </div>
-                    <span className="text-accent text-sm font-semibold tracking-wider uppercase mb-2 block drop-shadow-sm">{startup.domain}</span>
-                    <h3 className="text-3xl font-bold text-white mb-4 drop-shadow-md">{startup.name}</h3>
-                    <p className="text-gray-200 line-clamp-2 drop-shadow-sm">{startup.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-
 
         {/* Final Premium CTA */}
         <div className="relative rounded-[3rem] overflow-hidden max-w-5xl mx-auto shadow-[0_20px_50px_rgba(255,122,0,0.2)]">

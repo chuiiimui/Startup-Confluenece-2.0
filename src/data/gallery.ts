@@ -48,6 +48,9 @@ import img44 from '../assets/Previous image Gallery/UBD_0433.JPG';
 import img45 from '../assets/Previous image Gallery/UBD_0446.JPG';
 import img46 from '../assets/Previous image Gallery/UBD_0448.JPG';
 import img47 from '../assets/Previous image Gallery/UBD_0457.JPG';
+import img48 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.02 (1).jpeg';
+import img49 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.02.jpeg';
+import img50 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.03.jpeg';
 
 export const gallery: GalleryImage[] = [
   {
@@ -386,4 +389,25 @@ export const gallery: GalleryImage[] = [
     category: 'audience',
     alt: 'Event Moment 48'
   },
+  {
+    id: 'gal-49',
+    src: img48,
+    title: 'Event Moment 49',
+    category: 'expo',
+    alt: 'Event Moment 49'
+  },
+  {
+    id: 'gal-50',
+    src: img49,
+    title: 'Event Moment 50',
+    category: 'networking',
+    alt: 'Event Moment 50'
+  },
+  {
+    id: 'gal-51',
+    src: img50,
+    title: 'Event Moment 51',
+    category: 'workshops',
+    alt: 'Event Moment 51'
+  }
 ];

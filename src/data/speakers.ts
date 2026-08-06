@@ -1,6 +1,6 @@
 import { Speaker } from '../types';
 
-export const speakers: Speaker[] = Array.from({ length: 8 }).map((_, index) => ({
+export const speakers: Speaker[] = Array.from({ length: 4 }).map((_, index) => ({
   id: `speaker-${index + 1}`,
   name: 'To Be Revealed',
   role: 'Industry Leader',

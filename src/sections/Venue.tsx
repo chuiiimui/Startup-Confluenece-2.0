@@ -62,7 +62,6 @@ export const Venue: React.FC = () => {
             className="hidden lg:block h-[500px] w-full rounded-3xl overflow-hidden border relative"
             style={{ borderColor: 'var(--border)' }}
           >
-            <div className="absolute inset-0 backdrop-blur-sm pointer-events-none" style={{ background: 'var(--surface)' }}></div>
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.123!2d81.8!3d25.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2zMjXCsDIxJzAwLjAiTiA4McKwNDgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234" 
               width="100%" 
@@ -71,7 +70,7 @@ export const Venue: React.FC = () => {
               allowFullScreen={false} 
               loading="lazy" 
               referrerPolicy="no-referrer-when-downgrade"
-              className="grayscale contrast-125 opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700"
+              className="transition-all duration-700"
             ></iframe>
           </motion.div>
         </div>

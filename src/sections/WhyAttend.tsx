@@ -40,18 +40,73 @@ export default function WhyAttend() {
               <motion.div
                 key={benefit.id}
                 variants={itemVariants}
-                className="group relative p-8 rounded-[2rem] border backdrop-blur-xl overflow-hidden hover:-translate-y-2 transition-all duration-500 shadow-lg hover:shadow-[0_20px_40px_rgba(255,122,0,0.15)]"
-                style={{ background: 'linear-gradient(145deg, var(--surface) 0%, rgba(255,255,255,0.02) 100%)', borderColor: 'var(--border)' }}
+                className="relative rounded-[32px] overflow-hidden group flex flex-col justify-end min-h-[280px] md:min-h-[380px]"
+                whileHover={{ y: -12 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                style={{
+                  boxShadow: '0 20px 60px rgba(15,23,42,0.08)'
+                }}
               >
-                <div className="absolute inset-0 bg-accent/0 group-hover:bg-accent/[0.03] transition-colors duration-500 z-0" />
-                <div className="relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/20 to-transparent border border-accent/20 flex items-center justify-center mb-6 group-hover:rotate-6 group-hover:scale-110 transition-all duration-500 shadow-[inset_0_0_20px_rgba(255,122,0,0.1)]">
-                    <IconComponent className="w-8 h-8 text-accent drop-shadow-[0_0_10px_rgba(255,122,0,0.5)]" />
+                {/* Background Image */}
+                {benefit.image && (
+                  <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[32px] z-0">
+                    <div 
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
+                      style={{ 
+                        backgroundImage: `url('${benefit.image}')`,
+                        filter: 'brightness(0.9) contrast(1.05)'
+                      }}
+                    />
                   </div>
-                  <h3 className="text-xl font-heading font-semibold mb-3 group-hover:text-accent transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
+                )}
+
+                {/* Subtle Image Overlay for text readability */}
+                <div 
+                  className="absolute inset-0 z-10 transition-opacity duration-500"
+                  style={{
+                    background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 40%, rgba(10,46,109,0.35) 100%)'
+                  }}
+                />
+                
+                {/* Additional Hover Darkening */}
+                <div className="absolute inset-0 z-10 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                {/* Reflection Sweep */}
+                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[32px]">
+                  <div className="absolute -top-[100%] -bottom-[100%] left-[-100%] w-[30%] bg-gradient-to-r from-transparent via-white/40 to-transparent -rotate-45 group-hover:left-[200%] transition-all duration-[1.2s] ease-in-out opacity-0 group-hover:opacity-100" />
+                </div>
+
+                {/* Text Content */}
+                <div className="relative z-30 p-8 flex flex-col items-start transition-colors duration-500 mt-auto">
+                  {/* Glass Icon Badge */}
+                  <div 
+                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm border border-white/40"
+                    style={{
+                      background: 'rgba(255,255,255,0.2)',
+                      backdropFilter: 'blur(12px)',
+                      WebkitBackdropFilter: 'blur(12px)',
+                    }}
+                  >
+                    <IconComponent className="w-6 h-6 md:w-7 md:h-7 text-[#FFFFFF]" />
+                  </div>
+
+                  <h3 
+                    className="font-heading font-bold text-xl md:text-2xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
+                    style={{ 
+                      color: '#FFFFFF',
+                      textShadow: '0 4px 20px rgba(0,0,0,0.35)'
+                    }}
+                  >
                     {benefit.title}
                   </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                  
+                  <p 
+                    className="font-body text-sm md:text-base leading-relaxed transition-opacity duration-500 opacity-90 group-hover:opacity-100" 
+                    style={{ 
+                      color: 'rgba(255,255,255,0.92)',
+                      textShadow: '0 2px 12px rgba(0,0,0,0.25)'
+                    }}
+                  >
                     {benefit.description}
                   </p>
                 </div>
