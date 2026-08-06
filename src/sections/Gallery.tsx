@@ -2,18 +2,14 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gallery } from '../data/gallery';
 
-const galleryCategories = ['All', 'expo', 'workshops', 'speakers', 'audience'] as const;
-
 import SectionHeading from '../components/SectionHeading';
 import { FiX, FiZoomIn } from 'react-icons/fi';
 
 const Gallery = () => {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [selectedImage, setSelectedImage] = useState<typeof gallery[0] | null>(null);
+  const [showAll, setShowAll] = useState(false);
 
-  const filteredImages = activeCategory === 'All' 
-    ? gallery 
-    : gallery.filter(img => img.category === activeCategory);
+  const displayedImages = showAll ? gallery : gallery.slice(0, 9);
 
   // Generate a random gradient for placeholders since we don't have images
   const getGradient = (id: string | number) => {
@@ -39,28 +35,6 @@ const Gallery = () => {
           alignment="center"
         />
 
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap justify-center gap-3 mb-16">
-          {galleryCategories.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className="relative px-5 py-2.5 rounded-full text-sm font-medium transition-colors duration-300 z-10"
-            >
-              {activeCategory === category && (
-                <motion.div
-                  layoutId="activeGalleryTab"
-                  className="absolute inset-0 rounded-full -z-10 border"
-                  style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
-                  transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                />
-              )}
-              <span className={`relative z-10`} style={{ color: activeCategory === category ? 'var(--text-primary)' : 'var(--text-muted)' }}>
-                {category}
-              </span>
-            </button>
-          ))}
-        </div>
 
         {/* Masonry Grid */}
         <motion.div 
@@ -68,7 +42,7 @@ const Gallery = () => {
           className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6"
         >
           <AnimatePresence>
-            {filteredImages.map((image) => (
+            {displayedImages.map((image) => (
               <motion.div
                 layout
                 initial={{ opacity: 0, scale: 0.9 }}
@@ -81,25 +55,20 @@ const Gallery = () => {
                 onClick={() => setSelectedImage(image)}
               >
                 {/* Fallback placeholder since actual image src might not exist or be reachable */}
-                <div 
-                  className={`w-full aspect-[4/3] bg-gradient-to-br ${getGradient(image.id)} flex items-center justify-center relative overflow-hidden`}
-                >
+                <div className="w-full aspect-[4/3] bg-gray-100 flex items-center justify-center relative overflow-hidden">
                   {image.src ? (
                     <img 
                       src={image.src} 
                       alt={image.title} 
-                      className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                     />
                   ) : null}
-                  <div className="absolute inset-0 transition-colors duration-500" style={{ backgroundColor: 'var(--bg)', opacity: 0.4 }} />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style={{ backgroundColor: 'var(--bg)', opacity: 0.2 }} />
                   
                   {/* Overlay content */}
-                  <div className="absolute inset-0 p-6 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'linear-gradient(to top, var(--bg) 10%, transparent 100%)' }}>
-                    <span className="text-accent text-xs font-semibold mb-1 uppercase tracking-wider">{image.category}</span>
-                    <h4 className="font-heading font-medium text-lg leading-tight" style={{ color: 'var(--text-primary)' }}>{image.title}</h4>
-                    <div className="absolute top-4 right-4 w-10 h-10 rounded-full backdrop-blur-md flex items-center justify-center translate-y-4 group-hover:translate-y-0 transition-transform duration-300" style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}>
-                      <FiZoomIn size={18} />
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 text-white shadow-lg">
+                      <FiZoomIn size={24} />
                     </div>
                   </div>
                 </div>
@@ -107,6 +76,18 @@ const Gallery = () => {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* Show More Button */}
+        {gallery.length > 9 && (
+          <div className="mt-16 text-center">
+            <button
+              onClick={() => setShowAll(!showAll)}
+              className="px-8 py-3 rounded-full border border-black/10 bg-white hover:bg-gray-50 text-gray-900 font-medium transition-colors shadow-sm"
+            >
+              {showAll ? 'Show Less' : 'View All Images'}
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Lightbox Modal */}
@@ -147,10 +128,6 @@ const Gallery = () => {
                   ) : (
                     <span className="font-heading text-4xl" style={{ color: 'var(--text-muted)' }}>Image Placeholder</span>
                   )}
-               </div>
-               <div className="absolute bottom-0 left-0 right-0 p-6" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }}>
-                 <span className="text-accent text-sm font-semibold mb-2 block">{selectedImage.category}</span>
-                 <h3 className="text-2xl font-heading font-semibold" style={{ color: 'var(--text-primary)' }}>{selectedImage.title}</h3>
                </div>
             </motion.div>
           </motion.div>

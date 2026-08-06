@@ -60,6 +60,7 @@ export interface GalleryImage {
   src: string;
   alt: string;
   category: string;
+  title: string;
 }
 
 export interface NavItem {

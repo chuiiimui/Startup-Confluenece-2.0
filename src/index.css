@@ -182,3 +182,12 @@ html {
 .swiper-wrapper {
   padding-bottom: 3rem;
 }
+
+/* Hide scrollbar for horizontal containers */
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
