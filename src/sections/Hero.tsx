@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { motion, animate } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import GridPattern from '../components/GridPattern';
+import { useRegistration } from '../context/RegistrationContext';
 
 
 
 const Hero = () => {
+  const { openModal } = useRegistration();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -178,7 +180,7 @@ const Hero = () => {
               variants={wordVariants}
             >
               <motion.button 
-                onClick={() => document.getElementById('register')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => openModal()}
                 className="group relative overflow-hidden w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 rounded-full bg-primary text-white font-semibold text-base md:text-lg flex items-center justify-center gap-2 md:gap-3"
                 whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px -10px rgba(11,42,107,0.4)' }}
                 whileTap={{ scale: 0.95 }}

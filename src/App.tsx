@@ -6,12 +6,15 @@ import {
   WhyAttend, Speakers, StartupExpo, PitchingArena, Schedule, 
   Gallery, Sponsors, Team, Registration, Venue, FAQ, Contact, Footer 
 } from './sections';
+import { RegistrationProvider } from './context/RegistrationContext';
+import RegistrationModal from './components/RegistrationModal';
 
 function App() {
   const [isLoading, setIsLoading] = React.useState(true);
 
   return (
     <HelmetProvider>
+    <RegistrationProvider>
       <SEO />
       {isLoading && <PremiumLoader onComplete={() => setIsLoading(false)} />}
       <div 
@@ -39,8 +42,10 @@ function App() {
           <Contact />
         </main>
         
+        <RegistrationModal />
         <Footer />
       </div>
+    </RegistrationProvider>
     </HelmetProvider>
   );
 }

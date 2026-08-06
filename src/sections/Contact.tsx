@@ -51,7 +51,7 @@ export const Contact: React.FC = () => {
                 {card.icon}
               </div>
               <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{card.title}</h4>
-              <p className="text-text">{card.value}</p>
+              <div className="text-text">{card.value}</div>
             </motion.div>
           ))}
         </div>

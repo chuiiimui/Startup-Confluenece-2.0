@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRegistration } from '../context/RegistrationContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Cpu, HeartPulse, Leaf, ShoppingCart, Zap, Globe, Coins, Layers, HardHat, BookOpen,
@@ -25,6 +26,7 @@ const journeySteps = [
 
 export default function StartupExpo() {
   const [activeCategoryId, setActiveCategoryId] = useState(expoCategories[0]?.id || 'cat-1');
+  const { openModal } = useRegistration();
   const activeCategory = expoCategories.find((c: any) => c.id === activeCategoryId) || expoCategories[0];
   const ActiveIcon = activeCategory ? (iconMap[activeCategory.icon] || Cpu) : Cpu;
 
@@ -177,7 +179,7 @@ export default function StartupExpo() {
               Join 50+ innovative startups and connect with investors, mentors, and ecosystem leaders.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button className="w-full sm:w-auto px-10 py-4 rounded-full bg-white text-accent font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
+              <button onClick={() => openModal('startup')} className="w-full sm:w-auto px-10 py-4 rounded-full bg-white text-accent font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
                 Register
               </button>
             </div>

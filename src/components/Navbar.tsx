@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
+import { useRegistration } from '../context/RegistrationContext';
 import logo from '../assets/logo.png';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const { openModal } = useRegistration();
 
   // Handle scroll detection for shrinking navbar
   useEffect(() => {
@@ -131,7 +133,7 @@ export const Navbar = () => {
             {/* Desktop: Action Button */}
             <div className="hidden lg:flex items-center">
               <motion.button 
-                onClick={() => handleNavClick('register')}
+                onClick={() => openModal()}
                 className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-semibold relative overflow-hidden"
                 whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(255,122,0,0.5)' }}
                 whileTap={{ scale: 0.95 }}
@@ -204,7 +206,8 @@ export const Navbar = () => {
                     transition={{ delay: NAV_ITEMS.length * 0.05, duration: 0.3 }}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleNavClick('register');
+                      setIsOpen(false);
+                      openModal();
                     }}
                     className="mt-4 w-full bg-accent hover:bg-[#E66E00] text-white py-4 rounded-2xl text-lg font-semibold transition-colors flex items-center justify-center space-x-2"
                   >
