@@ -484,10 +484,9 @@ function SponsorForm({
           })}
         >
           <option value="">Select category</option>
-          <option value="Bronze">Bronze</option>
-          <option value="Silver">Silver</option>
-          <option value="Gold">Gold</option>
-          <option value="Title Sponsor">Title Sponsor</option>
+          <option value="Incubation & Technology Partners">Incubation & Technology Partners</option>
+          <option value="Media & Ecosystem Partners">Media & Ecosystem Partners</option>
+          <option value="Community Partners">Community Partners</option>
         </select>
         {errors.sponsorshipCategory && (
           <p className={errorTextClass}>{errors.sponsorshipCategory.message}</p>
