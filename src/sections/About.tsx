@@ -3,6 +3,8 @@ import { CheckCircle2 } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import AnimatedCounter from '../components/AnimatedCounter';
 import GlassCard from '../components/GlassCard';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { LiquidMetalBlobScene } from '../components/interactive3d/scenes';
 
 const stats = [
   { value: 1000, suffix: '+', label: 'Expected Attendees' },
@@ -45,8 +47,35 @@ export default function About() {
   };
 
   return (
-    <section className="py-24 relative min-h-[100dvh] flex items-center justify-center" id="about" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="container mx-auto px-6 w-full">
+    <section className="py-24 relative min-h-[100dvh] flex items-center justify-center overflow-hidden" id="about" >
+      {/* Neon orange circular glow */}
+      <div
+        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[680px] md:w-[680px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(255,122,0,0.38) 0%, rgba(255,122,0,0.16) 38%, rgba(255,122,0,0.05) 62%, transparent 72%)',
+          boxShadow:
+            '0 0 80px rgba(255,122,0,0.28), 0 0 160px rgba(255,122,0,0.16)',
+          filter: 'blur(8px)',
+        }}
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[280px] md:w-[280px]"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(255,180,80,0.45) 0%, rgba(255,122,0,0.18) 45%, transparent 70%)',
+          filter: 'blur(2px)',
+        }}
+        aria-hidden
+      />
+      <InteractiveCanvas
+        className="absolute right-[-3%] bottom-[12%] z-[2] hidden h-[240px] w-[240px] opacity-75 lg:block xl:right-[2%]"
+        camera={{ position: [0, 0, 4.2], fov: 40 }}
+      >
+        <LiquidMetalBlobScene />
+      </InteractiveCanvas>
+      <div className="container mx-auto px-6 w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Left Column - Text */}
@@ -103,7 +132,7 @@ export default function About() {
                     <AnimatedCounter 
                       value={stat.value} 
                       prefix={stat.prefix}
-                      className="font-heading font-extrabold text-4xl text-black"
+                      className="font-heading text-4xl font-extrabold text-white"
                     />
                     <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>
                   </div>

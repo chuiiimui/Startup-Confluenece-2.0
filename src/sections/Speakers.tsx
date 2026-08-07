@@ -6,6 +6,8 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import SectionHeading from '../components/SectionHeading';
 import SpeakerRevealCard from '../components/SpeakerRevealCard';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { ProfileCrystalScene } from '../components/interactive3d/scenes';
 import { speakers } from '../data/speakers';
 
 export default function Speakers() {
@@ -37,8 +39,14 @@ export default function Speakers() {
   };
 
   return (
-    <section id="speakers" className="py-24 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section id="speakers" className="py-24 relative z-10 overflow-hidden" >
+      <InteractiveCanvas
+        className="absolute right-[2%] top-[10%] z-[2] hidden h-[220px] w-[220px] opacity-90 lg:block"
+        camera={{ position: [0, 0, 3.8], fov: 40 }}
+      >
+        <ProfileCrystalScene />
+      </InteractiveCanvas>
+      <div className="container relative z-10 mx-auto max-w-7xl px-4">
         <SectionHeading badge="Keynote" title="Chief Guest Spotlight" />
         
         {/* Chief Guest Spotlight */}

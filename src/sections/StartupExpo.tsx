@@ -6,6 +6,7 @@ import {
   ArrowRight, Briefcase, Users, Radio, Handshake, Rocket, CheckCircle2
 } from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
+import DomainTile3D from '../components/interactive3d/DomainTile3D';
 import { expoCategories } from '../data/expoCategories';
 
 import { expoBenefits } from '../data/expoBenefits';
@@ -41,14 +42,13 @@ export default function StartupExpo() {
   const ActiveIcon = activeCategory ? (iconMap[activeCategory.icon] || Cpu) : Cpu;
 
   return (
-    <section id="expo" className="py-32 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="expo" className="py-32 relative z-10 overflow-hidden" >
       {/* Premium Background Environment */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[800px] h-[800px] bg-accent/10 rounded-full blur-[120px] mix-blend-multiply" />
         <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-blue-500/10 rounded-full blur-[100px] mix-blend-multiply" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[1px] bg-gradient-to-r from-transparent via-accent/20 to-transparent" />
       </div>
-
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         
 
@@ -62,23 +62,22 @@ export default function StartupExpo() {
               const isActive = category.id === activeCategoryId;
               
               return (
-                <motion.button
+                <DomainTile3D
                   key={category.id}
+                  active={isActive}
                   onClick={() => setActiveCategoryId(category.id)}
-                  whileHover={{ y: -5, scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`relative flex items-center shrink-0 snap-center gap-3 px-6 py-4 rounded-2xl border transition-all duration-300 ${
+                  className={`relative flex items-center gap-3 overflow-hidden rounded-2xl border px-6 py-4 backdrop-blur-md transition-colors duration-300 group ${
                     isActive 
-                      ? 'bg-white border-accent/30 shadow-[0_10px_40px_rgba(255,122,0,0.15)]' 
-                      : 'bg-white/60 border-black/5 hover:bg-white hover:border-black/10 shadow-sm'
-                  } backdrop-blur-md overflow-hidden group`}
+                      ? 'border-accent/40 bg-white/15' 
+                      : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                  }`}
                 >
-                  <div className={`absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${isActive ? 'opacity-100' : ''}`} />
-                  <Icon className={`w-5 h-5 relative z-10 transition-colors ${isActive ? 'text-accent' : 'text-gray-500 group-hover:text-gray-900'}`} />
-                  <span className={`font-medium text-sm tracking-wide relative z-10 transition-colors ${isActive ? 'text-gray-900' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                  <div className={`absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${isActive ? 'opacity-100' : ''}`} />
+                  <Icon className={`relative z-10 h-5 w-5 transition-colors ${isActive ? 'text-accent' : 'text-slate-400 group-hover:text-white'}`} />
+                  <span className={`relative z-10 text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
                     {category.name}
                   </span>
-                </motion.button>
+                </DomainTile3D>
               );
             })}
           </div>

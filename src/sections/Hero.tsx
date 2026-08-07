@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
-import { motion, animate } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import GridPattern from '../components/GridPattern';
+import Button from '../components/Button';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import {
+  LiquidMetalBlobScene,
+  NeonWireframeCityScene,
+  NodeConstellationScene,
+} from '../components/interactive3d/scenes';
 import { useRegistration } from '../context/RegistrationContext';
 
+const appleEase = [0.22, 1, 0.36, 1] as const;
 
 const Hero = () => {
   const { openModal } = useRegistration();
@@ -36,23 +44,22 @@ const Hero = () => {
     return () => clearInterval(timerId);
   }, []);
 
-
-  // Text reveal animation variants
   const wordVariants = {
-    hidden: { opacity: 0, y: 100 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } 
+    hidden: { opacity: 0, y: 100, rotateX: -35 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      rotateX: 0,
+      transition: { duration: 0.95, ease: appleEase },
     },
   };
 
   const scaleFadeVariants = {
     hidden: { opacity: 0, scale: 0.8 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
-      transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } 
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { duration: 1, ease: appleEase },
     },
   };
 
@@ -61,155 +68,192 @@ const Hero = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
+        staggerChildren: 0.12,
+        delayChildren: 0.15,
       },
     },
   };
 
   return (
-    <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none"
-      >
-        <source src="https://res.cloudinary.com/doqv1rx2k/video/upload/v1786079749/lv_0_20260806230834_2_srxziy.mp4" type="video/mp4" />
-      </video>
-
-      {/* Background Elements */}
+    <section
+      id="home"
+      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-8 pt-24 lg:pt-28"
+    >
       <GridPattern parallax={true} />
-      
-      {/* Ambient Glows */}
-      <div className="absolute -top-40 -left-40 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-primary/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-[60vw] h-[60vw] max-w-[800px] max-h-[800px] bg-accent/10 blur-[150px] rounded-full pointer-events-none" />
 
-      {/* Gradient fade at bottom for smooth transition to next section */}
-      <div className="absolute bottom-0 left-0 w-full h-32 z-10 pointer-events-none" style={{ background: 'linear-gradient(to top, var(--bg), transparent)' }} />
+      {/* Neon wireframe city + constellation — sits around foreground 3D shapes */}
+      <InteractiveCanvas
+        className="absolute inset-0 z-[1] opacity-85"
+        interactive={false}
+        camera={{ position: [0, 0.35, 6.4], fov: 40 }}
+      >
+        <NeonWireframeCityScene />
+        <NodeConstellationScene />
+      </InteractiveCanvas>
 
-      <div className="container mx-auto px-6 lg:px-12 relative z-20 flex flex-col justify-center items-center h-full text-center">
-          
-          {/* Main Content */}
-          <motion.div
-            className="flex flex-col items-center max-w-[1200px]"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+      {/* Liquid metal funding blob — cursor magnet */}
+      <InteractiveCanvas
+        className="absolute left-[-4%] top-[22%] z-[5] hidden h-[260px] w-[260px] opacity-80 lg:block xl:left-[1%] xl:h-[300px] xl:w-[300px]"
+        camera={{ position: [0, 0, 4.2], fov: 40 }}
+      >
+        <LiquidMetalBlobScene />
+      </InteractiveCanvas>
+
+      {/* Soft hero glass wash */}
+      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-white/10 via-transparent to-transparent" />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-32 w-full bg-gradient-to-t from-[#070B1A]/80 to-transparent" />
+
+      <div className="container relative z-20 mx-auto flex h-full flex-col items-center justify-center px-6 text-center lg:px-12">
+        <motion.div
+          className="flex max-w-[1200px] flex-col items-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <div
+            className="hero-title-glow mt-4 flex flex-col items-center font-heading uppercase leading-[0.95] tracking-[-0.04em] lg:mt-0"
+            style={{ fontWeight: 900 }}
           >
-            {/* Monumental Headline */}
-            <div 
-              className="font-heading tracking-[-0.04em] leading-[0.95] flex flex-col uppercase mt-4 lg:mt-0 items-center"
-              style={{ fontWeight: 900 }}
-            >
-              <div className="overflow-hidden pb-1 md:pb-2 w-full">
-                <motion.div 
-                  variants={wordVariants} 
-                  className="text-primary drop-shadow-sm"
-                  style={{ fontSize: "clamp(2rem, 6.5vw, 6.5rem)" }}
-                >
-                  STARTUP
-                </motion.div>
-              </div>
-              <div className="overflow-hidden pb-2 md:pb-4 flex flex-col md:flex-row md:items-baseline justify-center md:gap-x-6 w-full">
-                <motion.div 
-                  variants={wordVariants} 
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600 drop-shadow-sm"
-                  style={{ fontSize: "clamp(2.5rem, 8vw, 8.5rem)" }}
-                >
-                  CONFLUENCE
-                </motion.div>
-                <motion.div 
-                  variants={scaleFadeVariants} 
-                  className="text-transparent bg-clip-text bg-gradient-to-br from-accent to-orange-400 drop-shadow-md mt-0 md:mt-0"
-                  style={{ fontSize: "clamp(1.8rem, 6vw, 6rem)" }}
-                >
-                  2.0
-                </motion.div>
-              </div>
+            <div className="w-full overflow-hidden pb-1 md:pb-2">
+              <motion.div
+                variants={wordVariants}
+                className="hero-glow-startup text-white"
+                style={{ fontSize: 'clamp(2rem, 6.5vw, 6.5rem)' }}
+              >
+                STARTUP
+              </motion.div>
             </div>
+            <div className="flex w-full flex-col justify-center overflow-hidden pb-2 md:flex-row md:items-baseline md:gap-x-6 md:pb-4">
+              <motion.div
+                variants={wordVariants}
+                className="hero-glow-confluence bg-gradient-to-r from-sky-300 via-violet-300 to-indigo-300 bg-clip-text text-transparent"
+                style={{ fontSize: 'clamp(2.5rem, 8vw, 8.5rem)' }}
+              >
+                CONFLUENCE
+              </motion.div>
+              <motion.div
+                variants={scaleFadeVariants}
+                className="hero-glow-version mt-0 bg-gradient-to-br from-accent to-orange-400 bg-clip-text text-transparent"
+                style={{ fontSize: 'clamp(1.8rem, 6vw, 6rem)' }}
+              >
+                2.0
+              </motion.div>
+            </div>
+          </div>
 
-            {/* Value Proposition */}
-            <motion.div variants={wordVariants} className="mt-2 md:mt-4 flex flex-col md:flex-row items-center justify-center gap-2 md:gap-4 flex-wrap">
-              <p className="text-sm md:text-2xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
-                Fostering Collaboration.
-              </p>
-              <p className="text-sm md:text-2xl font-medium tracking-tight" style={{ color: 'var(--text-secondary)' }}>
-                Driving Innovation.
-              </p>
-              <p className="text-sm md:text-2xl font-medium tracking-tight text-primary">
-                Fueling Growth.
-              </p>
-            </motion.div>
-
-            {/* Event Details Pills */}
-            <motion.div 
-              className="mt-4 md:mt-6 flex flex-wrap justify-center gap-2 md:gap-4 w-full"
-              variants={wordVariants}
+          <motion.div
+            variants={wordVariants}
+            className="mt-2 flex flex-col flex-wrap items-center justify-center gap-2 md:mt-4 md:flex-row md:gap-4"
+          >
+            <p
+              className="text-sm font-medium tracking-tight md:text-2xl"
+              style={{ color: 'var(--text-secondary)' }}
             >
-              <div className="flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <Calendar className="w-4 h-4 text-accent shrink-0" />
-                <span className="text-xs md:text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>23–24 October 2026</span>
-              </div>
-              <div className="flex items-center gap-2 md:gap-2.5 px-3 py-1.5 md:px-5 md:py-2.5 rounded-full border backdrop-blur-md bg-white/50" style={{ borderColor: 'var(--border)' }}>
-                <MapPin className="w-4 h-4 text-primary shrink-0" />
-                <span className="text-xs md:text-sm font-semibold text-left leading-tight md:leading-normal" style={{ color: 'var(--text-primary)' }}>United Incubation Hub, Prayagraj</span>
-              </div>
-            </motion.div>
-
-            {/* Countdown Timer */}
-            <motion.div 
-              className="mt-4 md:mt-6 flex items-center justify-center gap-2 md:gap-4 w-full max-w-xl mx-auto"
-              variants={wordVariants}
+              Fostering Collaboration.
+            </p>
+            <p
+              className="text-sm font-medium tracking-tight md:text-2xl"
+              style={{ color: 'var(--text-secondary)' }}
             >
+              Driving Innovation.
+            </p>
+            <p className="text-sm font-medium tracking-tight text-sky-300 md:text-2xl">
+              Fueling Growth.
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="mt-4 flex w-full flex-wrap justify-center gap-2 md:mt-6 md:gap-4"
+            variants={wordVariants}
+          >
+            <div
+              className="flex items-center gap-2 rounded-full border bg-white/10 px-3 py-1.5 backdrop-blur-md md:gap-2.5 md:px-5 md:py-2.5"
+              style={{ borderColor: 'var(--border)' }}
+            >
+              <Calendar className="h-4 w-4 shrink-0 text-accent" />
+              <span
+                className="text-xs font-semibold md:text-sm"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                23–24 October 2026
+              </span>
+            </div>
+            <div
+              className="flex items-center gap-2 rounded-full border bg-white/10 px-3 py-1.5 backdrop-blur-md md:gap-2.5 md:px-5 md:py-2.5"
+              style={{ borderColor: 'var(--border)' }}
+            >
+              <MapPin className="h-4 w-4 shrink-0 text-sky-300" />
+              <span
+                className="text-left text-xs font-semibold leading-tight md:text-sm md:leading-normal"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                United Incubation Hub, Prayagraj
+              </span>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="clay-timer-shell mx-auto mt-5 w-full max-w-lg rounded-[28px] px-3 py-3 md:mt-7 md:rounded-[32px] md:px-5 md:py-4"
+            variants={wordVariants}
+          >
+            <div className="flex items-center justify-center gap-2 md:gap-3">
               {[
                 { label: 'Days', value: timeLeft.days },
                 { label: 'Hours', value: timeLeft.hours },
                 { label: 'Minutes', value: timeLeft.minutes },
                 { label: 'Seconds', value: timeLeft.seconds },
-              ].map((item) => (
-                <div key={item.label} className="flex flex-col items-center">
-                  <div className="w-14 h-14 md:w-20 md:h-20 flex items-center justify-center rounded-2xl bg-white/5 backdrop-blur-md border border-primary/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-primary/10 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent" />
-                    <span className="text-xl md:text-3xl font-heading font-bold text-transparent bg-clip-text bg-gradient-to-br from-primary to-purple-500 relative z-10">
-                      {String(item.value).padStart(2, '0')}
+              ].map((item, index) => (
+                <div key={item.label} className="flex items-center gap-2 md:gap-3">
+                  <motion.div
+                    className="flex flex-col items-center"
+                    whileHover={{ y: -3, scale: 1.03 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 18 }}
+                  >
+                    <div className="clay-timer-cell relative flex h-16 w-16 items-center justify-center rounded-[22px] md:h-[5.25rem] md:w-[5.25rem] md:rounded-[26px]">
+                      <div
+                        className="pointer-events-none absolute inset-x-2 top-1 h-1/3 rounded-full opacity-70"
+                        style={{
+                          background:
+                            'linear-gradient(180deg, rgba(255,255,255,0.28), transparent)',
+                        }}
+                      />
+                      <span className="clay-timer-value relative z-10 font-heading text-2xl font-extrabold tabular-nums tracking-tight md:text-4xl">
+                        {String(item.value).padStart(2, '0')}
+                      </span>
+                    </div>
+                    <span className="clay-timer-label mt-2 text-[10px] font-bold uppercase tracking-[0.18em] md:text-xs">
+                      {item.label}
                     </span>
-                  </div>
-                  <span className="text-[10px] md:text-xs font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-500 uppercase tracking-widest mt-2">
-                    {item.label}
-                  </span>
+                  </motion.div>
+                  {index < 3 && (
+                    <span
+                      className="mb-6 select-none font-heading text-xl font-bold md:mb-7 md:text-3xl"
+                      style={{ color: 'rgba(196,181,253,0.75)' }}
+                      aria-hidden
+                    >
+                      :
+                    </span>
+                  )}
                 </div>
               ))}
-            </motion.div>
-
-            {/* CTA Buttons */}
-            <motion.div 
-              className="mt-4 md:mt-6 flex flex-col sm:flex-row items-center gap-3 md:gap-4 w-full sm:w-auto px-4 sm:px-0"
-              variants={wordVariants}
-            >
-              <motion.button 
-                onClick={() => openModal()}
-                className="group relative overflow-hidden w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 rounded-full bg-primary text-white font-semibold text-base md:text-lg flex items-center justify-center gap-2 md:gap-3"
-                whileHover={{ scale: 1.05, y: -4, boxShadow: '0 20px 40px -10px rgba(11,42,107,0.4)' }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              >
-                <motion.div
-                  className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                  style={{
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)'
-                  }}
-                />
-                <span className="relative z-10">Register Now</span>
-                <ArrowRight className="w-4 h-4 md:w-5 md:h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </motion.div>
+            </div>
           </motion.div>
+
+          <motion.div
+            className="mt-4 flex w-full flex-col items-center gap-3 px-4 sm:w-auto sm:flex-row sm:px-0 md:mt-6 md:gap-4"
+            variants={wordVariants}
+          >
+            <Button
+              size="lg"
+              onClick={() => openModal()}
+              icon={<ArrowRight className="h-5 w-5" />}
+              className="w-full sm:w-auto"
+            >
+              Register Now
+            </Button>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

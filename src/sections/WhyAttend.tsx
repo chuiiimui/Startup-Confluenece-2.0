@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Users, Banknote, Network, Briefcase, Lightbulb, Rocket, Target, Zap, Globe, Shield, Star, Award, BookOpen, Coffee, Cpu, Activity } from 'lucide-react';
 import { benefits } from '../data/benefits';
 import SectionHeading from '../components/SectionHeading';
+import TiltCard from '../components/TiltCard';
 
 const iconMap: Record<string, React.ElementType> = {
   Users, Banknote, Network, Briefcase, Lightbulb, Rocket, Target, Zap, Globe, Shield, Star, Award, BookOpen, Coffee, Cpu, Activity
@@ -23,8 +24,8 @@ const itemVariants = {
 
 export default function WhyAttend() {
   return (
-    <section id="why-attend" className="py-24 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section id="why-attend" className="py-24 relative z-10 overflow-hidden" >
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <SectionHeading badge="Why Attend" title="Why You Should Be There" />
         
         <motion.div 
@@ -37,14 +38,12 @@ export default function WhyAttend() {
           {benefits.map((benefit: any) => {
             const IconComponent = iconMap[benefit.icon] || Star;
             return (
-              <motion.div
-                key={benefit.id}
-                variants={itemVariants}
-                className="relative rounded-[32px] overflow-hidden group flex flex-col justify-end min-h-[280px] md:min-h-[380px]"
-                whileHover={{ y: -12 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              <motion.div key={benefit.id} variants={itemVariants}>
+              <TiltCard
+                className="group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] md:min-h-[380px]"
+                intensity={11}
                 style={{
-                  boxShadow: '0 20px 60px rgba(15,23,42,0.08)'
+                  boxShadow: '0 20px 60px rgba(79,70,229,0.12)',
                 }}
               >
                 {/* Background Image */}
@@ -110,6 +109,7 @@ export default function WhyAttend() {
                     {benefit.description}
                   </p>
                 </div>
+              </TiltCard>
               </motion.div>
             );
           })}

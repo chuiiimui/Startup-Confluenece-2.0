@@ -20,8 +20,10 @@ function getSavedFormData<T>(key: string): Partial<T> {
   }
 }
 
-// Replace with your deployed Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqwQZIZhlAJK4z30HBqYvGz62xaiKh_0dgYGkDyOC0zyN1PHTLCHVo4a6F_M7rJv-k/exec';
+// Prefer VITE_GOOGLE_SCRIPT_URL from .env — see docs/EMAIL_SETUP.md
+const GOOGLE_SCRIPT_URL =
+  (import.meta.env.VITE_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
+  'https://script.google.com/macros/s/AKfycbx3KEix1mtaKzco5pj-8ut-VjChYhanuxUt_JPxHPbHPq0d6VZBT5PvhVm7o6qjrqAZ2g/exec';
 
 type RegistrationType = 'startup' | 'sponsor' | 'speaker';
 
@@ -98,12 +100,10 @@ const categories: {
   },
 ];
 
-const inputClass =
-  'w-full rounded-xl border border-gray-200 px-4 py-3 text-sm font-body bg-white/80 outline-none transition-all focus:border-[#FF7A1A] focus:ring-2 focus:ring-[#FF7A1A]/20';
-const inputErrorClass =
-  'w-full rounded-xl border border-red-400 px-4 py-3 text-sm font-body bg-white/80 outline-none transition-all focus:border-red-500 focus:ring-2 focus:ring-red-400/20';
-const labelClass = 'block text-sm font-medium text-gray-600 mb-1.5 font-body';
-const errorTextClass = 'text-xs text-red-500 mt-1 font-body';
+const inputClass = 'form-glass-input font-body';
+const inputErrorClass = 'form-glass-input form-glass-input-error font-body';
+const labelClass = 'form-glass-label font-body';
+const errorTextClass = 'text-xs text-red-300 mt-1 font-body';
 
 function FieldWrapper({ children }: { children: React.ReactNode }) {
   return <div className="space-y-0">{children}</div>;
@@ -765,7 +765,7 @@ function SubmitButton({
     <motion.button
       type="submit"
       disabled={isSubmitting}
-      className="mt-2 w-full rounded-2xl bg-[#FF7A1A] py-4 text-base font-bold text-white font-heading shadow-lg shadow-[#FF7A1A]/25 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+      className="mt-2 w-full rounded-2xl bg-accent py-4 text-base font-bold text-white font-heading shadow-lg shadow-[0_12px_32px_rgba(255,122,0,0.28)] transition-colors disabled:cursor-not-allowed disabled:opacity-50"
       whileHover={isSubmitting ? {} : { scale: 1.02 }}
       whileTap={isSubmitting ? {} : { scale: 0.98 }}
     >
@@ -839,10 +839,24 @@ export const RegistrationModal: React.FC = () => {
     }
   }, [submitError]);
 
+  const clearFormDrafts = () => {
+    localStorage.removeItem('startupFormAutoSave');
+    localStorage.removeItem('sponsorFormAutoSave');
+    localStorage.removeItem('speakerFormAutoSave');
+  };
+
   const handleFormSubmit = useCallback(
     async (data: StartupFormData | SponsorFormData | SpeakerFormData) => {
       setIsSubmitting(true);
       setSubmitError(null);
+
+      if (!GOOGLE_SCRIPT_URL) {
+        setSubmitError(
+          'Registration endpoint is not configured. Set VITE_GOOGLE_SCRIPT_URL.'
+        );
+        setIsSubmitting(false);
+        return;
+      }
 
       const payload = {
         registrationType: selectedType,
@@ -859,38 +873,48 @@ export const RegistrationModal: React.FC = () => {
       };
 
       try {
+        // text/plain avoids a CORS preflight; Apps Script still parses JSON body
         const response = await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain' },
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload),
+          redirect: 'follow',
         });
 
-        // no-cors returns opaque response, so we treat it as success
-        if (response.type === 'opaque' || response.ok) {
+        if (response.ok) {
+          let result: { ok?: boolean; error?: string } = { ok: true };
+          try {
+            result = (await response.json()) as {
+              ok?: boolean;
+              error?: string;
+            };
+          } catch {
+            // Non-JSON 200 body — treat as success
+          }
+          if (result.ok === false) {
+            throw new Error(result.error || 'Submission failed');
+          }
           setIsSuccess(true);
-          localStorage.removeItem('startupFormAutoSave');
-          localStorage.removeItem('sponsorFormAutoSave');
-          localStorage.removeItem('speakerFormAutoSave');
-        } else {
-          throw new Error('Submission failed');
+          clearFormDrafts();
+          return;
         }
-      } catch {
-        if (!isSuccess) {
-          setSubmitError(
-            'Something went wrong. Please try again or contact us directly.'
-          );
-        }
-        // If GOOGLE_SCRIPT_URL is empty, still show success for demo purposes
-        if (!GOOGLE_SCRIPT_URL) {
-          setIsSuccess(true);
-          setSubmitError(null);
-        }
+
+        throw new Error(`Server returned ${response.status}`);
+      } catch (err) {
+        const detail =
+          err instanceof Error && err.message
+            ? err.message
+            : 'Please try again or contact us directly.';
+        setSubmitError(
+          detail.includes('spreadsheet') || detail.includes('Sheet')
+            ? 'Sheet connection failed. Fix SPREADSHEET_ID in Apps Script (use ID only, not full URL), then redeploy.'
+            : `Something went wrong. ${detail}`
+        );
       } finally {
         setIsSubmitting(false);
       }
     },
-    [selectedType, isSuccess]
+    [selectedType]
   );
 
   return (
@@ -905,7 +929,7 @@ export const RegistrationModal: React.FC = () => {
         >
           {/* Overlay */}
           <motion.div
-            className="absolute inset-0 bg-black/40 backdrop-blur-xl"
+            className="absolute inset-0 bg-[#070B1A]/72 backdrop-blur-xl"
             onClick={closeModal}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -914,7 +938,7 @@ export const RegistrationModal: React.FC = () => {
 
           {/* Modal */}
           <motion.div
-            className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[32px] border border-white/60 bg-white/95 shadow-[0_32px_80px_rgba(0,0,0,0.12)] backdrop-blur-2xl"
+            className="form-glass-panel relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -922,10 +946,10 @@ export const RegistrationModal: React.FC = () => {
             onClick={(e) => e.stopPropagation()}
           >
             {/* Progress Bar */}
-            <div className="sticky top-0 z-20 px-6 pt-4">
-              <div className="h-1 w-full overflow-hidden rounded-full bg-gray-200">
+            <div className="sticky top-0 z-20 px-6 pt-4 backdrop-blur-md">
+              <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
                 <motion.div
-                  className="h-full rounded-full bg-[#FF7A1A]"
+                  className="h-full rounded-full bg-gradient-to-r from-violet-400 to-accent"
                   initial={{ width: '33%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -936,7 +960,7 @@ export const RegistrationModal: React.FC = () => {
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+              className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-slate-200 transition-colors hover:bg-white/15 hover:text-white"
               aria-label="Close modal"
             >
               <X className="h-4 w-4" />
@@ -970,7 +994,7 @@ export const RegistrationModal: React.FC = () => {
                     </motion.div>
 
                     <motion.h2
-                      className="mt-6 text-2xl font-bold text-[#0A2E6D] font-heading md:text-3xl"
+                      className="mt-6 text-2xl font-bold text-white font-heading md:text-3xl"
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
@@ -979,17 +1003,19 @@ export const RegistrationModal: React.FC = () => {
                     </motion.h2>
 
                     <motion.p
-                      className="mt-2 text-gray-500 font-body"
+                      className="mt-2 max-w-md text-slate-300 font-body"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.45 }}
                     >
-                      We'll be in touch soon.
+                      We&apos;ve received your application. A confirmation email
+                      has been sent to the address you provided — please check
+                      Inbox and Spam. We&apos;ll be in touch soon.
                     </motion.p>
 
                     <motion.button
                       onClick={closeModal}
-                      className="mt-8 rounded-2xl border border-gray-200 bg-white px-10 py-3 text-sm font-semibold text-[#0A2E6D] transition-colors hover:bg-gray-50 font-heading"
+                      className="mt-8 rounded-2xl border border-violet-300/35 bg-white/10 px-10 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15 font-heading"
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
@@ -1009,10 +1035,10 @@ export const RegistrationModal: React.FC = () => {
                   >
                     {/* Header */}
                     <div className="mb-6 text-center">
-                      <h2 className="text-2xl font-bold text-[#0A2E6D] font-heading md:text-3xl">
+                      <h2 className="text-2xl font-bold text-white font-heading md:text-3xl">
                         Join Startup Confluence 2.0
                       </h2>
-                      <p className="mt-1.5 text-sm text-gray-500 font-body">
+                      <p className="mt-1.5 text-sm text-slate-300 font-body">
                         Choose your registration type and fill in the details
                       </p>
                     </div>
@@ -1027,10 +1053,8 @@ export const RegistrationModal: React.FC = () => {
                             key={cat.type}
                             type="button"
                             onClick={() => setSelectedType(cat.type)}
-                            className={`flex items-center gap-3 rounded-2xl border p-4 text-left transition-all sm:flex-col sm:items-start sm:text-left ${
-                              isSelected
-                                ? 'border-[#FF7A1A] bg-[#FF7A1A]/5 shadow-md shadow-[#FF7A1A]/10'
-                                : 'border-gray-200 bg-gray-50/50 hover:border-gray-300 hover:bg-gray-50'
+                            className={`form-glass-option flex items-center gap-3 p-4 text-left sm:flex-col sm:items-start sm:text-left ${
+                              isSelected ? 'is-selected' : ''
                             }`}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
@@ -1038,8 +1062,8 @@ export const RegistrationModal: React.FC = () => {
                             <div
                               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
                                 isSelected
-                                  ? 'bg-[#FF7A1A]/10 text-[#FF7A1A]'
-                                  : 'bg-gray-100 text-gray-400'
+                                  ? 'bg-accent/20 text-accent'
+                                  : 'bg-white/10 text-violet-200'
                               }`}
                             >
                               <Icon className="h-5 w-5" />
@@ -1047,12 +1071,12 @@ export const RegistrationModal: React.FC = () => {
                             <div>
                               <p
                                 className={`text-sm font-bold font-heading ${
-                                  isSelected ? 'text-[#0A2E6D]' : 'text-gray-700'
+                                  isSelected ? 'text-white' : 'text-slate-200'
                                 }`}
                               >
-                                {cat.emoji} {cat.title}
+                                {cat.title}
                               </p>
-                              <p className="text-xs text-gray-400 font-body">
+                              <p className="text-xs text-slate-400 font-body">
                                 {cat.subtitle}
                               </p>
                             </div>
@@ -1099,12 +1123,12 @@ export const RegistrationModal: React.FC = () => {
             <AnimatePresence>
               {submitError && (
                 <motion.div
-                  className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-200 bg-white px-6 py-3 shadow-xl"
+                  className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#1E1B4B]/90 px-6 py-3 shadow-xl backdrop-blur-xl"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}
                 >
-                  <p className="text-sm font-medium text-red-600 font-body">
+                  <p className="text-sm font-medium text-red-300 font-body">
                     {submitError}
                   </p>
                 </motion.div>

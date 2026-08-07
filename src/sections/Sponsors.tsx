@@ -2,6 +2,8 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { sponsors } from '../data/sponsors';
 import SectionHeading from '../components/SectionHeading';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { HoloTickerRibbonScene, OrbitingCoinsScene } from '../components/interactive3d/scenes';
 
 const MarqueeRow = ({ sponsors, speed, direction = 'left', tierClass, name }: { sponsors: any[], speed: number, direction?: 'left' | 'right', tierClass: string, name: string }) => {
   // Duplicate array for infinite scroll effect
@@ -59,14 +61,27 @@ const Sponsors = () => {
   const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
 
   return (
-    <section id="sponsors" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }} ref={containerRef}>
+    <section id="sponsors" className="py-24 relative overflow-hidden"  ref={containerRef}>
       {/* Background Elements */}
       <motion.div style={{ y }} className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary rounded-full blur-[120px] mix-blend-screen" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-accent rounded-full blur-[120px] mix-blend-screen" />
       </motion.div>
 
-      <div className="container mx-auto px-6 relative z-10 max-w-7xl">
+      <InteractiveCanvas
+        className="absolute left-1/2 top-[6%] z-[1] h-[220px] w-[min(920px,92vw)] -translate-x-1/2 opacity-55"
+        interactive={false}
+        camera={{ position: [0, 0.1, 5.2], fov: 38 }}
+      >
+        <HoloTickerRibbonScene />
+      </InteractiveCanvas>
+      <InteractiveCanvas
+        className="absolute right-[2%] top-[12%] z-[2] hidden h-[240px] w-[240px] opacity-90 lg:block"
+        camera={{ position: [0, 0.2, 4.5], fov: 40 }}
+      >
+        <OrbitingCoinsScene />
+      </InteractiveCanvas>
+      <div className="container relative z-10 mx-auto max-w-7xl px-6">
         <SectionHeading 
           badge="Sponsors" 
           title="Our Sponsors & Partners" 

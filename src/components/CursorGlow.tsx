@@ -39,11 +39,12 @@ const CursorGlow: React.FC = () => {
 
   return (
     <motion.div
-      className="pointer-events-none fixed left-0 top-0 z-50 h-[300px] w-[300px] rounded-full opacity-50 mix-blend-screen blur-[80px]"
+      className="pointer-events-none fixed left-0 top-0 z-50 h-[340px] w-[340px] rounded-full opacity-60 mix-blend-screen blur-[90px]"
       style={{
         x: cursorXSpring,
         y: cursorYSpring,
-        backgroundColor: 'var(--cursor-glow)',
+        background:
+          'radial-gradient(circle, rgba(167,139,250,0.45) 0%, rgba(96,165,250,0.22) 45%, transparent 70%)',
       }}
     />
   );

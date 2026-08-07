@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import RevealText from './RevealText';
 
 export interface SectionHeadingProps {
   title: string;
   subtitle?: string;
   badge?: string;
   align?: 'left' | 'center';
+  alignment?: 'left' | 'center';
 }
 
 const containerVariants = {
@@ -13,17 +15,19 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
+      staggerChildren: 0.12,
+      delayChildren: 0.05,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  hidden: { opacity: 0, y: 36, filter: 'blur(8px)' },
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+    filter: 'blur(0px)',
+    transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -31,40 +35,43 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
   title,
   subtitle,
   badge,
-  align = 'center',
+  align,
+  alignment,
 }) => {
-  const alignClasses = align === 'center' ? 'items-center text-center' : 'items-start text-left';
+  const resolvedAlign = align || alignment || 'center';
+  const alignClasses =
+    resolvedAlign === 'center' ? 'items-center text-center' : 'items-start text-left';
 
   return (
     <motion.div
-      className={`flex flex-col mb-12 ${alignClasses}`}
+      className={`mb-12 flex flex-col ${alignClasses}`}
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: '-100px' }}
+      viewport={{ once: true, amount: 0.35, margin: '0px 0px -8% 0px' }}
     >
       {badge && (
         <motion.div
           variants={itemVariants}
-          className="mb-4 inline-flex items-center rounded-full px-3 py-1"
+          className="mb-4 inline-flex items-center rounded-full px-3 py-1 backdrop-blur-md"
           style={{
             background: 'var(--badge-bg)',
             border: '1px solid var(--badge-border)',
           }}
         >
-          <span className="text-xs font-semibold uppercase tracking-widest text-accent">
+          <span className="text-xs font-semibold uppercase tracking-widest text-violet-300">
             {badge}
           </span>
         </motion.div>
       )}
-      
-      <motion.h2
-        variants={itemVariants}
+
+      <RevealText
+        text={title}
+        as="h2"
         className="mb-6 font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
         style={{ color: 'var(--text-primary)' }}
-      >
-        {title}
-      </motion.h2>
+        delay={0.05}
+      />
 
       {subtitle && (
         <motion.p

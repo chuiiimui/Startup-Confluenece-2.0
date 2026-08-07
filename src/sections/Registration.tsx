@@ -1,6 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import SectionHeading from '../components/SectionHeading';
+import Button from '../components/Button';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import {
+  HoloTicketScene,
+  HoloTickerRibbonScene,
+  OrbitingCoinsScene,
+} from '../components/interactive3d/scenes';
 import { ArrowRight } from 'lucide-react';
 import { useRegistration } from '../context/RegistrationContext';
 
@@ -9,7 +16,26 @@ export const Registration: React.FC = () => {
 
   return (
     <section id="register" className="py-24 relative overflow-hidden">
-      <div className="max-w-4xl mx-auto px-6 text-center">
+      <InteractiveCanvas
+        className="absolute left-1/2 top-[8%] z-[1] h-[200px] w-[min(720px,90vw)] -translate-x-1/2 opacity-50"
+        interactive={false}
+        camera={{ position: [0, 0.1, 5], fov: 38 }}
+      >
+        <HoloTickerRibbonScene />
+      </InteractiveCanvas>
+      <InteractiveCanvas
+        className="absolute left-[2%] top-[22%] z-[2] hidden h-[220px] w-[280px] opacity-90 lg:block"
+        camera={{ position: [0, 0, 4.2], fov: 38 }}
+      >
+        <HoloTicketScene />
+      </InteractiveCanvas>
+      <InteractiveCanvas
+        className="absolute right-[2%] top-[28%] z-[2] hidden h-[200px] w-[200px] opacity-85 lg:block"
+        camera={{ position: [0, 0.2, 4.5], fov: 40 }}
+      >
+        <OrbitingCoinsScene />
+      </InteractiveCanvas>
+      <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <SectionHeading badge="Register" title="Join the Confluence" />
         
         <div className="mt-16">
@@ -17,19 +43,23 @@ export const Registration: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="backdrop-blur-xl border rounded-3xl p-8 md:p-12 shadow-2xl inline-block max-w-xl w-full"
-            style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+            className="clay-card inline-block w-full max-w-xl rounded-[28px] p-8 md:p-12"
           >
-            <h3 className="text-2xl font-heading font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Ready to accelerate your startup journey?</h3>
-            <p className="text-text mb-8">Secure your spot at India's premier startup summit. Connect with investors, founders, and industry leaders.</p>
+            <h3 className="mb-4 font-heading text-2xl font-bold text-white">
+              Ready to accelerate your startup journey?
+            </h3>
+            <p className="mb-8 text-slate-200/85">
+              Secure your spot at India's premier startup summit. Connect with investors, founders, and industry leaders.
+            </p>
             
-            <button 
+            <Button
+              size="lg"
               onClick={() => openModal()}
-              className="inline-flex bg-accent hover:bg-accent/90 text-white rounded-xl px-8 py-4 font-semibold text-lg transition-all items-center justify-center space-x-2 w-full sm:w-auto hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,122,0,0.3)]"
+              icon={<ArrowRight className="w-5 h-5" />}
+              className="w-full sm:w-auto"
             >
-              <span>Register Now</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              Register Now
+            </Button>
           </motion.div>
         </div>
       </div>

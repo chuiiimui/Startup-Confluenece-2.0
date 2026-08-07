@@ -1,4 +1,16 @@
+import type Lenis from 'lenis';
+
 type ClassValue = string | number | boolean | undefined | null | ClassValue[];
+
+let lenisInstance: Lenis | null = null;
+
+export function setLenisInstance(instance: Lenis | null): void {
+  lenisInstance = instance;
+}
+
+export function getLenisInstance(): Lenis | null {
+  return lenisInstance;
+}
 
 export function cn(...inputs: ClassValue[]): string {
   const flatten = (arr: ClassValue[]): string[] => {
@@ -24,12 +36,20 @@ export function formatDate(date: string): string {
 
 export function scrollToSection(id: string): void {
   const element = document.getElementById(id);
-  if (element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
+  if (!element) return;
+
+  if (lenisInstance) {
+    lenisInstance.scrollTo(element, {
+      offset: -24,
+      duration: 1.2,
     });
+    return;
   }
+
+  element.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
 }
 
 export function getInitials(name: string): string {

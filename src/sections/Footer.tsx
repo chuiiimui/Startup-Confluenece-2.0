@@ -171,7 +171,19 @@ export const Footer: React.FC = () => {
           
           <div className="md:flex-1 text-center">
             <p className="text-sm text-gray-500">
-              Crafted with ❤️ by <a href="https://ayushyadav.dev" target="_blank" rel="noopener noreferrer" className="hover:text-accent font-medium transition-colors">Ayush Yadav</a>
+              Crafted with ❤️ by{' '}
+              <a
+                href="https://ayushyadav.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent font-medium transition-colors"
+              >
+                Ayush Yadav
+              </a>
+              {' '}&{' '}
+              <span className="hover:text-accent font-medium transition-colors">
+                Harsh Srivastava
+              </span>
             </p>
           </div>
 

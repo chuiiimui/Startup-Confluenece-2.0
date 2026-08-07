@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { gallery } from '../data/gallery';
 
 import SectionHeading from '../components/SectionHeading';
+import ImageReveal from '../components/ImageReveal';
+import DepthFrame from '../components/interactive3d/DepthFrame';
 import { FiX, FiZoomIn } from 'react-icons/fi';
 
 const Gallery = () => {
@@ -25,7 +27,7 @@ const Gallery = () => {
   };
 
   return (
-    <section id="gallery" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="gallery" className="py-24 relative overflow-hidden" >
       <div className="absolute bottom-0 left-0 w-1/2 h-[400px] bg-primary/5 rounded-full blur-[150px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
@@ -50,28 +52,29 @@ const Gallery = () => {
                 exit={{ opacity: 0, scale: 0.9 }}
                 transition={{ duration: 0.4 }}
                 key={image.id}
-                className="relative break-inside-avoid group cursor-pointer rounded-2xl overflow-hidden glass border"
-                style={{ borderColor: 'var(--border)' }}
-                onClick={() => setSelectedImage(image)}
+                className="relative break-inside-avoid"
               >
-                {/* Fallback placeholder since actual image src might not exist or be reachable */}
-                <div className="w-full aspect-[4/3] bg-gray-100 flex items-center justify-center relative overflow-hidden">
-                  {image.src ? (
-                    <img 
-                      src={image.src} 
-                      alt={image.title} 
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                    />
-                  ) : null}
-                  
-                  {/* Overlay content */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
-                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center scale-75 group-hover:scale-100 transition-transform duration-300 text-white shadow-lg">
-                      <FiZoomIn size={24} />
+                <DepthFrame
+                  className="group cursor-pointer overflow-hidden rounded-2xl border border-white/20"
+                  data-cursor="image"
+                  onClick={() => setSelectedImage(image)}
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-800/40">
+                    {image.src ? (
+                      <ImageReveal
+                        src={image.src}
+                        alt={image.title}
+                        className="absolute inset-0 h-full w-full"
+                        imgClassName="transition-transform duration-700 ease-out group-hover:scale-110"
+                      />
+                    ) : null}
+                    <div className="absolute inset-0 flex items-center justify-center bg-violet-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                      <div className="flex h-12 w-12 scale-75 items-center justify-center rounded-full bg-white/25 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-100">
+                        <FiZoomIn size={24} />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </DepthFrame>
               </motion.div>
             ))}
           </AnimatePresence>
@@ -82,7 +85,7 @@ const Gallery = () => {
           <div className="mt-16 text-center">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="px-8 py-3 rounded-full border border-black/10 bg-white hover:bg-gray-50 text-gray-900 font-medium transition-colors shadow-sm"
+              className="rounded-full border border-white/15 bg-white/10 px-8 py-3 font-medium text-white shadow-sm transition-colors hover:bg-white/15"
             >
               {showAll ? 'Show Less' : 'View All Images'}
             </button>
