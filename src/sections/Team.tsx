@@ -29,7 +29,7 @@ const Team = () => {
   };
 
   return (
-    <section id="team" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="team" className="py-24 relative overflow-hidden" >
       <div className="absolute top-1/2 left-0 w-1/4 h-1/2 bg-primary/5 rounded-full blur-[150px] -translate-y-1/2 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
@@ -59,9 +59,13 @@ const Team = () => {
               
               <div className="relative mb-6">
                 <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-accent p-1 group-hover:scale-105 transition-transform duration-500">
-                  <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden relative" style={{ backgroundColor: 'var(--bg)' }}>
+                  <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-white/80" >
                     {member.image ? (
-                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="h-full w-full object-cover object-[center_18%]"
+                      />
                     ) : (
                       <span className="text-3xl font-heading font-bold" style={{ color: 'var(--text-muted)' }}>{getInitials(member.name)}</span>
                     )}
@@ -123,9 +127,13 @@ const Team = () => {
                   
                   <div className="relative mb-6">
                     <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-primary to-accent p-1">
-                      <div className="w-full h-full rounded-full flex items-center justify-center overflow-hidden relative" style={{ backgroundColor: 'var(--bg)' }}>
+                      <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-white/80" >
                         {member.image ? (
-                          <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                          <img
+                            src={member.image}
+                            alt={member.name}
+                            className="h-full w-full object-cover object-[center_18%]"
+                          />
                         ) : (
                           <span className="text-3xl font-heading font-bold" style={{ color: 'var(--text-muted)' }}>{getInitials(member.name)}</span>
                         )}

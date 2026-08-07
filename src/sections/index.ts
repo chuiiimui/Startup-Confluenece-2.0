@@ -3,6 +3,7 @@ export { default as About } from './About';
 export { default as EventHighlights } from './EventHighlights';
 export { default as WhyAttend } from './WhyAttend';
 export { default as Speakers } from './Speakers';
+export { default as ExperienceStrip } from './ExperienceStrip';
 export { default as StartupExpo } from './StartupExpo';
 export { default as PitchingArena } from './PitchingArena';
 export { default as Schedule } from './Schedule';

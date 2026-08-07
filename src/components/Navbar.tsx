@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
@@ -11,21 +11,21 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { openModal } = useRegistration();
+  const { scrollY } = useScroll();
+  const navScale = useTransform(scrollY, [0, 120], [1, 0.97]);
 
-  // Handle scroll detection for shrinking navbar
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 40);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Handle intersection observer to detect active section
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
-    
+
     const observerCallback = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
@@ -36,7 +36,7 @@ export const Navbar = () => {
 
     const observerOptions = {
       root: null,
-      rootMargin: '-50% 0px -50% 0px', // Trigger when section is in the middle of viewport
+      rootMargin: '-50% 0px -50% 0px',
       threshold: 0,
     };
 
@@ -58,10 +58,9 @@ export const Navbar = () => {
   const handleNavClick = (id: string) => {
     setActiveSection(id);
     setIsOpen(false);
-    // Delay scroll to prevent iOS Safari from cancelling it during layout animation
     setTimeout(() => {
       scrollToSection(id);
-    }, 300);
+    }, 280);
   };
 
   return (
@@ -71,39 +70,66 @@ export const Navbar = () => {
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className={`pointer-events-auto flex flex-col items-center overflow-hidden ${
-            isOpen ? 'rounded-[32px] w-full max-w-md' : 'rounded-full w-fit max-w-[1100px]'
-          }`}
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.75), rgba(255,255,255,0.4))',
-            backdropFilter: 'blur(40px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
-            borderTop: '1px solid rgba(255,255,255,0.8)',
-            borderLeft: '1px solid rgba(255,255,255,0.6)',
-            borderRight: '1px solid rgba(255,255,255,0.4)',
-            borderBottom: '1px solid rgba(255,255,255,0.2)',
-            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.08), inset 0 4px 10px rgba(255,255,255,0.5), inset 0 -4px 10px rgba(255,255,255,0.1)',
+            scale: isOpen ? 1 : navScale,
+            background: isScrolled
+              ? 'linear-gradient(135deg, rgba(7,11,26,0.92), rgba(15,23,42,0.86))'
+              : 'linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.55))',
+            backdropFilter: isScrolled
+              ? 'blur(48px) saturate(180%)'
+              : 'blur(28px) saturate(140%)',
+            WebkitBackdropFilter: isScrolled
+              ? 'blur(48px) saturate(180%)'
+              : 'blur(28px) saturate(140%)',
+            borderTop: isScrolled
+              ? '1px solid rgba(196,181,253,0.22)'
+              : '1px solid rgba(255,255,255,0.14)',
+            borderLeft: '1px solid rgba(255,255,255,0.10)',
+            borderRight: '1px solid rgba(255,255,255,0.08)',
+            borderBottom: isScrolled
+              ? '1px solid rgba(147,197,253,0.14)'
+              : '1px solid rgba(255,255,255,0.06)',
+            boxShadow: isScrolled
+              ? '0 18px 48px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(139,92,246,0.08), inset 0 1px 0 rgba(255,255,255,0.14)'
+              : '0 20px 40px -10px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10)',
+            color: 'var(--text-primary)',
           }}
+          className={`pointer-events-auto flex flex-col items-center overflow-hidden transition-[width] duration-300 ${
+            isOpen
+              ? 'rounded-[32px] w-full max-w-md'
+              : isScrolled
+                ? 'rounded-full w-fit max-w-[980px]'
+                : 'rounded-full w-fit max-w-[1100px]'
+          }`}
           layout
         >
-          {/* Main Navbar Row */}
           <motion.div
             className="flex items-center justify-between w-full"
             animate={{
-              padding: isOpen 
-                ? '24px' 
-                : isScrolled ? '12px 24px' : '16px 32px',
+              padding: isOpen
+                ? '24px'
+                : isScrolled
+                  ? '8px 18px'
+                  : '16px 32px',
             }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             layout
           >
-            {/* Logo */}
-            <div className="flex-shrink-0 cursor-pointer flex items-center" onClick={() => handleNavClick('home')}>
-              <img src={logo} alt="UIH Logo" className="h-8 w-auto object-contain" />
+            <div
+              className="flex-shrink-0 cursor-pointer flex items-center"
+              onClick={() => handleNavClick('home')}
+              data-cursor="link"
+            >
+              <motion.img
+                src={logo}
+                alt="UIH Logo"
+                className="w-auto object-contain"
+                animate={{ height: isScrolled && !isOpen ? 26 : 32 }}
+                transition={{ duration: 0.3 }}
+              />
             </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center space-x-1 mx-8">
+            <div className="hidden lg:flex items-center space-x-1 mx-6">
               {NAV_ITEMS.map((item) => {
                 const itemId = item.href.replace('#', '');
                 const isActive = activeSection === itemId;
@@ -111,7 +137,8 @@ export const Navbar = () => {
                   <button
                     key={itemId}
                     onClick={() => handleNavClick(itemId)}
-                    className="relative px-4 py-2 rounded-full text-sm font-medium transition-colors duration-300"
+                    data-cursor="link"
+                    className="relative px-3.5 py-2 rounded-full text-sm font-medium transition-colors duration-300"
                     style={{
                       color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
                     }}
@@ -130,11 +157,17 @@ export const Navbar = () => {
               })}
             </div>
 
-            {/* Desktop: Action Button */}
             <div className="hidden lg:flex items-center">
-              <motion.button 
+              <motion.button
                 onClick={() => openModal()}
-                className="bg-accent text-white px-6 py-2.5 rounded-full text-sm font-semibold relative overflow-hidden"
+                data-cursor="link"
+                className="bg-accent text-white rounded-full text-sm font-semibold relative overflow-hidden"
+                animate={{
+                  paddingLeft: isScrolled ? 18 : 24,
+                  paddingRight: isScrolled ? 18 : 24,
+                  paddingTop: isScrolled ? 8 : 10,
+                  paddingBottom: isScrolled ? 8 : 10,
+                }}
                 whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(255,122,0,0.5)' }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
@@ -143,27 +176,27 @@ export const Navbar = () => {
                   className="absolute inset-0 z-0 pointer-events-none mix-blend-overlay"
                   initial={{ x: '-100%' }}
                   whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  transition={{ duration: 0.6, ease: 'easeInOut' }}
                   style={{
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)'
+                    background:
+                      'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
                   }}
                 />
                 <span className="relative z-10">Register Now</span>
               </motion.button>
             </div>
 
-            {/* Mobile Menu Toggle */}
             <button
               className="lg:hidden p-2 -mr-2 rounded-full transition-colors"
               style={{ color: 'var(--text-muted)' }}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
+              data-cursor="link"
             >
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </motion.div>
 
-          {/* Mobile Menu Expansion (Dynamic Island style) */}
           <AnimatePresence>
             {isOpen && (
               <motion.div
@@ -178,26 +211,31 @@ export const Navbar = () => {
                   {NAV_ITEMS.map((item, index) => {
                     const itemId = item.href.replace('#', '');
                     return (
-                    <motion.button
-                      key={itemId}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ delay: index * 0.05, duration: 0.3 }}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleNavClick(itemId);
-                      }}
-                      className="flex items-center justify-between w-full p-3 rounded-2xl transition-all"
-                      style={{
-                        background: activeSection === itemId ? 'var(--surface-hover)' : 'transparent',
-                        color: activeSection === itemId ? 'var(--text-primary)' : 'var(--text-muted)',
-                      }}
-                    >
-                      <span className="text-lg font-medium">{item.label}</span>
-                      <ChevronRight size={18} style={{ opacity: 0.5 }} />
-                    </motion.button>
-                  );
+                      <motion.button
+                        key={itemId}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ delay: index * 0.05, duration: 0.3 }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleNavClick(itemId);
+                        }}
+                        data-cursor="link"
+                        className="flex items-center justify-between w-full p-3 rounded-2xl transition-all"
+                        style={{
+                          background:
+                            activeSection === itemId ? 'var(--surface-hover)' : 'transparent',
+                          color:
+                            activeSection === itemId
+                              ? 'var(--text-primary)'
+                              : 'var(--text-muted)',
+                        }}
+                      >
+                        <span className="text-lg font-medium">{item.label}</span>
+                        <ChevronRight size={18} style={{ opacity: 0.5 }} />
+                      </motion.button>
+                    );
                   })}
                   <motion.button
                     initial={{ opacity: 0, y: 10 }}
@@ -209,6 +247,7 @@ export const Navbar = () => {
                       setIsOpen(false);
                       openModal();
                     }}
+                    data-cursor="link"
                     className="mt-4 w-full bg-accent hover:bg-[#E66E00] text-white py-4 rounded-2xl text-lg font-semibold transition-colors flex items-center justify-center space-x-2"
                   >
                     <span>Register Now</span>
@@ -220,7 +259,6 @@ export const Navbar = () => {
         </motion.nav>
       </div>
 
-      {/* Mobile Menu Backdrop Overlay */}
       <AnimatePresence>
         {isOpen && (
           <motion.div

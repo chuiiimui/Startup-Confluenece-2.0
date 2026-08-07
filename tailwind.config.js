@@ -14,10 +14,10 @@ export default {
     },
     extend: {
       colors: {
-        primary: '#0B2A6B',
+        primary: '#93C5FD',
         accent: '#FF7A00',
-        light: '#F7F9FC',
-        dark: '#050505',
+        light: '#F8FAFC',
+        dark: '#070B1A',
         surface: {
           glass: 'var(--surface)',
           glassBorder: 'var(--border)',

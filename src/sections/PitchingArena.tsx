@@ -4,6 +4,8 @@ import { FileText, Search, CheckCircle, Mic, Users, Star, Trophy } from 'lucide-
 import SectionHeading from '../components/SectionHeading';
 import VisionCard from '../components/VisionCard';
 import RewardCard from '../components/RewardCard';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { PitchPodiumScene } from '../components/interactive3d/scenes';
 import { pitchSteps } from '../data/pitchSteps';
 
 const MentorshipIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -49,8 +51,14 @@ export default function PitchingArena() {
   const isInView = useInView(timelineRef, { once: true, margin: "-100px" });
 
   return (
-    <section id="pitching-arena" className="py-24 relative z-10 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section id="pitching-arena" className="py-24 relative z-10 overflow-hidden" >
+      <InteractiveCanvas
+        className="absolute left-[-2%] top-[8%] z-[2] hidden h-[280px] w-[280px] opacity-90 lg:block"
+        camera={{ position: [0, 0.3, 4.8], fov: 38 }}
+      >
+        <PitchPodiumScene />
+      </InteractiveCanvas>
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <SectionHeading badge="Pitch" title="Pitching Arena" />
         
         {/* Timeline */}
@@ -113,10 +121,10 @@ export default function PitchingArena() {
                     whileInView={{ scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
-                    className="absolute left-3 md:left-1/2 w-12 h-12 -translate-x-1/2 border-2 border-accent rounded-full flex items-center justify-center z-20 shadow-[0_0_20px_rgba(255,122,0,0.4)] mt-6 md:mt-0" style={{ backgroundColor: 'var(--bg)' }}
+                    className="absolute left-3 md:left-1/2 z-20 mt-6 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-accent bg-slate-900/90 shadow-[0_0_20px_rgba(255,122,0,0.4)] backdrop-blur-md md:mt-0" 
                   >
-                    <div className="w-10 h-10 bg-accent/20 rounded-full flex items-center justify-center">
-                      <span className="font-bold text-lg font-heading" style={{ color: 'var(--text-primary)' }}>{index + 1}</span>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/25">
+                      <span className="font-heading text-lg font-bold text-white">{index + 1}</span>
                     </div>
                   </motion.div>
                 </div>

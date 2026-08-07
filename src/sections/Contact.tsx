@@ -44,14 +44,13 @@ export const Contact: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: card.delay }}
-              className="backdrop-blur-xl border hover:border-accent/50 rounded-3xl p-8 flex flex-col items-center text-center group transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,122,0,0.1)] hover:-translate-y-2"
-              style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}
+              className="clay-card group flex flex-col items-center rounded-[28px] p-8 text-center transition-transform duration-300 hover:-translate-y-2"
             >
-              <div className="w-16 h-16 group-hover:bg-accent/10 rounded-2xl flex items-center justify-center mb-6 transition-colors" style={{ background: 'var(--surface)' }}>
+              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-300/25 bg-white/10 transition-colors group-hover:bg-accent/15">
                 {card.icon}
               </div>
-              <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>{card.title}</h4>
-              <div className="text-text">{card.value}</div>
+              <h4 className="mb-2 text-xl font-semibold text-white">{card.title}</h4>
+              <div className="text-slate-200/85">{card.value}</div>
             </motion.div>
           ))}
         </div>

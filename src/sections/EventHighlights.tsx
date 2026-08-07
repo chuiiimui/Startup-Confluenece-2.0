@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
+import TiltCard from '../components/TiltCard';
 import { highlights } from '../data/highlights';
 
 export default function EventHighlights() {
@@ -13,18 +14,20 @@ export default function EventHighlights() {
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { 
-      opacity: 1, 
+    hidden: { opacity: 0, y: 72, filter: 'blur(10px)', scale: 0.96 },
+    visible: {
+      opacity: 1,
       y: 0,
-      transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] }
-    }
+      filter: 'blur(0px)',
+      scale: 1,
+      transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] },
+    },
   };
 
 
 
   return (
-    <section className="py-24 relative overflow-hidden" id="highlights" style={{ backgroundColor: 'var(--bg)' }}>
+    <section className="py-24 relative overflow-hidden" id="highlights" >
       {/* Mesh Gradient Background Effect */}
       <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#0A2E6D]/10 blur-[120px]" />
@@ -62,15 +65,13 @@ export default function EventHighlights() {
               <motion.div
                 key={index}
                 variants={cardVariants}
-                className={`relative rounded-[32px] overflow-hidden group flex flex-col justify-end bg-white ${
-                  isLargeCard ? 'lg:col-span-2' : 'lg:col-span-1'
-                }`}
-                whileHover={{ 
-                  y: -12,
-                }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className={isLargeCard ? 'lg:col-span-2' : 'lg:col-span-1'}
+              >
+              <TiltCard
+                className="group relative flex h-full min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] bg-slate-900/40 md:min-h-[420px] lg:min-h-[480px]"
+                intensity={10}
                 style={{
-                  boxShadow: '0 20px 60px rgba(15,23,42,0.08)'
+                  boxShadow: '0 20px 60px rgba(79,70,229,0.12)',
                 }}
               >
                 {/* Background Image */}
@@ -136,6 +137,7 @@ export default function EventHighlights() {
                     {highlight.description}
                   </p>
                 </div>
+              </TiltCard>
               </motion.div>
             );
           })}

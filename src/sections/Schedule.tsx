@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { schedule } from '../data/schedule';
 import SectionHeading from '../components/SectionHeading';
 import ScheduleEventCard from '../components/ScheduleEventCard';
+import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { TimelineBeadsScene } from '../components/interactive3d/scenes';
 
 const Schedule = () => {
   const [activeDay, setActiveDay] = useState(schedule[0]?.id || 1);
@@ -11,7 +13,7 @@ const Schedule = () => {
   const currentDayData = schedule.find((day) => day.id === activeDay);
 
   return (
-    <section id="schedule" className="py-24 relative overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+    <section id="schedule" className="py-24 relative overflow-hidden" >
       <div className="absolute top-0 right-0 w-1/3 h-[500px] bg-accent/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10 max-w-6xl">
@@ -20,6 +22,20 @@ const Schedule = () => {
           title="Event Schedule" 
           alignment="center"
         />
+
+        <div className="mx-auto mb-8 hidden h-[120px] w-full max-w-xl md:block">
+          <InteractiveCanvas
+            className="h-full w-full"
+            camera={{ position: [0, 0, 5], fov: 35 }}
+          >
+            <TimelineBeadsScene
+              onSelect={(i) => {
+                const day = schedule[Math.min(i, schedule.length - 1)];
+                if (day) setActiveDay(day.id);
+              }}
+            />
+          </InteractiveCanvas>
+        </div>
 
         {/* Day Tabs */}
         <div className="flex flex-nowrap justify-center items-center gap-2 mb-12 max-w-fit mx-auto p-1.5 rounded-full border bg-surface/30 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
