@@ -5,7 +5,6 @@ import GridPattern from '../components/GridPattern';
 import { useRegistration } from '../context/RegistrationContext';
 
 
-
 const Hero = () => {
   const { openModal } = useRegistration();
   const [timeLeft, setTimeLeft] = useState({
@@ -70,6 +69,17 @@ const Hero = () => {
 
   return (
     <section id="home" className="relative min-h-[100dvh] w-full flex items-center pt-24 lg:pt-28 pb-8 overflow-hidden" style={{ backgroundColor: 'var(--bg)' }}>
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none"
+      >
+        <source src="https://res.cloudinary.com/doqv1rx2k/video/upload/v1786079749/lv_0_20260806230834_2_srxziy.mp4" type="video/mp4" />
+      </video>
+
       {/* Background Elements */}
       <GridPattern parallax={true} />
       

@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { useRegistration } from '../context/RegistrationContext';
 
 // Replace with your deployed Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwutOZOyBMaT0CyeJaSHJEcXE5iCczEVdQIbBZz_hHQE_xaXSR4d166KHCdRDiP57vW/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqwQZIZhlAJK4z30HBqYvGz62xaiKh_0dgYGkDyOC0zyN1PHTLCHVo4a6F_M7rJv-k/exec';
 
 type RegistrationType = 'startup' | 'sponsor' | 'speaker';
 
