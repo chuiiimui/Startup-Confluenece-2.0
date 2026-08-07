@@ -11,6 +11,15 @@ import {
 import { useForm } from 'react-hook-form';
 import { useRegistration } from '../context/RegistrationContext';
 
+function getSavedFormData<T>(key: string): Partial<T> {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+}
+
 // Replace with your deployed Google Apps Script Web App URL
 const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqwQZIZhlAJK4z30HBqYvGz62xaiKh_0dgYGkDyOC0zyN1PHTLCHVo4a6F_M7rJv-k/exec';
 
@@ -155,8 +164,16 @@ function StartupForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<StartupFormData>();
+  } = useForm<StartupFormData>({ defaultValues: getSavedFormData<StartupFormData>('startupFormAutoSave') });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem('startupFormAutoSave', JSON.stringify(value));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -386,8 +403,16 @@ function SponsorForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<SponsorFormData>();
+  } = useForm<SponsorFormData>({ defaultValues: getSavedFormData<SponsorFormData>('sponsorFormAutoSave') });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem('sponsorFormAutoSave', JSON.stringify(value));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -546,8 +571,16 @@ function SpeakerForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm<SpeakerFormData>();
+  } = useForm<SpeakerFormData>({ defaultValues: getSavedFormData<SpeakerFormData>('speakerFormAutoSave') });
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      localStorage.setItem('speakerFormAutoSave', JSON.stringify(value));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -836,6 +869,9 @@ export const RegistrationModal: React.FC = () => {
         // no-cors returns opaque response, so we treat it as success
         if (response.type === 'opaque' || response.ok) {
           setIsSuccess(true);
+          localStorage.removeItem('startupFormAutoSave');
+          localStorage.removeItem('sponsorFormAutoSave');
+          localStorage.removeItem('speakerFormAutoSave');
         } else {
           throw new Error('Submission failed');
         }
