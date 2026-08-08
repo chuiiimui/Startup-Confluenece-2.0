@@ -46,15 +46,20 @@ export default function MobileRegisterDock() {
           <div
             className="mx-auto flex max-w-md items-center gap-3 rounded-2xl px-3 py-3"
             style={{
-              background: 'linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.88))',
+              background: 'var(--nav-bg-scrolled)',
               backdropFilter: 'blur(28px) saturate(160%)',
               WebkitBackdropFilter: 'blur(28px) saturate(160%)',
-              border: '1px solid rgba(255,255,255,0.14)',
-              boxShadow: '0 -8px 40px rgba(0,0,0,0.45), 0 0 32px rgba(139,92,246,0.12)',
+              border: '1px solid var(--border)',
+              boxShadow: 'var(--nav-shadow-scrolled)',
             }}
           >
             <div className="min-w-0 flex-1 pl-1">
-              <p className="truncate text-sm font-semibold text-white">Ready to join?</p>
+              <p
+                className="truncate text-sm font-semibold"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                Ready to join?
+              </p>
               <p className="truncate text-xs" style={{ color: 'var(--text-muted)' }}>
                 Secure your spot at Confluence 2.0
               </p>

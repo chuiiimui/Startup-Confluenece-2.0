@@ -4,6 +4,7 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
 import { useRegistration } from '../context/RegistrationContext';
+import ThemeToggle from './ThemeToggle';
 import logo from '../assets/logo.png';
 
 export const Navbar = () => {
@@ -72,9 +73,7 @@ export const Navbar = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           style={{
             scale: isOpen ? 1 : navScale,
-            background: isScrolled
-              ? 'linear-gradient(135deg, rgba(7,11,26,0.92), rgba(15,23,42,0.86))'
-              : 'linear-gradient(135deg, rgba(15,23,42,0.72), rgba(30,41,59,0.55))',
+            background: isScrolled ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
             backdropFilter: isScrolled
               ? 'blur(48px) saturate(180%)'
               : 'blur(28px) saturate(140%)',
@@ -82,16 +81,12 @@ export const Navbar = () => {
               ? 'blur(48px) saturate(180%)'
               : 'blur(28px) saturate(140%)',
             borderTop: isScrolled
-              ? '1px solid rgba(196,181,253,0.22)'
-              : '1px solid rgba(255,255,255,0.14)',
-            borderLeft: '1px solid rgba(255,255,255,0.10)',
-            borderRight: '1px solid rgba(255,255,255,0.08)',
-            borderBottom: isScrolled
-              ? '1px solid rgba(147,197,253,0.14)'
-              : '1px solid rgba(255,255,255,0.06)',
-            boxShadow: isScrolled
-              ? '0 18px 48px -12px rgba(0,0,0,0.55), 0 0 0 1px rgba(139,92,246,0.08), inset 0 1px 0 rgba(255,255,255,0.14)'
-              : '0 20px 40px -10px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.10)',
+              ? '1px solid var(--nav-border-top-scrolled)'
+              : '1px solid var(--nav-border-top)',
+            borderLeft: '1px solid var(--border)',
+            borderRight: '1px solid var(--border)',
+            borderBottom: '1px solid var(--border)',
+            boxShadow: isScrolled ? 'var(--nav-shadow-scrolled)' : 'var(--nav-shadow)',
             color: 'var(--text-primary)',
           }}
           className={`pointer-events-auto flex flex-col items-center overflow-hidden transition-[width] duration-300 ${
@@ -157,7 +152,8 @@ export const Navbar = () => {
               })}
             </div>
 
-            <div className="hidden lg:flex items-center">
+            <div className="hidden lg:flex items-center gap-2.5">
+              <ThemeToggle />
               <motion.button
                 onClick={() => openModal()}
                 data-cursor="link"
@@ -186,15 +182,18 @@ export const Navbar = () => {
               </motion.button>
             </div>
 
-            <button
-              className="lg:hidden p-2 -mr-2 rounded-full transition-colors"
-              style={{ color: 'var(--text-muted)' }}
-              onClick={() => setIsOpen(!isOpen)}
-              aria-label="Toggle menu"
-              data-cursor="link"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="flex items-center gap-1.5 lg:hidden">
+              <ThemeToggle />
+              <button
+                className="p-2 -mr-2 rounded-full transition-colors"
+                style={{ color: 'var(--text-muted)' }}
+                onClick={() => setIsOpen(!isOpen)}
+                aria-label="Toggle menu"
+                data-cursor="link"
+              >
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </motion.div>
 
           <AnimatePresence>

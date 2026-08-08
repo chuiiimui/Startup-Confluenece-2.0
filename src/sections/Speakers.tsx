@@ -75,7 +75,7 @@ export default function Speakers() {
                   <p className="text-lg md:text-xl leading-relaxed mb-8 max-w-xl" style={{ color: 'var(--text-secondary)' }}>
                     We're bringing in a visionary leader who has fundamentally reshaped the tech landscape. Stay tuned for an announcement that will elevate Startup Confluence 2.0 to new heights.
                   </p>
-                  <button className="px-8 py-3 rounded-full border hover:bg-black/5 transition-colors duration-300 font-semibold" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
+                  <button className="px-8 py-3 rounded-full border transition-colors duration-300 font-semibold hover:bg-[color:var(--surface-hover)]" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
                     Get Notified
                   </button>
                 </div>

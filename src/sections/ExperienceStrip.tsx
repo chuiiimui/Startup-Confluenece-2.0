@@ -48,9 +48,10 @@ export default function ExperienceStrip() {
       <div className="pointer-events-none absolute left-0 right-0 top-16 z-20 px-6 md:px-12">
         <RevealText
           text="The Confluence Experience"
-          className="font-heading text-3xl font-bold text-white md:text-5xl"
+          className="font-heading text-3xl font-bold md:text-5xl"
+          style={{ color: 'var(--text-primary)' }}
         />
-        <p className="mt-3 max-w-xl text-base text-slate-300 md:text-lg">
+        <p className="mt-3 max-w-xl text-base md:text-lg" style={{ color: 'var(--text-secondary)' }}>
           Scroll to move horizontally through the moments that define Startup Confluence 2.0.
         </p>
       </div>
@@ -63,21 +64,34 @@ export default function ExperienceStrip() {
             intensity={14}
           >
             <div
-              className={`flex h-full flex-col justify-between overflow-hidden rounded-[32px] border border-white/15 bg-gradient-to-br ${tint} p-8 backdrop-blur-xl`}
+              className={`flex h-full flex-col justify-between overflow-hidden rounded-[32px] border bg-gradient-to-br ${tint} p-8 backdrop-blur-xl`}
               style={{
-                backgroundColor: 'rgba(15,23,42,0.55)',
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--bg-alt)',
                 boxShadow:
-                  'inset 0 1px 0 rgba(255,255,255,0.14), 0 20px 60px rgba(0,0,0,0.35)',
+                  'inset 0 1px 0 var(--glass-highlight), var(--shadow-card)',
               }}
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white/10 text-sky-300 shadow-sm backdrop-blur-md">
+              <div
+                className="flex h-14 w-14 items-center justify-center rounded-2xl border text-sky-600 shadow-sm backdrop-blur-md dark:text-sky-300"
+                style={{
+                  borderColor: 'var(--border)',
+                  background: 'var(--surface)',
+                }}
+              >
                 <Icon className="h-7 w-7" strokeWidth={1.6} />
               </div>
               <div>
-                <h3 className="font-heading text-2xl font-bold text-white md:text-3xl">
+                <h3
+                  className="font-heading text-2xl font-bold md:text-3xl"
+                  style={{ color: 'var(--text-primary)' }}
+                >
                   {title}
                 </h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300 md:text-base">
+                <p
+                  className="mt-3 text-sm leading-relaxed md:text-base"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
                   {copy}
                 </p>
               </div>

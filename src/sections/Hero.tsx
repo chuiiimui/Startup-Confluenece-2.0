@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
 import {
   LiquidMetalBlobScene,
-  NeonWireframeCityScene,
   NodeConstellationScene,
 } from '../components/interactive3d/scenes';
 import { useRegistration } from '../context/RegistrationContext';
@@ -81,17 +80,16 @@ const Hero = () => {
     >
       <GridPattern parallax={true} />
 
-      {/* Neon wireframe city + constellation — sits around foreground 3D shapes */}
+      {/* Lightweight constellation — tablet/desktop only (skip on phones for scroll FPS) */}
       <InteractiveCanvas
-        className="absolute inset-0 z-[1] opacity-85"
+        className="absolute inset-0 z-[1] hidden opacity-70 md:block"
         interactive={false}
         camera={{ position: [0, 0.35, 6.4], fov: 40 }}
       >
-        <NeonWireframeCityScene />
         <NodeConstellationScene />
       </InteractiveCanvas>
 
-      {/* Liquid metal funding blob — cursor magnet */}
+      {/* Liquid metal funding blob — desktop only */}
       <InteractiveCanvas
         className="absolute left-[-4%] top-[22%] z-[5] hidden h-[260px] w-[260px] opacity-80 lg:block xl:left-[1%] xl:h-[300px] xl:w-[300px]"
         camera={{ position: [0, 0, 4.2], fov: 40 }}
@@ -100,9 +98,20 @@ const Hero = () => {
       </InteractiveCanvas>
 
       {/* Soft hero glass wash */}
-      <div className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-white/10 via-transparent to-transparent" />
+      <div
+        className="pointer-events-none absolute inset-0 z-[2]"
+        style={{
+          background:
+            'linear-gradient(to bottom, color-mix(in srgb, var(--surface) 55%, transparent), transparent)',
+        }}
+      />
 
-      <div className="pointer-events-none absolute bottom-0 left-0 z-10 h-32 w-full bg-gradient-to-t from-[#070B1A]/80 to-transparent" />
+      <div
+        className="pointer-events-none absolute bottom-0 left-0 z-10 h-32 w-full"
+        style={{
+          background: 'linear-gradient(to top, var(--page-fade), transparent)',
+        }}
+      />
 
       <div className="container relative z-20 mx-auto flex h-full flex-col items-center justify-center px-6 text-center lg:px-12">
         <motion.div
@@ -118,23 +127,23 @@ const Hero = () => {
             <div className="w-full overflow-hidden pb-1 md:pb-2">
               <motion.div
                 variants={wordVariants}
-                className="hero-glow-startup text-white"
+                className="hero-glow-startup"
                 style={{ fontSize: 'clamp(2rem, 6.5vw, 6.5rem)' }}
               >
                 STARTUP
               </motion.div>
             </div>
-            <div className="flex w-full flex-col justify-center overflow-hidden pb-2 md:flex-row md:items-baseline md:gap-x-6 md:pb-4">
+            <div className="flex w-full flex-col justify-center overflow-x-clip overflow-y-visible pb-2 md:flex-row md:items-baseline md:gap-x-6 md:pb-4">
               <motion.div
                 variants={wordVariants}
-                className="hero-glow-confluence bg-gradient-to-r from-sky-300 via-violet-300 to-indigo-300 bg-clip-text text-transparent"
+                className="hero-glow-confluence"
                 style={{ fontSize: 'clamp(2.5rem, 8vw, 8.5rem)' }}
               >
                 CONFLUENCE
               </motion.div>
               <motion.div
                 variants={scaleFadeVariants}
-                className="hero-glow-version mt-0 bg-gradient-to-br from-accent to-orange-400 bg-clip-text text-transparent"
+                className="hero-glow-version"
                 style={{ fontSize: 'clamp(1.8rem, 6vw, 6rem)' }}
               >
                 2.0
@@ -158,7 +167,10 @@ const Hero = () => {
             >
               Driving Innovation.
             </p>
-            <p className="text-sm font-medium tracking-tight text-sky-300 md:text-2xl">
+            <p
+              className="text-sm font-medium tracking-tight md:text-2xl"
+              style={{ color: 'var(--accent-link)' }}
+            >
               Fueling Growth.
             </p>
           </motion.div>
@@ -183,7 +195,7 @@ const Hero = () => {
               className="flex items-center gap-2 rounded-full border bg-white/10 px-3 py-1.5 backdrop-blur-md md:gap-2.5 md:px-5 md:py-2.5"
               style={{ borderColor: 'var(--border)' }}
             >
-              <MapPin className="h-4 w-4 shrink-0 text-sky-300" />
+              <MapPin className="h-4 w-4 shrink-0" style={{ color: 'var(--accent-link)' }} />
               <span
                 className="text-left text-xs font-semibold leading-tight md:text-sm md:leading-normal"
                 style={{ color: 'var(--text-primary)' }}
@@ -229,7 +241,7 @@ const Hero = () => {
                   {index < 3 && (
                     <span
                       className="mb-6 select-none font-heading text-xl font-bold md:mb-7 md:text-3xl"
-                      style={{ color: 'rgba(196,181,253,0.75)' }}
+                      style={{ color: 'var(--badge-text)' }}
                       aria-hidden
                     >
                       :

@@ -25,17 +25,17 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
   const getBadgeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case 'keynote':
-        return 'bg-violet-400/20 text-violet-200 border-violet-300/40';
+        return 'bg-violet-500/15 text-[color:var(--badge-text)] border-violet-400/35';
       case 'workshop':
-        return 'bg-sky-400/20 text-sky-200 border-sky-300/40';
+        return 'bg-sky-500/15 text-sky-700 dark:text-sky-200 border-sky-400/35';
       case 'networking':
-        return 'bg-emerald-400/20 text-emerald-200 border-emerald-300/40';
+        return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-200 border-emerald-400/35';
       case 'pitch':
-        return 'bg-violet-400/25 text-violet-100 border-violet-300/45';
+        return 'bg-violet-500/20 text-[color:var(--badge-text)] border-violet-400/40';
       case 'break':
-        return 'bg-slate-400/20 text-slate-200 border-slate-300/35';
+        return 'bg-[color:var(--surface)] text-[color:var(--text-secondary)] border-[color:var(--border)]';
       default:
-        return 'bg-violet-400/25 text-[#DDD6FE] border-violet-300/40';
+        return 'bg-violet-500/15 text-[color:var(--badge-text)] border-violet-400/35';
     }
   };
 
@@ -112,14 +112,20 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
 
           <div className="relative z-10">
             <div className="flex justify-between items-start mb-1">
-              <span className="text-[#DDD6FE] font-mono font-bold text-sm tracking-widest">
+              <span
+                className="font-mono font-bold text-sm tracking-widest"
+                style={{ color: 'var(--badge-text)' }}
+              >
                 {event.time}
               </span>
               <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                <FiChevronDown className="text-white/70" />
+                <FiChevronDown style={{ color: 'var(--text-muted)' }} />
               </motion.div>
             </div>
-            <h3 className="text-xl font-heading font-semibold mb-3 leading-tight text-white">
+            <h3
+              className="text-xl font-heading font-semibold mb-3 leading-tight"
+              style={{ color: 'var(--text-primary)' }}
+            >
               {event.title}
             </h3>
 
@@ -130,7 +136,10 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
                 {event.type}
               </span>
               {event.location && (
-                <span className="flex items-center text-xs font-medium text-slate-200/80">
+                <span
+                  className="flex items-center text-xs font-medium"
+                  style={{ color: 'var(--text-secondary)' }}
+                >
                   <FiMapPin className="mr-1" /> {event.location}
                 </span>
               )}
@@ -144,12 +153,23 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
                   exit={{ height: 0, opacity: 0 }}
                   className="overflow-hidden"
                 >
-                  <p className="text-sm mt-3 text-slate-200/85" style={{ lineHeight: 1.6 }}>
+                  <p
+                    className="text-sm mt-3"
+                    style={{ lineHeight: 1.6, color: 'var(--text-secondary)' }}
+                  >
                     {event.description}
                   </p>
                   {event.speaker && (
-                    <p className="text-sm mt-3 font-medium inline-block rounded-xl border border-violet-300/35 bg-black/20 px-3 py-1.5 text-slate-100">
-                      Speaker: <span className="text-white">{event.speaker}</span>
+                    <p
+                      className="text-sm mt-3 font-medium inline-block rounded-xl border px-3 py-1.5"
+                      style={{
+                        borderColor: 'var(--border-strong)',
+                        background: 'var(--surface)',
+                        color: 'var(--text-secondary)',
+                      }}
+                    >
+                      Speaker:{' '}
+                      <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
                     </p>
                   )}
                 </motion.div>
@@ -184,7 +204,8 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
           <div className="relative z-10">
             <div className="flex justify-between items-start mb-2 gap-4">
               <motion.h3
-                className="text-xl font-heading font-semibold text-white"
+                className="text-xl font-heading font-semibold"
+                style={{ color: 'var(--text-primary)' }}
                 animate={{ scale: isHovered ? 1.02 : 1, originX: 0 }}
                 transition={{ duration: 0.4 }}
               >
@@ -205,26 +226,30 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
                   }}
                   transition={{ duration: 0.4 }}
                 >
-                  <FiArrowRight className="text-[#DDD6FE] w-5 h-5" />
+                  <FiArrowRight className="w-5 h-5" style={{ color: 'var(--badge-text)' }} />
                 </motion.div>
               </div>
             </div>
 
             {event.speaker && (
               <motion.p
-                className="text-sm font-medium mb-3 text-slate-200/90"
-                animate={{ opacity: isHovered ? 1 : 0.8 }}
+                className="text-sm font-medium mb-3"
+                style={{ color: 'var(--text-secondary)' }}
+                animate={{ opacity: isHovered ? 1 : 0.85 }}
                 transition={{ duration: 0.4 }}
               >
-                By <span className="text-white">{event.speaker}</span>
+                By <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
               </motion.p>
             )}
 
-            <p className="mb-4 text-slate-200/80">{event.description}</p>
+            <p className="mb-4" style={{ color: 'var(--text-secondary)' }}>
+              {event.description}
+            </p>
 
             {event.location && (
               <motion.div
-                className="flex items-center text-sm text-[#DDD6FE]/90"
+                className="flex items-center text-sm"
+                style={{ color: 'var(--badge-text)' }}
                 animate={{ x: isHovered ? 4 : 0 }}
                 transition={{ duration: 0.4 }}
               >

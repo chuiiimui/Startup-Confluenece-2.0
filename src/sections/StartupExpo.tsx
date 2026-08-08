@@ -68,13 +68,17 @@ export default function StartupExpo() {
                   onClick={() => setActiveCategoryId(category.id)}
                   className={`relative flex items-center gap-3 overflow-hidden rounded-2xl border px-6 py-4 backdrop-blur-md transition-colors duration-300 group ${
                     isActive 
-                      ? 'border-accent/40 bg-white/15' 
-                      : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                      ? 'border-accent/40' 
+                      : 'hover:border-[color:var(--border-strong)]'
                   }`}
+                  style={{
+                    borderColor: isActive ? undefined : 'var(--border)',
+                    background: isActive ? 'var(--surface-hover)' : 'var(--surface)',
+                  }}
                 >
                   <div className={`absolute inset-0 bg-gradient-to-r from-accent/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 ${isActive ? 'opacity-100' : ''}`} />
-                  <Icon className={`relative z-10 h-5 w-5 transition-colors ${isActive ? 'text-accent' : 'text-slate-400 group-hover:text-white'}`} />
-                  <span className={`relative z-10 text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-white' : 'text-slate-300 group-hover:text-white'}`}>
+                  <Icon className={`relative z-10 h-5 w-5 transition-colors ${isActive ? 'text-accent' : 'text-[color:var(--text-muted)] group-hover:text-[color:var(--text-primary)]'}`} />
+                  <span className={`relative z-10 text-sm font-medium tracking-wide transition-colors ${isActive ? 'text-[color:var(--text-primary)]' : 'text-[color:var(--text-secondary)] group-hover:text-[color:var(--text-primary)]'}`}>
                     {category.name}
                   </span>
                 </DomainTile3D>

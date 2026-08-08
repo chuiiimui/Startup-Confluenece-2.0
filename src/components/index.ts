@@ -1,4 +1,5 @@
 export { Navbar } from './Navbar';
+export { default as ThemeToggle } from './ThemeToggle';
 export { default as SectionHeading } from './SectionHeading';
 export { default as CursorGlow } from './CursorGlow';
 export { default as CursorTrail } from './CursorTrail';

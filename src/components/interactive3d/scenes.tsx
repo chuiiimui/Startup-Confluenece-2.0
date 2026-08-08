@@ -71,7 +71,7 @@ export function FundingOrbScene() {
       {/* Inner KPI rings */}
       {[0.55, 0.72, 0.88].map((r, i) => (
         <mesh key={r} rotation={[Math.PI / 2.4 + i * 0.3, i * 0.5, 0]}>
-          <torusGeometry args={[r, 0.018, 12, 64]} />
+          <torusGeometry args={[r, 0.018, 8, 32]} />
           <meshStandardMaterial
             color={i === 2 ? ORANGE : i === 1 ? BLUE : VIOLET}
             emissive={i === 2 ? ORANGE : BLUE}
@@ -94,7 +94,7 @@ export function FundingOrbScene() {
           />
         </mesh>
       ))}
-      <Sparkles count={24} scale={3} size={2} speed={0.4} opacity={0.45} color={BLUE} />
+      <Sparkles count={8} scale={3} size={2} speed={0.35} opacity={0.4} color={BLUE} />
     </group>
   );
 }
@@ -145,11 +145,11 @@ export function PitchPodiumScene() {
       />
 
       <mesh position={[0, -0.9, 0]} castShadow>
-        <cylinderGeometry args={[1.1, 1.25, 0.22, 48]} />
+        <cylinderGeometry args={[1.1, 1.25, 0.22, 24]} />
         <meshStandardMaterial color="#1E293B" metalness={0.85} roughness={0.25} />
       </mesh>
       <mesh position={[0, -0.76, 0]}>
-        <torusGeometry args={[1.12, 0.04, 12, 64]} />
+        <torusGeometry args={[1.12, 0.04, 8, 32]} />
         <meshStandardMaterial
           color={ORANGE}
           emissive={ORANGE}
@@ -164,7 +164,7 @@ export function PitchPodiumScene() {
         <meshStandardMaterial color="#94A3B8" metalness={0.95} roughness={0.15} />
       </mesh>
       <mesh position={[0, 0.45, 0.1]} rotation={[0.55, 0, 0]}>
-        <sphereGeometry args={[0.12, 20, 20]} />
+        <sphereGeometry args={[0.12, 12, 12]} />
         <meshStandardMaterial color="#0F172A" metalness={0.9} roughness={0.2} />
       </mesh>
       {/* Deal ring pulse */}
@@ -368,23 +368,35 @@ export function HoloTicketScene() {
   );
 }
 
-/* ─── 6. Node Constellation ─── */
+/* ─── 6. Node Constellation (lightweight backdrop) ─── */
 export function NodeConstellationScene() {
   const group = useRef<THREE.Group>(null);
   const magnet = useRef({ x: 0, y: 0 });
+  const isCoarse =
+    typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+  const nodeCount = isCoarse ? 8 : 12;
+
   const nodes = useMemo(
     () =>
-      Array.from({ length: 18 }, () => ({
-        x: (Math.random() - 0.5) * 6,
-        y: (Math.random() - 0.5) * 3.5,
-        z: (Math.random() - 0.5) * 2.5,
-        s: 0.04 + Math.random() * 0.06,
-      })),
-    []
+      Array.from({ length: nodeCount }, (_, i) => {
+        const seed = Math.sin(i * 12.9898) * 43758.5453;
+        const r = seed - Math.floor(seed);
+        const r2 = Math.sin(i * 78.233) * 43758.5453;
+        const r3 = r2 - Math.floor(r2);
+        const r4 = Math.sin(i * 39.346) * 43758.5453;
+        const r5 = r4 - Math.floor(r4);
+        return {
+          x: (r - 0.5) * 6,
+          y: (r3 - 0.5) * 3.5,
+          z: (r5 - 0.5) * 2.5,
+          s: 0.045 + r * 0.05,
+        };
+      }),
+    [nodeCount]
   );
 
-  // Follow cursor even when canvas has pointer-events: none
   useEffect(() => {
+    if (isCoarse) return;
     const onMove = (e: MouseEvent) => {
       magnet.current = {
         x: (e.clientX / window.innerWidth - 0.5) * 1.2,
@@ -393,43 +405,50 @@ export function NodeConstellationScene() {
     };
     window.addEventListener('mousemove', onMove, { passive: true });
     return () => window.removeEventListener('mousemove', onMove);
-  }, []);
+  }, [isCoarse]);
 
   useFrame((state) => {
     if (!group.current) return;
-    group.current.rotation.y = state.clock.elapsedTime * 0.05;
-    group.current.position.x += (magnet.current.x - group.current.position.x) * 0.04;
-    group.current.position.y += (magnet.current.y - group.current.position.y) * 0.04;
+    group.current.rotation.y = state.clock.elapsedTime * 0.04;
+    if (!isCoarse) {
+      group.current.position.x += (magnet.current.x - group.current.position.x) * 0.04;
+      group.current.position.y += (magnet.current.y - group.current.position.y) * 0.04;
+    }
   });
+
+  const linkCount = Math.min(6, nodes.length);
 
   return (
     <group ref={group}>
       <ambientLight intensity={0.5} />
-      <pointLight position={[0, 0, 3]} intensity={0.8} color={BLUE} />
+      <pointLight position={[0, 0, 3]} intensity={0.65} color={BLUE} />
       {nodes.map((n, i) => (
         <mesh key={i} position={[n.x, n.y, n.z]}>
-          <sphereGeometry args={[n.s, 12, 12]} />
-          <meshStandardMaterial
+          <sphereGeometry args={[n.s, 6, 6]} />
+          <meshBasicMaterial
             color={i % 3 === 0 ? ORANGE : i % 3 === 1 ? BLUE : VIOLET}
-            emissive={i % 3 === 0 ? ORANGE : BLUE}
-            emissiveIntensity={0.5}
+            transparent
+            opacity={0.85}
           />
         </mesh>
       ))}
-      {/* Link lines */}
-      {nodes.slice(0, 12).map((n, i) => {
+      {nodes.slice(0, linkCount).map((n, i) => {
         const next = nodes[(i + 3) % nodes.length];
         const start = new THREE.Vector3(n.x, n.y, n.z);
         const end = new THREE.Vector3(next.x, next.y, next.z);
         const mid = start.clone().lerp(end, 0.5);
         const dist = start.distanceTo(end);
         return (
-          <mesh key={`l-${i}`} position={mid.toArray()} quaternion={new THREE.Quaternion().setFromUnitVectors(
-            new THREE.Vector3(0, 1, 0),
-            end.clone().sub(start).normalize()
-          )}>
-            <cylinderGeometry args={[0.004, 0.004, dist, 4]} />
-            <meshBasicMaterial color={VIOLET} transparent opacity={0.25} />
+          <mesh
+            key={`l-${i}`}
+            position={mid.toArray()}
+            quaternion={new THREE.Quaternion().setFromUnitVectors(
+              new THREE.Vector3(0, 1, 0),
+              end.clone().sub(start).normalize()
+            )}
+          >
+            <cylinderGeometry args={[0.003, 0.003, dist, 3]} />
+            <meshBasicMaterial color={VIOLET} transparent opacity={0.22} />
           </mesh>
         );
       })}
@@ -476,7 +495,7 @@ export function ProfileCrystalScene() {
           emissiveIntensity={hot ? 0.45 : 0.12}
         />
       </mesh>
-      <Sparkles count={16} scale={2.5} size={2} speed={0.5} opacity={0.4} color={VIOLET} />
+      <Sparkles count={6} scale={2.5} size={2} speed={0.4} opacity={0.35} color={VIOLET} />
     </group>
   );
 }
@@ -511,7 +530,7 @@ export function TimelineBeadsScene({ onSelect }: { onSelect?: (i: number) => voi
             onSelect?.(i);
           }}
         >
-          <sphereGeometry args={[active === i ? 0.22 : 0.16, 24, 24]} />
+          <sphereGeometry args={[active === i ? 0.22 : 0.16, 12, 12]} />
           <meshStandardMaterial
             color={active === i ? ORANGE : BLUE}
             emissive={active === i ? ORANGE : BLUE}
@@ -525,11 +544,12 @@ export function TimelineBeadsScene({ onSelect }: { onSelect?: (i: number) => voi
   );
 }
 
-/* ─── 9. Liquid Metal Funding Blob ─── */
+/* ─── 9. Liquid Metal Funding Blob (low-poly, desktop accent) ─── */
 export function LiquidMetalBlobScene() {
   const group = useRef<THREE.Group>(null);
   const mouse = useRef({ x: 0, y: 0 });
   const [hot, setHot] = useState(false);
+  const tmp = useMemo(() => new THREE.Vector3(), []);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -557,7 +577,7 @@ export function LiquidMetalBlobScene() {
       0.045
     );
     const s = hot ? 1.08 : 1;
-    group.current.scale.lerp(new THREE.Vector3(s, s, s), 0.08);
+    group.current.scale.lerp(tmp.set(s, s, s), 0.08);
   });
 
   return (
@@ -573,25 +593,24 @@ export function LiquidMetalBlobScene() {
         document.body.style.cursor = 'auto';
       }}
     >
-      <SceneLights />
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[4, 6, 3]} intensity={1} />
+      <pointLight position={[-2, 2, -1]} intensity={0.45} color={VIOLET} />
       <mesh>
-        <icosahedronGeometry args={[1.12, 24]} />
+        {/* detail 2 ≈ ~80 tris vs detail 24 (thousands) — big win on GPU */}
+        <icosahedronGeometry args={[1.12, 2]} />
         <MeshDistortMaterial
           color="#D4D4F7"
           emissive={hot ? ORANGE : '#6366F1'}
           emissiveIntensity={hot ? 0.55 : 0.28}
           metalness={0.98}
           roughness={0.08}
-          distort={hot ? 0.58 : 0.42}
-          speed={hot ? 3.2 : 2.1}
+          distort={hot ? 0.4 : 0.28}
+          speed={hot ? 2.2 : 1.4}
         />
       </mesh>
-      <mesh scale={1.1}>
-        <icosahedronGeometry args={[1.12, 6]} />
-        <meshBasicMaterial color={BLUE} wireframe transparent opacity={0.14} />
-      </mesh>
       <mesh scale={0.42}>
-        <sphereGeometry args={[1, 32, 32]} />
+        <sphereGeometry args={[1, 12, 12]} />
         <meshStandardMaterial
           color={ORANGE}
           emissive={ORANGE}
@@ -601,11 +620,11 @@ export function LiquidMetalBlobScene() {
         />
       </mesh>
       <Sparkles
-        count={28}
-        scale={3.2}
-        size={2.2}
-        speed={0.55}
-        opacity={0.5}
+        count={10}
+        scale={3}
+        size={2}
+        speed={0.4}
+        opacity={0.4}
         color={hot ? ORANGE : BLUE}
       />
     </group>
@@ -616,8 +635,8 @@ export function LiquidMetalBlobScene() {
 function useTickerTexture() {
   return useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = 2048;
-    canvas.height = 256;
+    canvas.width = 1024;
+    canvas.height = 128;
     const ctx = canvas.getContext('2d')!;
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
     gradient.addColorStop(0, '#0B1229');
@@ -627,26 +646,26 @@ function useTickerTexture() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.strokeStyle = 'rgba(147,197,253,0.35)';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(8, 8, canvas.width - 16, canvas.height - 16);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
 
     const text =
       '  SEED ▲ 12%   SERIES A ▲ 28%   SERIES B ▲ 41%   IPO ● LIVE   DEAL FLOW ▲   RAISE $2.4M   ANGEL ROUND   UNICORN WATCH   CONFLUENCE 2.0   EXIT ▲   ';
-    ctx.font = 'bold 72px Space Grotesk, Inter, sans-serif';
+    ctx.font = 'bold 36px Space Grotesk, Inter, sans-serif';
     ctx.fillStyle = '#E0E7FF';
     ctx.textBaseline = 'middle';
-    ctx.fillText(text, 40, 110);
+    ctx.fillText(text, 20, 52);
     ctx.fillStyle = '#FF7A00';
-    ctx.fillText('  ● LIVE MARKETS  ', 40, 190);
+    ctx.fillText('  ● LIVE MARKETS  ', 20, 95);
     ctx.fillStyle = 'rgba(167,139,250,0.85)';
-    ctx.font = '600 48px Space Grotesk, Inter, sans-serif';
-    ctx.fillText(text, 40, 200);
+    ctx.font = '600 24px Space Grotesk, Inter, sans-serif';
+    ctx.fillText(text, 20, 100);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
     texture.repeat.set(2, 1);
-    texture.anisotropy = 8;
+    texture.anisotropy = 4;
     texture.needsUpdate = true;
     return texture;
   }, []);
@@ -709,7 +728,7 @@ export function HoloTickerRibbonScene() {
           opacity={0.75}
         />
       </mesh>
-      <Sparkles count={18} scale={4} size={1.8} speed={0.35} opacity={0.4} color={BLUE} />
+      <Sparkles count={8} scale={4} size={1.8} speed={0.3} opacity={0.35} color={BLUE} />
     </group>
   );
 }
@@ -834,164 +853,7 @@ export function PitchCardSwarmScene() {
           </group>
         </Float>
       ))}
-      <Sparkles count={20} scale={4.5} size={1.6} speed={0.4} opacity={0.35} color={VIOLET} />
-    </group>
-  );
-}
-
-/* ─── 12. Neon Wireframe City of Startups ─── */
-function seeded(n: number) {
-  const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
-  return x - Math.floor(x);
-}
-
-export function NeonWireframeCityScene() {
-  const group = useRef<THREE.Group>(null);
-  const mouse = useRef({ x: 0, y: 0 });
-
-  const buildings = useMemo(() => {
-    const items: {
-      pos: [number, number, number];
-      size: [number, number, number];
-      color: string;
-      pulse: number;
-      beacon: boolean;
-    }[] = [];
-
-    // Compact outer ring — smaller towers, clearer silhouette
-    for (let i = 0; i < 28; i++) {
-      const a = (i / 28) * Math.PI * 2 + seeded(i) * 0.12;
-      const r = 1.85 + seeded(i + 3) * 0.55;
-      const h = 0.22 + seeded(i + 7) * 0.55 + (i % 6 === 0 ? 0.22 : 0);
-      const w = 0.08 + seeded(i + 11) * 0.07;
-      const d = 0.08 + seeded(i + 13) * 0.07;
-      const color = i % 7 === 0 ? ORANGE : i % 3 === 0 ? VIOLET : BLUE;
-      items.push({
-        pos: [Math.cos(a) * r, h / 2 - 0.95, Math.sin(a) * r * 0.78],
-        size: [w, h, d],
-        color,
-        pulse: seeded(i + 19),
-        beacon: h > 0.55,
-      });
-    }
-
-    // Sparse inner low-rises
-    for (let i = 0; i < 10; i++) {
-      const a = (i / 10) * Math.PI * 2 + 0.35;
-      const r = 1.05 + seeded(i + 40) * 0.28;
-      const h = 0.14 + seeded(i + 45) * 0.28;
-      const w = 0.07 + seeded(i + 50) * 0.05;
-      items.push({
-        pos: [Math.cos(a) * r, h / 2 - 0.95, Math.sin(a) * r * 0.76],
-        size: [w, h, w],
-        color: i % 2 === 0 ? BLUE : VIOLET,
-        pulse: seeded(i + 60),
-        beacon: false,
-      });
-    }
-
-    return items;
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
-  useFrame((state) => {
-    if (!group.current) return;
-    const t = state.clock.elapsedTime;
-    group.current.rotation.y = t * 0.035 + mouse.current.x * 0.1;
-    group.current.rotation.x = -0.22 + mouse.current.y * 0.05;
-    group.current.position.y = Math.sin(t * 0.35) * 0.03;
-  });
-
-  return (
-    <group ref={group} position={[0, -0.55, 0]} scale={0.92}>
-      <ambientLight intensity={0.35} />
-      <pointLight position={[0, 2.2, 2]} intensity={0.85} color={BLUE} />
-      <pointLight position={[-2, 1.2, -1]} intensity={0.65} color={VIOLET} />
-      <pointLight position={[2, 0.8, 1]} intensity={0.45} color={ORANGE} />
-
-      {/* Ground neon ring — light, high-contrast, no heavy dark disc */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.96, 0]}>
-        <ringGeometry args={[0.95, 2.55, 72]} />
-        <meshBasicMaterial color="#A5B4FC" wireframe transparent opacity={0.42} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.955, 0]}>
-        <ringGeometry args={[1.05, 2.45, 64]} />
-        <meshBasicMaterial color={VIOLET} transparent opacity={0.08} />
-      </mesh>
-
-      {buildings.map((b, i) => (
-        <group key={i} position={b.pos}>
-          {/* Bright wireframe shell */}
-          <mesh>
-            <boxGeometry args={b.size} />
-            <meshBasicMaterial
-              color={b.color}
-              wireframe
-              transparent
-              opacity={0.95}
-              depthWrite={false}
-            />
-          </mesh>
-          {/* Soft neon core for readability */}
-          <mesh scale={[0.78, 0.92, 0.78]}>
-            <boxGeometry args={b.size} />
-            <meshStandardMaterial
-              color={b.color}
-              emissive={b.color}
-              emissiveIntensity={0.55 + b.pulse * 0.45}
-              transparent
-              opacity={0.28}
-              metalness={0.4}
-              roughness={0.25}
-              depthWrite={false}
-            />
-          </mesh>
-          {b.beacon && (
-            <mesh position={[0, b.size[1] / 2 + 0.035, 0]}>
-              <sphereGeometry args={[0.022, 8, 8]} />
-              <meshStandardMaterial
-                color={ORANGE}
-                emissive={ORANGE}
-                emissiveIntensity={1.6}
-              />
-            </mesh>
-          )}
-        </group>
-      ))}
-
-      {/* Slim deal-flow arcs */}
-      {[0, 1].map((i) => (
-        <mesh
-          key={`arc-${i}`}
-          rotation={[0.08, (i * Math.PI) / 2 + 0.3, 0.04]}
-          position={[0, -0.45 + i * 0.1, 0]}
-        >
-          <torusGeometry args={[2.05 + i * 0.2, 0.006, 6, 64, Math.PI * 0.9]} />
-          <meshBasicMaterial
-            color={i % 2 === 0 ? BLUE : VIOLET}
-            transparent
-            opacity={0.5}
-            depthWrite={false}
-          />
-        </mesh>
-      ))}
-
-      <Sparkles
-        count={16}
-        scale={[5.5, 1.4, 4.2]}
-        size={1.1}
-        speed={0.2}
-        opacity={0.45}
-        color={BLUE}
-      />
+      <Sparkles count={8} scale={4.5} size={1.6} speed={0.3} opacity={0.3} color={VIOLET} />
     </group>
   );
 }

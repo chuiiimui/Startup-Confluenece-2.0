@@ -17,7 +17,7 @@ export const Registration: React.FC = () => {
   return (
     <section id="register" className="py-24 relative overflow-hidden">
       <InteractiveCanvas
-        className="absolute left-1/2 top-[8%] z-[1] h-[200px] w-[min(720px,90vw)] -translate-x-1/2 opacity-50"
+        className="absolute left-1/2 top-[8%] z-[1] hidden h-[200px] w-[min(720px,90vw)] -translate-x-1/2 opacity-50 md:block"
         interactive={false}
         camera={{ position: [0, 0.1, 5], fov: 38 }}
       >
@@ -45,10 +45,10 @@ export const Registration: React.FC = () => {
             viewport={{ once: true }}
             className="clay-card inline-block w-full max-w-xl rounded-[28px] p-8 md:p-12"
           >
-            <h3 className="mb-4 font-heading text-2xl font-bold text-white">
+            <h3 className="mb-4 font-heading text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
               Ready to accelerate your startup journey?
             </h3>
-            <p className="mb-8 text-slate-200/85">
+            <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
               Secure your spot at India's premier startup summit. Connect with investors, founders, and industry leaders.
             </p>
             

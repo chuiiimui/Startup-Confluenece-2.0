@@ -55,7 +55,8 @@ const Gallery = () => {
                 className="relative break-inside-avoid"
               >
                 <DepthFrame
-                  className="group cursor-pointer overflow-hidden rounded-2xl border border-white/20"
+                  className="group cursor-pointer overflow-hidden rounded-2xl border"
+                  style={{ borderColor: 'var(--border)' }}
                   data-cursor="image"
                   onClick={() => setSelectedImage(image)}
                 >
@@ -85,7 +86,12 @@ const Gallery = () => {
           <div className="mt-16 text-center">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="rounded-full border border-white/15 bg-white/10 px-8 py-3 font-medium text-white shadow-sm transition-colors hover:bg-white/15"
+              className="rounded-full border px-8 py-3 font-medium shadow-sm transition-colors"
+              style={{
+                borderColor: 'var(--border)',
+                background: 'var(--surface)',
+                color: 'var(--text-primary)',
+              }}
             >
               {showAll ? 'Show Less' : 'View All Images'}
             </button>

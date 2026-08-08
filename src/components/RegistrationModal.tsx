@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -10,14 +10,38 @@ import {
 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useRegistration } from '../context/RegistrationContext';
+import { getLenisInstance } from '../lib/utils';
 
 function getSavedFormData<T>(key: string): Partial<T> {
   try {
     const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : {};
+    if (!saved) return {};
+    const parsed = JSON.parse(saved) as Record<string, unknown>;
+    // Never persist large base64 pitch decks in localStorage
+    delete parsed.pitchDeckBase64;
+    delete parsed.pitchDeckFileName;
+    delete parsed.pitchDeckMimeType;
+    return parsed as Partial<T>;
   } catch {
     return {};
   }
+}
+
+const PITCH_DECK_MAX_BYTES = 3.5 * 1024 * 1024; // ~3.5MB (base64 expands ~33%)
+const PITCH_DECK_ACCEPT =
+  '.pdf,.ppt,.pptx,application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation';
+
+function readFileAsBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result || '');
+      const base64 = result.includes(',') ? result.split(',')[1] : result;
+      resolve(base64 || '');
+    };
+    reader.onerror = () => reject(new Error('Could not read pitch deck file'));
+    reader.readAsDataURL(file);
+  });
 }
 
 // Prefer VITE_GOOGLE_SCRIPT_URL from .env — see docs/EMAIL_SETUP.md
@@ -38,7 +62,12 @@ interface StartupFormData {
   description: string;
   teamSize: number;
   needStall: string;
+  fundingGrant: string;
   wantPitch: string;
+  pitchDeckUrl?: string;
+  pitchDeckFileName?: string;
+  pitchDeckMimeType?: string;
+  pitchDeckBase64?: string;
   linkedin: string;
 }
 
@@ -105,6 +134,14 @@ const inputErrorClass = 'form-glass-input form-glass-input-error font-body';
 const labelClass = 'form-glass-label font-body';
 const errorTextClass = 'text-xs text-red-300 mt-1 font-body';
 
+function scrollFormToFirstError() {
+  requestAnimationFrame(() => {
+    document
+      .querySelector('.registration-form-scroll .form-glass-input-error')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
 function FieldWrapper({ children }: { children: React.ReactNode }) {
   return <div className="space-y-0">{children}</div>;
 }
@@ -165,18 +202,100 @@ function StartupForm({
     register,
     handleSubmit,
     watch,
+    setValue,
+    setError,
+    clearErrors,
     formState: { errors },
-  } = useForm<StartupFormData>({ defaultValues: getSavedFormData<StartupFormData>('startupFormAutoSave') });
+  } = useForm<StartupFormData>({
+    defaultValues: {
+      fundingGrant: '',
+      wantPitch: '',
+      ...getSavedFormData<StartupFormData>('startupFormAutoSave'),
+    },
+    shouldFocusError: true,
+  });
+
+  const wantPitch = watch('wantPitch');
+  const pitchDeckFileName = watch('pitchDeckFileName');
 
   useEffect(() => {
     const subscription = watch((value) => {
-      localStorage.setItem('startupFormAutoSave', JSON.stringify(value));
+      const {
+        pitchDeckBase64: _b64,
+        pitchDeckFileName: _name,
+        pitchDeckMimeType: _mime,
+        ...rest
+      } = value;
+      localStorage.setItem('startupFormAutoSave', JSON.stringify(rest));
     });
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  useEffect(() => {
+    if (wantPitch !== 'Yes') {
+      setValue('pitchDeckUrl', '');
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      clearErrors(['pitchDeckUrl', 'pitchDeckFileName']);
+    }
+  }, [wantPitch, setValue, clearErrors]);
+
+  const handlePitchDeckChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    clearErrors(['pitchDeckFileName', 'pitchDeckUrl']);
+
+    if (!file) {
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      return;
+    }
+
+    if (file.size > PITCH_DECK_MAX_BYTES) {
+      setError('pitchDeckFileName', {
+        type: 'manual',
+        message: 'Pitch deck must be under 3.5 MB. Upload a smaller file or paste a Drive/URL link instead.',
+      });
+      e.target.value = '';
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      return;
+    }
+
+    try {
+      const base64 = await readFileAsBase64(file);
+      setValue('pitchDeckFileName', file.name, { shouldValidate: true });
+      setValue('pitchDeckMimeType', file.type || 'application/octet-stream');
+      setValue('pitchDeckBase64', base64);
+    } catch {
+      setError('pitchDeckFileName', {
+        type: 'manual',
+        message: 'Could not read that file. Try again or use a link instead.',
+      });
+      e.target.value = '';
+    }
+  };
+
+  const submitStartup = (data: StartupFormData) => {
+    if (data.wantPitch === 'Yes') {
+      const hasFile = Boolean(data.pitchDeckBase64 && data.pitchDeckFileName);
+      const hasUrl = Boolean(data.pitchDeckUrl?.trim());
+      if (!hasFile && !hasUrl) {
+        setError('pitchDeckFileName', {
+          type: 'manual',
+          message: 'Add a pitch deck file or paste a deck URL to continue.',
+        });
+        scrollFormToFirstError();
+        return;
+      }
+    }
+    onSubmit(data);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(submitStartup, scrollFormToFirstError)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FieldWrapper>
           <label className={labelClass}>
@@ -322,7 +441,7 @@ function StartupForm({
         )}
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FieldWrapper>
           <label className={labelClass}>
             Team Size <span className="text-red-400">*</span>
@@ -358,6 +477,28 @@ function StartupForm({
             <p className={errorTextClass}>{errors.needStall.message}</p>
           )}
         </FieldWrapper>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Has your startup received any funding?{' '}
+            <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.fundingGrant ? inputErrorClass : inputClass}
+            {...register('fundingGrant', {
+              required: 'Please select whether you have received funding',
+            })}
+          >
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+          {errors.fundingGrant && (
+            <p className={errorTextClass}>{errors.fundingGrant.message}</p>
+          )}
+        </FieldWrapper>
 
         <FieldWrapper>
           <label className={labelClass}>
@@ -376,6 +517,54 @@ function StartupForm({
           )}
         </FieldWrapper>
       </div>
+
+      {wantPitch === 'Yes' && (
+        <div
+          className="space-y-4 rounded-2xl border p-4"
+          style={{
+            borderColor: 'var(--border-strong)',
+            background: 'var(--surface)',
+          }}
+        >
+          <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+            Pitch deck <span className="text-red-400">*</span>
+          </p>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            Upload a PDF/PPT (max 3.5 MB) or paste a Drive / public deck link.
+          </p>
+
+          <FieldWrapper>
+            <label className={labelClass}>Upload pitch deck</label>
+            <input
+              type="file"
+              accept={PITCH_DECK_ACCEPT}
+              className={errors.pitchDeckFileName ? inputErrorClass : inputClass}
+              onChange={handlePitchDeckChange}
+            />
+            {pitchDeckFileName && (
+              <p className="mt-1 text-xs" style={{ color: 'var(--badge-text)' }}>
+                Selected: {pitchDeckFileName}
+              </p>
+            )}
+            {errors.pitchDeckFileName && (
+              <p className={errorTextClass}>{errors.pitchDeckFileName.message}</p>
+            )}
+          </FieldWrapper>
+
+          <FieldWrapper>
+            <label className={labelClass}>Or pitch deck URL</label>
+            <input
+              type="url"
+              className={errors.pitchDeckUrl ? inputErrorClass : inputClass}
+              placeholder="https://drive.google.com/... or public deck link"
+              {...register('pitchDeckUrl')}
+            />
+            {errors.pitchDeckUrl && (
+              <p className={errorTextClass}>{errors.pitchDeckUrl.message}</p>
+            )}
+          </FieldWrapper>
+        </div>
+      )}
 
       <FieldWrapper>
         <label className={labelClass}>LinkedIn Profile</label>
@@ -405,7 +594,10 @@ function SponsorForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<SponsorFormData>({ defaultValues: getSavedFormData<SponsorFormData>('sponsorFormAutoSave') });
+  } = useForm<SponsorFormData>({
+    defaultValues: getSavedFormData<SponsorFormData>('sponsorFormAutoSave'),
+    shouldFocusError: true,
+  });
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -415,7 +607,7 @@ function SponsorForm({
   }, [watch]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FieldWrapper>
           <label className={labelClass}>
@@ -573,7 +765,10 @@ function SpeakerForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<SpeakerFormData>({ defaultValues: getSavedFormData<SpeakerFormData>('speakerFormAutoSave') });
+  } = useForm<SpeakerFormData>({
+    defaultValues: getSavedFormData<SpeakerFormData>('speakerFormAutoSave'),
+    shouldFocusError: true,
+  });
 
   useEffect(() => {
     const subscription = watch((value) => {
@@ -583,7 +778,7 @@ function SpeakerForm({
   }, [watch]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FieldWrapper>
           <label className={labelClass}>
@@ -788,6 +983,7 @@ export const RegistrationModal: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Sync external registrationType to internal selection
   useEffect(() => {
@@ -802,8 +998,17 @@ export const RegistrationModal: React.FC = () => {
       setIsSuccess(false);
       setSubmitError(null);
       setIsSubmitting(false);
+      requestAnimationFrame(() => {
+        scrollRef.current?.scrollTo({ top: 0 });
+      });
     }
   }, [isOpen]);
+
+  // Keep form scrolled to top when switching registration type
+  useEffect(() => {
+    if (!isOpen) return;
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [selectedType, isOpen]);
 
   // ESC to close
   useEffect(() => {
@@ -816,15 +1021,19 @@ export const RegistrationModal: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, closeModal]);
 
-  // Body scroll lock
+  // Body scroll lock + pause Lenis so the form scrolls natively
   useEffect(() => {
+    const lenis = getLenisInstance();
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      lenis?.stop();
     } else {
       document.body.style.overflow = '';
+      lenis?.start();
     }
     return () => {
       document.body.style.overflow = '';
+      getLenisInstance()?.start();
     };
   }, [isOpen]);
 
@@ -862,7 +1071,14 @@ export const RegistrationModal: React.FC = () => {
         registrationType: selectedType,
         ...data,
         // Remap field names to match Google Apps Script
-        ...(selectedType === 'startup' && { linkedIn: (data as StartupFormData).linkedin }),
+        ...(selectedType === 'startup' && {
+          linkedIn: (data as StartupFormData).linkedin,
+          fundingGrant: (data as StartupFormData).fundingGrant,
+          pitchDeckUrl: (data as StartupFormData).pitchDeckUrl || '',
+          pitchDeckFileName: (data as StartupFormData).pitchDeckFileName || '',
+          pitchDeckMimeType: (data as StartupFormData).pitchDeckMimeType || '',
+          pitchDeckBase64: (data as StartupFormData).pitchDeckBase64 || '',
+        }),
         ...(selectedType === 'sponsor' && { organizationName: (data as SponsorFormData).orgName }),
         ...(selectedType === 'speaker' && {
           linkedIn: (data as SpeakerFormData).linkedin,
@@ -921,7 +1137,7 @@ export const RegistrationModal: React.FC = () => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 z-50 flex items-end justify-center px-0 sm:items-center sm:px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -929,25 +1145,38 @@ export const RegistrationModal: React.FC = () => {
         >
           {/* Overlay */}
           <motion.div
-            className="absolute inset-0 bg-[#070B1A]/72 backdrop-blur-xl"
+            className="absolute inset-0 backdrop-blur-xl"
+            style={{ background: 'var(--overlay-bg)' }}
             onClick={closeModal}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           />
 
-          {/* Modal */}
+          {/* Modal — flex column: sticky chrome + scrollable form body */}
           <motion.div
-            className="form-glass-panel relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[32px]"
+            className="form-glass-panel relative z-10 flex max-h-[min(92dvh,920px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[28px] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: 'spring', damping: 30, stiffness: 350 }}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="registration-modal-title"
           >
-            {/* Progress Bar */}
-            <div className="sticky top-0 z-20 px-6 pt-4 backdrop-blur-md">
-              <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
+            {/* Sticky header */}
+            <div
+              className="relative z-20 shrink-0 border-b px-6 pb-3 pt-4 backdrop-blur-md"
+              style={{
+                borderColor: 'var(--border)',
+                background: 'var(--bg-alt)',
+              }}
+            >
+              <div
+                className="h-1 w-full overflow-hidden rounded-full"
+                style={{ background: 'var(--surface)' }}
+              >
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-violet-400 to-accent"
                   initial={{ width: '33%' }}
@@ -955,18 +1184,26 @@ export const RegistrationModal: React.FC = () => {
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
                 />
               </div>
+              <button
+                onClick={closeModal}
+                className="absolute right-4 top-3 z-30 flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
+                style={{
+                  borderColor: 'var(--border)',
+                  background: 'var(--surface)',
+                  color: 'var(--text-secondary)',
+                }}
+                aria-label="Close modal"
+              >
+                <X className="h-4 w-4" />
+              </button>
             </div>
 
-            {/* Close Button */}
-            <button
-              onClick={closeModal}
-              className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-slate-200 transition-colors hover:bg-white/15 hover:text-white"
-              aria-label="Close modal"
+            {/* Scrollable form content */}
+            <div
+              ref={scrollRef}
+              data-lenis-prevent
+              className="registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4 md:px-10 md:py-6"
             >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="p-6 pt-4 md:p-10 md:pt-6">
               <AnimatePresence mode="wait">
                 {isSuccess ? (
                   /* ─── Success State ──────────────────── */
@@ -994,7 +1231,8 @@ export const RegistrationModal: React.FC = () => {
                     </motion.div>
 
                     <motion.h2
-                      className="mt-6 text-2xl font-bold text-white font-heading md:text-3xl"
+                      className="mt-6 text-2xl font-bold font-heading md:text-3xl"
+                      style={{ color: 'var(--text-primary)' }}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
@@ -1003,7 +1241,8 @@ export const RegistrationModal: React.FC = () => {
                     </motion.h2>
 
                     <motion.p
-                      className="mt-2 max-w-md text-slate-300 font-body"
+                      className="mt-2 max-w-md font-body"
+                      style={{ color: 'var(--text-secondary)' }}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.45 }}
@@ -1015,7 +1254,12 @@ export const RegistrationModal: React.FC = () => {
 
                     <motion.button
                       onClick={closeModal}
-                      className="mt-8 rounded-2xl border border-violet-300/35 bg-white/10 px-10 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/15 font-heading"
+                      className="mt-8 rounded-2xl border px-10 py-3 text-sm font-semibold transition-colors font-heading"
+                      style={{
+                        borderColor: 'var(--border-strong)',
+                        background: 'var(--surface)',
+                        color: 'var(--text-primary)',
+                      }}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
@@ -1034,11 +1278,18 @@ export const RegistrationModal: React.FC = () => {
                     exit={{ opacity: 0 }}
                   >
                     {/* Header */}
-                    <div className="mb-6 text-center">
-                      <h2 className="text-2xl font-bold text-white font-heading md:text-3xl">
+                    <div className="mb-6 pr-8 text-center">
+                      <h2
+                        id="registration-modal-title"
+                        className="text-2xl font-bold font-heading md:text-3xl"
+                        style={{ color: 'var(--text-primary)' }}
+                      >
                         Join Startup Confluence 2.0
                       </h2>
-                      <p className="mt-1.5 text-sm text-slate-300 font-body">
+                      <p
+                        className="mt-1.5 text-sm font-body"
+                        style={{ color: 'var(--text-secondary)' }}
+                      >
                         Choose your registration type and fill in the details
                       </p>
                     </div>
@@ -1061,22 +1312,34 @@ export const RegistrationModal: React.FC = () => {
                           >
                             <div
                               className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-                                isSelected
-                                  ? 'bg-accent/20 text-accent'
-                                  : 'bg-white/10 text-violet-200'
+                                isSelected ? 'bg-accent/20 text-accent' : ''
                               }`}
+                              style={
+                                isSelected
+                                  ? undefined
+                                  : {
+                                      background: 'var(--surface)',
+                                      color: 'var(--badge-text)',
+                                    }
+                              }
                             >
                               <Icon className="h-5 w-5" />
                             </div>
                             <div>
                               <p
-                                className={`text-sm font-bold font-heading ${
-                                  isSelected ? 'text-white' : 'text-slate-200'
-                                }`}
+                                className="text-sm font-bold font-heading"
+                                style={{
+                                  color: isSelected
+                                    ? 'var(--text-primary)'
+                                    : 'var(--text-secondary)',
+                                }}
                               >
                                 {cat.title}
                               </p>
-                              <p className="text-xs text-slate-400 font-body">
+                              <p
+                                className="text-xs font-body"
+                                style={{ color: 'var(--text-muted)' }}
+                              >
                                 {cat.subtitle}
                               </p>
                             </div>
@@ -1123,7 +1386,7 @@ export const RegistrationModal: React.FC = () => {
             <AnimatePresence>
               {submitError && (
                 <motion.div
-                  className="fixed bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#1E1B4B]/90 px-6 py-3 shadow-xl backdrop-blur-xl"
+                  className="pointer-events-none absolute bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#1E1B4B]/90 px-6 py-3 shadow-xl backdrop-blur-xl"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}

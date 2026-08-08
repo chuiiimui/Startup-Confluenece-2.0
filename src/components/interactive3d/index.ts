@@ -14,6 +14,5 @@ export {
   LiquidMetalBlobScene,
   HoloTickerRibbonScene,
   PitchCardSwarmScene,
-  NeonWireframeCityScene,
   SceneLights,
 } from './scenes';

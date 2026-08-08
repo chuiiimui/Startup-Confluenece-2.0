@@ -170,7 +170,7 @@ export const Footer: React.FC = () => {
           </p>
           
           <div className="md:flex-1 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
               Crafted with ❤️ by{' '}
               <a
                 href="https://ayushyadav.dev"

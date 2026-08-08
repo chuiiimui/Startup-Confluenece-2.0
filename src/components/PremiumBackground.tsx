@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 /**
- * Site-wide dark premium purple–blue gradient background.
+ * Site-wide premium gradient background — theme aware.
+ * Glass panel blur / sheen structure is preserved in both themes.
  */
 export default function PremiumBackground() {
+  const { theme } = useTheme();
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [isHovering, setIsHovering] = useState(false);
 
@@ -51,26 +54,13 @@ export default function PremiumBackground() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      key={theme}
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden transition-opacity duration-500"
       aria-hidden
     >
-      {/* Deep navy–indigo base */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(110% 70% at 12% 8%, #4C1D95 0%, transparent 48%), radial-gradient(90% 60% at 88% 18%, #1E3A8A 0%, transparent 50%), radial-gradient(80% 70% at 50% 100%, #312E81 0%, transparent 55%), linear-gradient(165deg, #070B1A 0%, #0B1229 32%, #111827 68%, #0A0F1E 100%)',
-        }}
-      />
+      <div className="absolute inset-0" style={{ background: 'var(--bg-base-gradient)' }} />
 
-      {/* Soft atmospheric lift */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(70% 50% at 50% 20%, rgba(99,102,241,0.18) 0%, transparent 55%), linear-gradient(180deg, rgba(15,23,42,0.2) 0%, rgba(2,6,23,0.55) 100%)',
-        }}
-      />
+      <div className="absolute inset-0" style={{ background: 'var(--bg-atmosphere)' }} />
 
       <motion.div
         className="absolute -left-[15%] top-[-10%] h-[55vmax] w-[55vmax] rounded-full"
@@ -78,8 +68,7 @@ export default function PremiumBackground() {
           y: y1,
           scale,
           x: hoverX * 0.6,
-          background:
-            'radial-gradient(circle, rgba(139,92,246,0.38) 0%, rgba(67,56,202,0.16) 42%, transparent 70%)',
+          background: 'var(--orb-1)',
           filter: 'blur(40px)',
         }}
         animate={{ opacity: [0.7, 0.95, 0.7] }}
@@ -91,8 +80,7 @@ export default function PremiumBackground() {
         style={{
           y: y2,
           x: -hoverX * 0.5,
-          background:
-            'radial-gradient(circle, rgba(37,99,235,0.36) 0%, rgba(30,64,175,0.16) 45%, transparent 70%)',
+          background: 'var(--orb-2)',
           filter: 'blur(48px)',
         }}
         animate={{ opacity: [0.65, 0.9, 0.65] }}
@@ -104,8 +92,7 @@ export default function PremiumBackground() {
         style={{
           y: y3,
           x: hoverX * 0.35,
-          background:
-            'radial-gradient(circle, rgba(168,85,247,0.28) 0%, rgba(59,130,246,0.14) 45%, transparent 70%)',
+          background: 'var(--orb-3)',
           filter: 'blur(52px)',
         }}
         animate={{ opacity: [0.55, 0.85, 0.55] }}
@@ -116,50 +103,46 @@ export default function PremiumBackground() {
         className="absolute right-[20%] bottom-[10%] h-[30vmax] w-[30vmax] rounded-full"
         style={{
           y: y2,
-          background:
-            'radial-gradient(circle, rgba(255,122,0,0.12) 0%, transparent 65%)',
+          background: 'var(--orb-4)',
           filter: 'blur(36px)',
         }}
       />
 
-      {/* Glass panels — darker translucent */}
       <motion.div
-        className="absolute left-[8%] top-[22%] h-40 w-64 rounded-[28px] border border-white/10"
+        className="absolute left-[8%] top-[22%] h-40 w-64 rounded-[28px]"
         style={{
           rotate,
           x: hoverX * 0.25,
           y: panelY1,
-          background:
-            'linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 55%, rgba(139,92,246,0.10) 100%)',
+          background: 'var(--panel-glass)',
+          border: '1px solid var(--border)',
           backdropFilter: 'blur(18px)',
-          boxShadow:
-            'inset 0 1px 0 rgba(255,255,255,0.18), 0 20px 60px rgba(0,0,0,0.35)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight), var(--shadow-card)',
         }}
       />
 
       <motion.div
-        className="absolute right-[12%] top-[48%] h-52 w-52 rounded-full border border-white/10"
+        className="absolute right-[12%] top-[48%] h-52 w-52 rounded-full"
         style={{
           rotate: rotateNeg,
           x: -hoverX * 0.3,
           y: panelY2,
-          background:
-            'linear-gradient(160deg, rgba(255,255,255,0.10) 0%, rgba(59,130,246,0.08) 50%, rgba(255,255,255,0.02) 100%)',
+          background: 'var(--panel-glass)',
+          border: '1px solid var(--border)',
           backdropFilter: 'blur(20px)',
-          boxShadow:
-            'inset 0 1px 0 rgba(255,255,255,0.15), 0 24px 70px rgba(0,0,0,0.35)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight), var(--shadow-card)',
         }}
       />
 
       <motion.div
-        className="absolute left-[55%] top-[70%] h-28 w-72 rounded-[24px] border border-white/10"
+        className="absolute left-[55%] top-[70%] h-28 w-72 rounded-[24px]"
         style={{
           rotate: rotatePanel,
           x: hoverX * 0.2,
-          background:
-            'linear-gradient(120deg, rgba(255,255,255,0.08) 0%, rgba(129,140,248,0.10) 100%)',
+          background: 'var(--panel-glass)',
+          border: '1px solid var(--border)',
           backdropFilter: 'blur(16px)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.12)',
+          boxShadow: 'inset 0 1px 0 var(--glass-highlight)',
         }}
       />
 
@@ -167,8 +150,7 @@ export default function PremiumBackground() {
         className="absolute inset-y-0 w-[28%] skew-x-[-18deg]"
         style={{
           x: sheenX,
-          background:
-            'linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)',
+          background: 'var(--sheen)',
           opacity: 0.5,
         }}
       />
@@ -185,7 +167,7 @@ export default function PremiumBackground() {
           translateX: '-50%',
           translateY: '-50%',
           background:
-            'radial-gradient(circle, rgba(167,139,250,0.22) 0%, rgba(96,165,250,0.10) 40%, transparent 70%)',
+            'radial-gradient(circle, var(--cursor-glow) 0%, transparent 70%)',
           filter: 'blur(20px)',
         }}
       />
@@ -198,13 +180,7 @@ export default function PremiumBackground() {
         }}
       />
 
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 30%, rgba(2,6,23,0.55) 100%)',
-        }}
-      />
+      <div className="absolute inset-0" style={{ background: 'var(--bg-vignette)' }} />
     </div>
   );
 }

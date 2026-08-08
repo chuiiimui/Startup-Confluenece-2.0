@@ -49,8 +49,8 @@ export const Contact: React.FC = () => {
               <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-300/25 bg-white/10 transition-colors group-hover:bg-accent/15">
                 {card.icon}
               </div>
-              <h4 className="mb-2 text-xl font-semibold text-white">{card.title}</h4>
-              <div className="text-slate-200/85">{card.value}</div>
+              <h4 className="mb-2 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{card.title}</h4>
+              <div style={{ color: 'var(--text-secondary)' }}>{card.value}</div>
             </motion.div>
           ))}
         </div>

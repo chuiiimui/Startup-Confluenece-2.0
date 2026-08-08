@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ReactLenis, useLenis, type LenisRef } from 'lenis/react';
 import { cancelFrame, frame } from 'framer-motion';
 import { setLenisInstance } from '../lib/utils';
@@ -19,19 +19,25 @@ function LenisBridge() {
   return null;
 }
 
-function prefersReducedMotion() {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
+function shouldUseNativeScroll() {
+  if (typeof window === 'undefined') return true;
+  // Native touch scroll is crisp; Lenis fights momentum on mobile/low-end
+  if (window.matchMedia('(pointer: coarse)').matches) return true;
+  if (window.matchMedia('(max-width: 768px)').matches) return true;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+  return false;
 }
 
 /**
- * Lenis smooth scroll synced to Framer Motion's frame loop.
+ * Lenis on desktop only. Mobile/touch uses native scroll for crisp 60fps feel.
  */
 export default function SmoothScroll({ children, enabled = true }: SmoothScrollProps) {
   const lenisRef = useRef<LenisRef>(null);
-  const allowSmooth = enabled && !prefersReducedMotion();
+  const [allowSmooth, setAllowSmooth] = useState(false);
+
+  useEffect(() => {
+    setAllowSmooth(enabled && !shouldUseNativeScroll());
+  }, [enabled]);
 
   useEffect(() => {
     if (!allowSmooth) {
@@ -55,10 +61,11 @@ export default function SmoothScroll({ children, enabled = true }: SmoothScrollP
       ref={lenisRef}
       options={{
         autoRaf: false,
-        duration: 1.15,
+        duration: 0.9,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smoothWheel: true,
-        touchMultiplier: 1.2,
+        syncTouch: false,
+        touchMultiplier: 1,
       }}
     >
       <LenisBridge />

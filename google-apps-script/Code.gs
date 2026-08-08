@@ -164,6 +164,7 @@ function appendToSheet_(type, data, emailMeta) {
       : '';
 
   if (type === 'startup') {
+    var pitchDeckLink = savePitchDeck_(data);
     var startupHeaders = [
       'Timestamp',
       'Startup Name',
@@ -176,7 +177,9 @@ function appendToSheet_(type, data, emailMeta) {
       'Description',
       'Team Size',
       'Need Stall',
+      'Received Funding',
       'Want Pitch',
+      'Pitch Deck',
       'LinkedIn',
       'Email Sent',
       'Email Quota Left',
@@ -194,7 +197,9 @@ function appendToSheet_(type, data, emailMeta) {
       data.description || '',
       data.teamSize || '',
       data.needStall || '',
+      data.fundingGrant || '',
       data.wantPitch || '',
+      pitchDeckLink || data.pitchDeckUrl || '',
       data.linkedIn || data.linkedin || '',
       emailSent,
       emailQuotaLeft,
@@ -293,6 +298,8 @@ function sendConfirmationEmail_(type, data) {
       'Startup: ' + (data.startupName || '—'),
       'Stage: ' + (data.startupStage || '—'),
       'Industry: ' + (data.industry || '—'),
+      'Received Funding: ' + (data.fundingGrant || '—'),
+      'Want to Pitch: ' + (data.wantPitch || '—'),
     ];
   } else if (type === 'sponsor') {
     subject = 'Partnership inquiry received — Startup Confluence 2.0';
@@ -363,4 +370,50 @@ function escapeHtml_(value) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Saves uploaded pitch deck to Drive and returns a shareable link.
+ * Falls back to provided pitchDeckUrl when no file is attached.
+ */
+function savePitchDeck_(data) {
+  var existingUrl = String(data.pitchDeckUrl || '').trim();
+  var base64 = String(data.pitchDeckBase64 || '').trim();
+  var fileName = String(data.pitchDeckFileName || '').trim();
+
+  if (!base64 || !fileName) {
+    return existingUrl;
+  }
+
+  try {
+    var folder = getOrCreatePitchDeckFolder_();
+    var mime = String(data.pitchDeckMimeType || 'application/octet-stream');
+    var blob = Utilities.newBlob(
+      Utilities.base64Decode(base64),
+      mime,
+      fileName
+    );
+    var file = folder.createFile(blob);
+    try {
+      file.setSharing(
+        DriveApp.Access.ANYONE_WITH_LINK,
+        DriveApp.Permission.VIEW
+      );
+    } catch (shareErr) {
+      // Sharing may be restricted by Workspace policy — still return file URL
+    }
+    return file.getUrl();
+  } catch (err) {
+    // If Drive upload fails, keep any provided URL so the row is still useful
+    return existingUrl || 'Upload failed: ' + String(err);
+  }
+}
+
+function getOrCreatePitchDeckFolder_() {
+  var folderName = 'Startup Confluence 2.0 — Pitch Decks';
+  var folders = DriveApp.getFoldersByName(folderName);
+  if (folders.hasNext()) {
+    return folders.next();
+  }
+  return DriveApp.createFolder(folderName);
 }

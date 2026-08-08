@@ -33,7 +33,7 @@ const MarqueeRow = ({ sponsors, speed, direction = 'left', tierClass, name }: { 
           {duplicatedSponsors.map((sponsor, index) => (
             <div
               key={`${sponsor.id}-${index}`}
-              className="w-48 sm:w-64 h-32 shrink-0 glass rounded-2xl border hover:border-white/30 transition-colors flex items-center justify-center relative overflow-hidden"
+              className="w-48 sm:w-64 h-32 shrink-0 glass rounded-2xl border hover:border-[color:var(--border-strong)] transition-colors flex items-center justify-center relative overflow-hidden"
               style={{ borderColor: 'var(--border)' }}
             >
               {/* Fallback styling for sponsor logo */}
@@ -69,7 +69,7 @@ const Sponsors = () => {
       </motion.div>
 
       <InteractiveCanvas
-        className="absolute left-1/2 top-[6%] z-[1] h-[220px] w-[min(920px,92vw)] -translate-x-1/2 opacity-55"
+        className="absolute left-1/2 top-[6%] z-[1] hidden h-[220px] w-[min(920px,92vw)] -translate-x-1/2 opacity-55 md:block"
         interactive={false}
         camera={{ position: [0, 0.1, 5.2], fov: 38 }}
       >

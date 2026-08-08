@@ -59,7 +59,10 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
             border: '1px solid var(--badge-border)',
           }}
         >
-          <span className="text-xs font-semibold uppercase tracking-widest text-violet-300">
+          <span
+            className="text-xs font-semibold uppercase tracking-widest"
+            style={{ color: 'var(--badge-text)' }}
+          >
             {badge}
           </span>
         </motion.div>

@@ -89,8 +89,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const variantClasses = {
       primary:
         'bg-indigo-600 text-white shadow-[0_0_28px_rgba(79,70,229,0.45)] hover:bg-indigo-500 hover:shadow-[0_0_40px_rgba(124,58,237,0.55)] border border-white/10',
-      secondary: 'hover:border-violet-300/40 text-white',
-      ghost: 'hover:bg-white/10 text-white',
+      secondary: 'hover:border-[color:var(--border-strong)]',
+      ghost: 'hover:bg-[color:var(--surface-hover)]',
     };
 
     const disabledClasses = disabled
