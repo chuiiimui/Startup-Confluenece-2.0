@@ -1,20 +1,20 @@
 import { GalleryImage } from '../types';
 
-import img0 from '../assets/Previous image Gallery/DSC_7889.jpg';
-import img1 from '../assets/Previous image Gallery/DSC_7976.jpg';
-import img2 from '../assets/Previous image Gallery/DSC_7999.jpg';
-import img3 from '../assets/Previous image Gallery/DSC_8169.jpg';
-import img4 from '../assets/Previous image Gallery/UBD_0266.jpg';
-import img5 from '../assets/Previous image Gallery/UBD_0281.jpg';
-import img6 from '../assets/Previous image Gallery/UBD_0313.jpg';
-import img7 from '../assets/Previous image Gallery/UBD_0355.jpg';
-import img8 from '../assets/Previous image Gallery/UBD_0415.jpg';
-import img9 from '../assets/Previous image Gallery/UBD_0424.jpg';
-import img10 from '../assets/Previous image Gallery/UBD_0448.jpg';
-import img11 from '../assets/Previous image Gallery/UBD_0457.jpg';
-import img12 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.02 (1).jpg';
-import img13 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.02.jpg';
-import img14 from '../assets/Previous image Gallery/WhatsApp Image 2026-08-06 at 14.38.03.jpg';
+import img0 from '../assets/gallery/DSC_7889.jpg';
+import img1 from '../assets/gallery/DSC_7976.jpg';
+import img2 from '../assets/gallery/DSC_7999.jpg';
+import img3 from '../assets/gallery/DSC_8169.jpg';
+import img4 from '../assets/gallery/UBD_0266.jpg';
+import img5 from '../assets/gallery/UBD_0281.jpg';
+import img6 from '../assets/gallery/UBD_0313.jpg';
+import img7 from '../assets/gallery/UBD_0355.jpg';
+import img8 from '../assets/gallery/UBD_0415.jpg';
+import img9 from '../assets/gallery/UBD_0424.jpg';
+import img10 from '../assets/gallery/UBD_0448.jpg';
+import img11 from '../assets/gallery/UBD_0457.jpg';
+import img12 from '../assets/gallery/whatsapp-1.jpg';
+import img13 from '../assets/gallery/whatsapp-2.jpg';
+import img14 from '../assets/gallery/whatsapp-3.jpg';
 
 export const gallery: GalleryImage[] = [
   { id: 'gal-0', src: img0, title: 'Event Moment 0', category: 'expo', alt: 'Event Moment 0' },
