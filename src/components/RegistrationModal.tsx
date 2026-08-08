@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   Rocket,
-  Handshake,
+  Users,
   Mic,
   CheckCircle2,
   Loader2,
@@ -49,7 +49,7 @@ const GOOGLE_SCRIPT_URL =
   (import.meta.env.VITE_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
   'https://script.google.com/macros/s/AKfycbx3KEix1mtaKzco5pj-8ut-VjChYhanuxUt_JPxHPbHPq0d6VZBT5PvhVm7o6qjrqAZ2g/exec';
 
-type RegistrationType = 'startup' | 'sponsor' | 'speaker';
+type RegistrationType = 'startup' | 'speaker' | 'delegate';
 
 interface StartupFormData {
   startupName: string;
@@ -73,18 +73,12 @@ interface StartupFormData {
   linkedin: string;
 }
 
-interface SponsorFormData {
-  orgName: string;
-  contactPerson: string;
+interface DelegateFormData {
   email: string;
+  fullName: string;
   phone: string;
-  website: string;
-  sponsorshipCategory: string;
-  sponsorshipType: string;
-  sponsorshipAmount: number;
-  companyDescription: string;
-  expectedContribution: string;
-  additionalNotes: string;
+  idDetails: string;
+  events: string[];
 }
 
 interface SpeakerFormData {
@@ -105,13 +99,6 @@ interface SpeakerFormData {
 
 const CONFETTI_COLORS = ['#FF7A1A', '#0A2E6D', '#16B8CC', '#22C55E', '#FFD700'];
 
-const SPONSORSHIP_TIERS = [
-  { type: 'Title Sponsor', suggested: 200000 },
-  { type: 'Food Sponsor', suggested: 10000 },
-  { type: 'Brand Sponsor', suggested: 100000 },
-  { type: 'Event Sponsor', suggested: 50000 },
-] as const;
-
 const SPEAKER_TOPIC_OPTIONS = [
   'Idea Building',
   'Product Development',
@@ -120,13 +107,16 @@ const SPEAKER_TOPIC_OPTIONS = [
   'Other',
 ] as const;
 
-function formatINR(amount: number): string {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
+const DELEGATE_EVENT_OPTIONS = [
+  'Inauguration Ceremony',
+  'Keynote Sessions',
+  'Workshops',
+  'Startup Expo',
+  'Pitching Sessions',
+  'Investor Meetup',
+  'Closing Ceremony & Awards',
+  'Full Event (Both Days)',
+] as const;
 
 const categories: {
   type: RegistrationType;
@@ -143,18 +133,18 @@ const categories: {
     subtitle: 'Register your venture',
   },
   {
-    type: 'sponsor',
-    icon: Handshake,
-    emoji: '🤝',
-    title: 'Sponsor',
-    subtitle: 'Sponsor the summit',
-  },
-  {
     type: 'speaker',
     icon: Mic,
     emoji: '🎤',
     title: 'Speaker',
     subtitle: 'Share your expertise',
+  },
+  {
+    type: 'delegate',
+    icon: Users,
+    emoji: '🎟️',
+    title: 'Delegate / Visitor',
+    subtitle: 'Attend as a guest',
   },
 ];
 
@@ -522,50 +512,6 @@ function StartupForm({
         </FieldWrapper>
       </div>
 
-      {/* Stall Booking — FCFS */}
-      <div
-        className="space-y-2.5 rounded-xl border p-3"
-        style={{
-          borderColor: 'var(--border-strong)',
-          background: 'var(--surface)',
-        }}
-      >
-        <div>
-          <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-            Stall Booking <span className="text-red-400">*</span>
-          </p>
-          <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            Stalls are allotted on a <strong style={{ color: 'var(--badge-text)' }}>First Come, First Served (FCFS)</strong> basis.
-            Book early to secure your spot at the Startup Expo.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2">
-          {(['Yes', 'No'] as const).map((option) => {
-            const selected = needStall === option;
-            return (
-              <label
-                key={option}
-                className={`form-glass-option cursor-pointer px-3 py-3 text-center text-sm font-semibold transition-colors ${
-                  selected ? 'is-selected' : ''
-                } ${errors.needStall ? 'form-glass-input-error' : ''}`}
-              >
-                <input
-                  type="radio"
-                  value={option}
-                  className="sr-only"
-                  {...register('needStall', { required: 'Please select a stall option' })}
-                />
-                {option === 'Yes' ? 'Book a Stall' : 'No Stall Needed'}
-              </label>
-            );
-          })}
-        </div>
-        {errors.needStall && (
-          <p className={errorTextClass}>{errors.needStall.message}</p>
-        )}
-      </div>
-
       {accommodationRequired === 'Yes' && (
         <div
           className="space-y-2.5 rounded-xl border p-3"
@@ -595,6 +541,64 @@ function StartupForm({
           </FieldWrapper>
         </div>
       )}
+
+      {/* Stall Booking — FCFS */}
+      <div
+        className="space-y-3 rounded-xl border p-3 sm:p-4"
+        style={{
+          borderColor: errors.needStall
+            ? 'rgba(248, 113, 113, 0.65)'
+            : 'var(--border-strong)',
+          background: 'var(--surface)',
+        }}
+      >
+        <div>
+          <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Stall Booking <span className="text-red-400">*</span>
+          </p>
+          <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            Stalls are allotted on a{' '}
+            <strong style={{ color: 'var(--badge-text)' }}>
+              First Come, First Served (FCFS)
+            </strong>{' '}
+            basis. Book early to secure your spot at the Startup Expo.
+          </p>
+        </div>
+
+        <input
+          type="hidden"
+          {...register('needStall', { required: 'Please select a stall option' })}
+        />
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {(
+            [
+              { value: 'Yes', label: 'Book a Stall' },
+              { value: 'No', label: 'No Stall Needed' },
+            ] as const
+          ).map((option) => {
+            const selected = needStall === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() =>
+                  setValue('needStall', option.value, { shouldValidate: true })
+                }
+                className={`form-glass-option flex min-h-[3rem] w-full items-center justify-center rounded-xl px-4 py-3 text-center text-sm font-semibold transition-colors ${
+                  selected ? 'is-selected' : ''
+                }`}
+                aria-pressed={selected}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+        {errors.needStall && (
+          <p className={errorTextClass}>{errors.needStall.message}</p>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
@@ -698,12 +702,12 @@ function StartupForm({
   );
 }
 
-/* ─── Sponsor Form ─────────────────────────────────────────── */
-function SponsorForm({
+/* ─── Delegate / Visitor Form ──────────────────────────────── */
+function DelegateForm({
   onSubmit,
   isSubmitting,
 }: {
-  onSubmit: (data: SponsorFormData) => void;
+  onSubmit: (data: DelegateFormData) => void;
   isSubmitting: boolean;
 }) {
   const {
@@ -712,90 +716,64 @@ function SponsorForm({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<SponsorFormData>({
+  } = useForm<DelegateFormData>({
     defaultValues: {
-      sponsorshipType: '',
-      sponsorshipCategory: '',
-      sponsorshipAmount: 0,
-      expectedContribution: '',
-      ...getSavedFormData<SponsorFormData>('sponsorFormAutoSave'),
+      events: [],
+      ...getSavedFormData<DelegateFormData>('delegateFormAutoSave'),
     },
     shouldFocusError: true,
   });
 
-  const sponsorshipType = watch('sponsorshipType');
-  const sponsorshipAmount = watch('sponsorshipAmount');
+  const selectedEvents = watch('events') || [];
 
-  const selectedTier = SPONSORSHIP_TIERS.find((t) => t.type === sponsorshipType);
+  useEffect(() => {
+    register('events', {
+      validate: (value) =>
+        (Array.isArray(value) && value.length > 0) ||
+        'Please select at least one event',
+    });
+  }, [register]);
 
   useEffect(() => {
     const subscription = watch((value) => {
-      localStorage.setItem('sponsorFormAutoSave', JSON.stringify(value));
+      localStorage.setItem('delegateFormAutoSave', JSON.stringify(value));
     });
     return () => subscription.unsubscribe();
   }, [watch]);
 
-  // Keep expectedContribution in sync with the numeric amount for sheet/email
-  useEffect(() => {
-    const amount = Number(sponsorshipAmount) || 0;
-    if (amount > 0) {
-      setValue('expectedContribution', formatINR(amount), { shouldValidate: false });
-    }
-  }, [sponsorshipAmount, setValue]);
-
-  const selectTier = (type: string, suggested: number) => {
-    setValue('sponsorshipType', type, { shouldValidate: true });
-    setValue('sponsorshipCategory', type, { shouldValidate: true });
-    // Prefill suggested amount — partner can adjust
-    setValue('sponsorshipAmount', suggested, { shouldValidate: true });
-    setValue('expectedContribution', formatINR(suggested), { shouldValidate: true });
+  const toggleEvent = (event: string) => {
+    const next = selectedEvents.includes(event)
+      ? selectedEvents.filter((e) => e !== event)
+      : [...selectedEvents, event];
+    setValue('events', next, { shouldValidate: true });
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-2.5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-        <FieldWrapper>
-          <label className={labelClass}>
-            Organization Name <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
-            className={errors.orgName ? inputErrorClass : inputClass}
-            placeholder="Company / Organization"
-            {...register('orgName', { required: 'Organization name is required' })}
-          />
-          {errors.orgName && (
-            <p className={errorTextClass}>{errors.orgName.message}</p>
-          )}
-        </FieldWrapper>
-
-        <FieldWrapper>
-          <label className={labelClass}>
-            Contact Person <span className="text-red-400">*</span>
-          </label>
-          <input
-            type="text"
-            className={errors.contactPerson ? inputErrorClass : inputClass}
-            placeholder="Full name"
-            {...register('contactPerson', {
-              required: 'Contact person is required',
-            })}
-          />
-          {errors.contactPerson && (
-            <p className={errorTextClass}>{errors.contactPerson.message}</p>
-          )}
-        </FieldWrapper>
-      </div>
+      <FieldWrapper>
+        <label className={labelClass}>
+          Full Name <span className="text-red-400">*</span>
+        </label>
+        <input
+          type="text"
+          className={errors.fullName ? inputErrorClass : inputClass}
+          placeholder="Your full name"
+          {...register('fullName', { required: 'Full name is required' })}
+        />
+        {errors.fullName && (
+          <p className={errorTextClass}>{errors.fullName.message}</p>
+        )}
+      </FieldWrapper>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
-            Email <span className="text-red-400">*</span>
+            Mail ID / Email <span className="text-red-400">*</span>
           </label>
           <input
             type="email"
             className={errors.email ? inputErrorClass : inputClass}
-            placeholder="contact@company.com"
+            placeholder="you@email.com"
             {...register('email', {
               required: 'Email is required',
               pattern: {
@@ -811,7 +789,7 @@ function SponsorForm({
 
         <FieldWrapper>
           <label className={labelClass}>
-            Phone <span className="text-red-400">*</span>
+            Phone Number <span className="text-red-400">*</span>
           </label>
           <input
             type="tel"
@@ -826,16 +804,29 @@ function SponsorForm({
       </div>
 
       <FieldWrapper>
-        <label className={labelClass}>Website</label>
+        <label className={labelClass}>
+          Aadhaar Card / ID details <span className="text-red-400">*</span>
+        </label>
         <input
-          type="url"
-          className={inputClass}
-          placeholder="https://yourcompany.com"
-          {...register('website')}
+          type="text"
+          className={errors.idDetails ? inputErrorClass : inputClass}
+          placeholder="Aadhaar number or other government ID details"
+          {...register('idDetails', {
+            required: 'Aadhaar / ID details are required',
+            minLength: {
+              value: 4,
+              message: 'Please enter valid ID details',
+            },
+          })}
         />
+        <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+          Enter Aadhaar number or passport / driving licence / voter ID details.
+        </p>
+        {errors.idDetails && (
+          <p className={errorTextClass}>{errors.idDetails.message}</p>
+        )}
       </FieldWrapper>
 
-      {/* Sponsors / Partners — flexible amounts around suggested tiers */}
       <div
         className="space-y-3 rounded-xl border p-3"
         style={{
@@ -845,148 +836,37 @@ function SponsorForm({
       >
         <div>
           <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-            Sponsors / Partners <span className="text-red-400">*</span>
+            Events you want to participate in <span className="text-red-400">*</span>
           </p>
           <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-            Choose a category. Amounts shown are indicative — you can adjust your contribution.
+            Select one or more sessions you plan to attend.
           </p>
         </div>
 
-        <input
-          type="hidden"
-          {...register('sponsorshipType', {
-            required: 'Please select a sponsorship category',
-          })}
-        />
-        <input type="hidden" {...register('sponsorshipCategory')} />
-        <input type="hidden" {...register('expectedContribution')} />
-
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {SPONSORSHIP_TIERS.map((tier) => {
-            const selected = sponsorshipType === tier.type;
-            const isTitle = tier.type === 'Title Sponsor';
+          {DELEGATE_EVENT_OPTIONS.map((event) => {
+            const selected = selectedEvents.includes(event);
             return (
               <button
-                key={tier.type}
+                key={event}
                 type="button"
-                onClick={() => selectTier(tier.type, tier.suggested)}
-                className={`form-glass-option rounded-xl px-4 py-3 text-left transition-colors ${
+                onClick={() => toggleEvent(event)}
+                className={`form-glass-option rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
                   selected ? 'is-selected' : ''
-                } ${isTitle ? 'sm:col-span-2' : ''}`}
+                }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p
-                      className="text-sm font-bold"
-                      style={{ color: 'var(--text-primary)' }}
-                    >
-                      {tier.type}
-                      {isTitle ? ' — Flagship Partnership' : ''}
-                    </p>
-                    <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-                      Suggested starting range · flexible
-                    </p>
-                  </div>
-                  <span
-                    className="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold tabular-nums"
-                    style={{
-                      background: 'var(--badge-bg)',
-                      color: 'var(--badge-text)',
-                      border: '1px solid var(--badge-border)',
-                    }}
-                  >
-                    ≈ {formatINR(tier.suggested)}
-                  </span>
-                </div>
+                {event}
               </button>
             );
           })}
         </div>
 
-        {errors.sponsorshipType && (
-          <p className={errorTextClass}>{errors.sponsorshipType.message}</p>
-        )}
-
-        {selectedTier && (
-          <FieldWrapper>
-            <label className={labelClass}>
-              Your contribution amount (₹) <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="number"
-              min={Math.round(selectedTier.suggested * 0.75)}
-              step={1000}
-              className={errors.sponsorshipAmount ? inputErrorClass : inputClass}
-              placeholder={`Around ${formatINR(selectedTier.suggested)}`}
-              {...register('sponsorshipAmount', {
-                required: 'Please enter your contribution amount',
-                valueAsNumber: true,
-                validate: (value) => {
-                  const amount = Number(value);
-                  if (!Number.isFinite(amount) || amount <= 0) {
-                    return 'Enter a valid amount greater than 0';
-                  }
-                  const min = Math.round(selectedTier.suggested * 0.75);
-                  if (amount < min) {
-                    return `Minimum contribution for ${selectedTier.type} is ${formatINR(min)}`;
-                  }
-                  return true;
-                },
-              })}
-            />
-            <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-              Suggested ≈ {formatINR(selectedTier.suggested)}. You can enter any amount from{' '}
-              {formatINR(Math.round(selectedTier.suggested * 0.75))} upward — no upper limit.
-            </p>
-            {errors.sponsorshipAmount && (
-              <p className={errorTextClass}>{errors.sponsorshipAmount.message}</p>
-            )}
-          </FieldWrapper>
-        )}
-
-        {sponsorshipType === 'Title Sponsor' && (
-          <div
-            className="rounded-lg border px-3 py-2 text-xs"
-            style={{
-              borderColor: 'var(--badge-border)',
-              background: 'var(--badge-bg)',
-              color: 'var(--badge-text)',
-            }}
-          >
-            <strong>Title Sponsor</strong> is typically around{' '}
-            <strong>≈ {formatINR(200000)}</strong> — final amount is flexible.
-          </div>
+        {errors.events && (
+          <p className={errorTextClass}>{errors.events.message as string}</p>
         )}
       </div>
 
-      <FieldWrapper>
-        <label className={labelClass}>
-          Company Description <span className="text-red-400">*</span>
-        </label>
-        <textarea
-          rows={3}
-          className={errors.companyDescription ? inputErrorClass : inputClass}
-          placeholder="Brief description of your company"
-          {...register('companyDescription', {
-            required: 'Company description is required',
-          })}
-        />
-        {errors.companyDescription && (
-          <p className={errorTextClass}>{errors.companyDescription.message}</p>
-        )}
-      </FieldWrapper>
-
-      <FieldWrapper>
-        <label className={labelClass}>Additional Notes</label>
-        <textarea
-          rows={2}
-          className={inputClass}
-          placeholder="Any specific requirements or notes"
-          {...register('additionalNotes')}
-        />
-      </FieldWrapper>
-
-      <SubmitButton label="Become a Sponsor" isSubmitting={isSubmitting} />
+      <SubmitButton label="Register as Delegate / Visitor" isSubmitting={isSubmitting} />
     </form>
   );
 }
@@ -1357,12 +1237,12 @@ export const RegistrationModal: React.FC = () => {
 
   const clearFormDrafts = () => {
     localStorage.removeItem('startupFormAutoSave');
-    localStorage.removeItem('sponsorFormAutoSave');
+    localStorage.removeItem('delegateFormAutoSave');
     localStorage.removeItem('speakerFormAutoSave');
   };
 
   const handleFormSubmit = useCallback(
-    async (data: StartupFormData | SponsorFormData | SpeakerFormData) => {
+    async (data: StartupFormData | DelegateFormData | SpeakerFormData) => {
       setIsSubmitting(true);
       setSubmitError(null);
 
@@ -1392,16 +1272,13 @@ export const RegistrationModal: React.FC = () => {
           pitchDeckMimeType: (data as StartupFormData).pitchDeckMimeType || '',
           pitchDeckBase64: (data as StartupFormData).pitchDeckBase64 || '',
         }),
-        ...(selectedType === 'sponsor' && {
-          organizationName: (data as SponsorFormData).orgName,
-          sponsorshipType: (data as SponsorFormData).sponsorshipType,
-          sponsorshipAmount: (data as SponsorFormData).sponsorshipAmount,
-          sponsorshipCategory:
-            (data as SponsorFormData).sponsorshipType ||
-            (data as SponsorFormData).sponsorshipCategory,
-          expectedContribution:
-            (data as SponsorFormData).expectedContribution ||
-            formatINR((data as SponsorFormData).sponsorshipAmount || 0),
+        ...(selectedType === 'delegate' && {
+          fullName: (data as DelegateFormData).fullName,
+          idDetails: (data as DelegateFormData).idDetails,
+          events: Array.isArray((data as DelegateFormData).events)
+            ? (data as DelegateFormData).events.join(', ')
+            : (data as DelegateFormData).events,
+          eventsList: (data as DelegateFormData).events,
         }),
         ...(selectedType === 'speaker' && {
           linkedIn: (data as SpeakerFormData).linkedin,
@@ -1693,14 +1570,14 @@ export const RegistrationModal: React.FC = () => {
                             isSubmitting={isSubmitting}
                           />
                         )}
-                        {selectedType === 'sponsor' && (
-                          <SponsorForm
+                        {selectedType === 'speaker' && (
+                          <SpeakerForm
                             onSubmit={handleFormSubmit}
                             isSubmitting={isSubmitting}
                           />
                         )}
-                        {selectedType === 'speaker' && (
-                          <SpeakerForm
+                        {selectedType === 'delegate' && (
+                          <DelegateForm
                             onSubmit={handleFormSubmit}
                             isSubmitting={isSubmitting}
                           />

@@ -1,6 +1,6 @@
 # Registration email setup (Google Apps Script)
 
-This sends a **confirmation email to the submitter only** when Startup / Sponsor / Speaker forms are submitted. Data is saved to your Sheet’s 3 tabs.
+This sends a **confirmation email to the submitter only** when Startup / Sponsor / Partner / Speaker / Delegate forms are submitted. Data is saved to your Sheet’s tabs.
 
 ## Switch to a Sheet you own (fixes “no permission” on deploy)
 
@@ -10,10 +10,12 @@ Do this instead:
 
 1. Sign into **your** Google account in Chrome.
 2. Create a **new** Google Sheet (or open one you own).
-3. Rename 3 tabs to exactly:
+3. Rename tabs to exactly:
    - `Startup`
    - `Sponsor`
+   - `Partner`
    - `Speaker`
+   - `Delegate`
 4. Copy the Sheet ID from the browser URL:
    `https://docs.google.com/spreadsheets/d/`**`SHEET_ID_HERE`**`/edit`
 5. Go to [script.google.com](https://script.google.com) → **New project** (same account).
@@ -98,14 +100,18 @@ If you skip this, the live URL keeps the old code (no emails).
 | Problem | Fix |
 |---|---|
 | Sheet updates, no email | Re-authorize Mail permissions; check Spam; confirm `email` field is filled |
-| Missing sheet tab error | Rename tabs to `Startup`, `Sponsor`, `Speaker` |
+| Missing sheet tab error | Rename tabs to `Startup`, `Sponsor`, `Partner`, `Speaker`, `Delegate` |
 | Website still uses old behavior | Create a **New version** deployment |
 | Daily send limit | Gmail/MailApp quotas apply; fine for typical event volume |
 
 ## Email content
 
-Submitters get a branded confirmation with:
+Submitters get a **form-specific** confirmation email (not a generic message):
 
-- Thanks + “we received your submission”
-- Key details for their registration type
-- Reply contact: `startupconfluence@ugi.edu.in`
+- **Startup** — startup details, stall/accommodation/pitch summary + next steps
+- **Sponsor** — sponsorship type, amount, organization + partnership follow-up
+- **Partner** — partner category + review next steps
+- **Speaker** — speaker name, topic, organization + curation next steps
+- **Delegate / Visitor** — name, selected events, ID reminder + check-in next steps
+
+Each email also includes contact: `startupconfluence@ugi.edu.in` · +91-6390903018 · +91-89536 15232

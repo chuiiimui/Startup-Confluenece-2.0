@@ -9,7 +9,16 @@ export const Contact: React.FC = () => {
     {
       icon: <Phone className="w-8 h-8 text-accent" />,
       title: 'Phone',
-      value: '+91 98765 43210',
+      value: (
+        <div className="flex flex-col gap-2 text-sm mt-1">
+          <a href="tel:+916390903018" className="transition-colors hover:text-accent">
+            +91-6390903018
+          </a>
+          <a href="tel:+918953615232" className="transition-colors hover:text-accent">
+            +91-89536 15232
+          </a>
+        </div>
+      ),
       delay: 0.1
     },
     {

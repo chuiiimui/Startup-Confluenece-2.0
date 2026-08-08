@@ -3,7 +3,7 @@
  *
  * RECOMMENDED SETUP (avoids permission errors):
  * 1. Create a NEW Google Sheet under YOUR Google account
- * 2. Rename tabs to: Startup, Sponsor, Partner, Speaker
+ * 2. Rename tabs to: Startup, Sponsor, Partner, Speaker, Delegate
  * 3. Copy the Sheet ID from the URL:
  *    https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit
  * 4. Paste that ID into SPREADSHEET_ID below
@@ -29,6 +29,7 @@ var SHEET_NAMES = {
   sponsor: 'Sponsor',
   partner: 'Partner',
   speaker: 'Speaker',
+  delegate: 'Delegate',
 };
 
 var CONTACT_EMAIL = 'startupconfluence@ugi.edu.in';
@@ -55,7 +56,8 @@ function doPost(e) {
     if (!SHEET_NAMES[type]) {
       return json_({
         ok: false,
-        error: 'Invalid registrationType. Use startup, sponsor, partner, or speaker.',
+        error:
+          'Invalid registrationType. Use startup, sponsor, partner, speaker, or delegate.',
       });
     }
 
@@ -129,7 +131,7 @@ function getSheet_(type) {
     throw new Error(
       'Missing sheet tab "' +
         name +
-        '". Create tabs named Startup, Sponsor, Partner, and Speaker.'
+        '". Create tabs named Startup, Sponsor, Partner, Speaker, and Delegate.'
     );
   }
   return sheet;
@@ -282,6 +284,38 @@ function appendToSheet_(type, data, emailMeta) {
     return;
   }
 
+  if (type === 'delegate') {
+    var eventsValue = data.events || '';
+    if (Object.prototype.toString.call(data.eventsList) === '[object Array]') {
+      eventsValue = data.eventsList.join(', ');
+    } else if (Object.prototype.toString.call(data.events) === '[object Array]') {
+      eventsValue = data.events.join(', ');
+    }
+
+    var delegateHeaders = [
+      'Timestamp',
+      'Full Name',
+      'Email',
+      'Phone',
+      'Aadhaar / ID Details',
+      'Events',
+      'Email Sent',
+      'Email Quota Left',
+    ];
+    ensureHeaders_(sheet, delegateHeaders);
+    sheet.appendRow([
+      ts,
+      data.fullName || '',
+      data.email || '',
+      data.phone || '',
+      data.idDetails || '',
+      eventsValue,
+      emailSent,
+      emailQuotaLeft,
+    ]);
+    return;
+  }
+
   // speaker
   var speakerHeaders = [
     'Timestamp',
@@ -332,87 +366,79 @@ function sendConfirmationEmail_(type, data) {
     return { sent: false, reason: 'invalid_or_missing_email' };
   }
 
-  var subject = '';
-  var greetingName = '';
-  var detailLines = [];
+  var content = buildFormEmailContent_(type, data);
+  var detailHtml = content.detailLines
+    .map(function (line) {
+      return '<div style="margin:4px 0">' + escapeHtml_(line) + '</div>';
+    })
+    .join('');
 
-  if (type === 'startup') {
-    subject = 'Registration received — Startup Confluence 2.0';
-    greetingName = data.founderName || 'Founder';
-    detailLines = [
-      'Registration type: Startup',
-      'Startup: ' + (data.startupName || '—'),
-      'Stage: ' + (data.startupStage || '—'),
-      'Industry: ' + (data.industry || '—'),
-      'Stall Required: ' + (data.stallRequired || data.needStall || '—'),
-      'Accommodation: ' + (data.accommodationRequired || '—'),
-      'Received Funding: ' + (data.fundingGrant || '—'),
-      'Want to Pitch: ' + (data.wantPitch || '—'),
-    ];
-  } else if (type === 'sponsor') {
-    subject = 'Partnership inquiry received — Startup Confluence 2.0';
-    greetingName = data.contactPerson || 'Partner';
-    detailLines = [
-      'Registration type: Sponsor',
-      'Organization: ' + (data.organizationName || data.orgName || '—'),
-      'Sponsorship Type: ' + (data.sponsorshipType || data.sponsorshipCategory || '—'),
-      'Sponsorship Amount: ' + (data.expectedContribution || data.sponsorshipAmount || '—'),
-    ];
-  } else if (type === 'partner') {
-    subject = 'Partner application received — Startup Confluence 2.0';
-    greetingName = data.contactPerson || 'Partner';
-    detailLines = [
-      'Registration type: Partner',
-      'Organization: ' + (data.organizationName || data.orgName || '—'),
-      'Partner Category: ' + (data.partnerCategory || '—'),
-    ];
-  } else {
-    subject = 'Speaker application received — Startup Confluence 2.0';
-    greetingName = data.speakerName || data.fullName || 'Speaker';
-    detailLines = [
-      'Registration type: Speaker',
-      'Speaker: ' + (data.speakerName || data.fullName || '—'),
-      'Organization: ' + (data.organization || '—'),
-      'Topic: ' + (data.speakerTopic || data.topicProposal || '—'),
-    ];
-  }
+  var nextStepsHtml = content.nextSteps
+    .map(function (step, index) {
+      return (
+        '<li style="margin:6px 0">' +
+        escapeHtml_(index + 1 + '. ' + step) +
+        '</li>'
+      );
+    })
+    .join('');
 
   var html =
     '<div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#0f172a;max-width:560px">' +
-    '<h2 style="color:#5B21B6;margin:0 0 12px">Startup Confluence 2.0</h2>' +
+    '<h2 style="color:#FF7A1A;margin:0 0 12px">Startup Confluence 2.0</h2>' +
     '<p>Hi ' +
-    escapeHtml_(greetingName) +
+    escapeHtml_(content.greetingName) +
     ',</p>' +
-    '<p>Thanks for applying. We have received your submission and our team will review it shortly.</p>' +
-    '<div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:12px;padding:14px 16px;margin:16px 0">' +
-    detailLines
-      .map(function (line) {
-        return '<div>' + escapeHtml_(line) + '</div>';
-      })
-      .join('') +
+    '<p>' +
+    escapeHtml_(content.intro) +
+    '</p>' +
+    '<div style="background:#fff7ed;border:1px solid #fdba74;border-radius:12px;padding:14px 16px;margin:16px 0">' +
+    '<div style="font-weight:700;margin-bottom:8px">' +
+    escapeHtml_(content.summaryTitle) +
     '</div>' +
-    '<p>If you have questions, reply to this email or contact us at ' +
+    detailHtml +
+    '</div>' +
+    '<p style="font-weight:700;margin:0 0 6px">What happens next</p>' +
+    '<ul style="padding-left:18px;margin:0 0 16px">' +
+    nextStepsHtml +
+    '</ul>' +
+    '<p>' +
+    escapeHtml_(content.closing) +
+    '</p>' +
+    '<p>Questions? Reply to this email or contact us at ' +
     '<a href="mailto:' +
     CONTACT_EMAIL +
     '">' +
     CONTACT_EMAIL +
-    '</a>.</p>' +
+    '</a>' +
+    ' · +91-6390903018 · +91-89536 15232</p>' +
     '<p style="color:#64748b;font-size:13px;margin-top:24px">United Incubation Hub · Prayagraj</p>' +
     '</div>';
 
   var text =
     'Hi ' +
-    greetingName +
+    content.greetingName +
     ',\n\n' +
-    'Thanks for applying to Startup Confluence 2.0. We have received your submission.\n\n' +
-    detailLines.join('\n') +
+    content.intro +
+    '\n\n' +
+    content.summaryTitle +
+    '\n' +
+    content.detailLines.join('\n') +
+    '\n\nWhat happens next:\n' +
+    content.nextSteps
+      .map(function (step, index) {
+        return index + 1 + '. ' + step;
+      })
+      .join('\n') +
+    '\n\n' +
+    content.closing +
     '\n\nContact: ' +
     CONTACT_EMAIL +
-    '\n';
+    ' | +91-6390903018 | +91-89536 15232\n';
 
   MailApp.sendEmail({
     to: to,
-    subject: subject,
+    subject: content.subject,
     htmlBody: html,
     body: text,
     name: 'Startup Confluence 2.0',
@@ -420,6 +446,162 @@ function sendConfirmationEmail_(type, data) {
   });
 
   return { sent: true, to: to };
+}
+
+function buildFormEmailContent_(type, data) {
+  if (type === 'startup') {
+    return {
+      subject: 'Startup registration received — Startup Confluence 2.0',
+      greetingName: data.founderName || 'Founder',
+      intro:
+        'Thank you for registering your startup for Startup Confluence 2.0. We have received your startup application and the details below.',
+      summaryTitle: 'Your startup registration',
+      detailLines: [
+        'Startup: ' + (data.startupName || '—'),
+        'Founder: ' + (data.founderName || '—'),
+        'Email: ' + (data.email || '—'),
+        'Phone: ' + (data.phone || '—'),
+        'Stage: ' + (data.startupStage || '—'),
+        'Industry: ' + (data.industry || '—'),
+        'Team size: ' + (data.teamSize || '—'),
+        'Stall booking: ' + (data.stallRequired || data.needStall || '—') + ' (FCFS)',
+        'Accommodation: ' + (data.accommodationRequired || '—'),
+        data.accommodationRequired === 'Yes'
+          ? 'Accommodation details: ' + (data.accommodationDetails || '—')
+          : '',
+        'Received funding: ' + (data.fundingGrant || '—'),
+        'Want to pitch: ' + (data.wantPitch || '—'),
+      ].filter(Boolean),
+      nextSteps: [
+        'Our team will review your startup profile and expo requirements.',
+        data.stallRequired === 'Yes' || data.needStall === 'Yes'
+          ? 'Stall allotment is First Come, First Served — early registrants get priority.'
+          : 'If you later need a stall, reply to this email as early as possible (FCFS).',
+        data.wantPitch === 'Yes'
+          ? 'Pitch applications will be screened and shortlisted teams will be notified.'
+          : 'You will receive event updates closer to 23–24 Oct 2026.',
+        'Keep this email for your records.',
+      ],
+      closing:
+        'We are excited to have your venture at the confluence. See you in Prayagraj.',
+    };
+  }
+
+  if (type === 'sponsor') {
+    return {
+      subject: 'Sponsorship enquiry received — Startup Confluence 2.0',
+      greetingName: data.contactPerson || 'Sponsor',
+      intro:
+        'Thank you for your interest in sponsoring Startup Confluence 2.0. We have received your sponsorship enquiry with the details below.',
+      summaryTitle: 'Your sponsorship enquiry',
+      detailLines: [
+        'Organization: ' + (data.organizationName || data.orgName || '—'),
+        'Contact person: ' + (data.contactPerson || '—'),
+        'Email: ' + (data.email || '—'),
+        'Phone: ' + (data.phone || '—'),
+        'Sponsorship type: ' + (data.sponsorshipType || data.sponsorshipCategory || '—'),
+        'Proposed amount: ' +
+          (data.expectedContribution || data.sponsorshipAmount || '—'),
+        data.companyDescription
+          ? 'About organization: ' + data.companyDescription
+          : '',
+        data.additionalNotes ? 'Notes: ' + data.additionalNotes : '',
+      ].filter(Boolean),
+      nextSteps: [
+        'Our partnerships team will review your sponsorship category and proposed amount.',
+        'We will share deliverables, branding benefits, and next steps for confirmation.',
+        'If anything needs clarification, we will contact you on this email or phone.',
+      ],
+      closing:
+        'Thank you for considering a sponsorship with Startup Confluence 2.0.',
+    };
+  }
+
+  if (type === 'partner') {
+    return {
+      subject: 'Partner application received — Startup Confluence 2.0',
+      greetingName: data.contactPerson || 'Partner',
+      intro:
+        'Thank you for applying to partner with Startup Confluence 2.0. We have received your partner application with the details below.',
+      summaryTitle: 'Your partner application',
+      detailLines: [
+        'Organization: ' + (data.organizationName || data.orgName || '—'),
+        'Contact person: ' + (data.contactPerson || '—'),
+        'Email: ' + (data.email || '—'),
+        'Phone: ' + (data.phone || '—'),
+        'Partner category: ' + (data.partnerCategory || '—'),
+        data.companyDescription
+          ? 'About organization: ' + data.companyDescription
+          : '',
+        data.additionalNotes ? 'Notes: ' + data.additionalNotes : '',
+      ].filter(Boolean),
+      nextSteps: [
+        'Our team will review your partnership category and collaboration interest.',
+        'Shortlisted partners will receive a follow-up with scope, branding, and onboarding details.',
+        'Feel free to reply if you want to share additional materials.',
+      ],
+      closing:
+        'We look forward to exploring a partnership with you for Startup Confluence 2.0.',
+    };
+  }
+
+  if (type === 'delegate') {
+    var eventsText = data.events || '—';
+    if (Object.prototype.toString.call(data.eventsList) === '[object Array]') {
+      eventsText = data.eventsList.join(', ');
+    } else if (Object.prototype.toString.call(data.events) === '[object Array]') {
+      eventsText = data.events.join(', ');
+    }
+
+    return {
+      subject: 'Delegate / Visitor registration received — Startup Confluence 2.0',
+      greetingName: data.fullName || 'Guest',
+      intro:
+        'Thank you for registering as a Delegate / Visitor for Startup Confluence 2.0. We have received your attendance registration with the details below.',
+      summaryTitle: 'Your delegate registration',
+      detailLines: [
+        'Full name: ' + (data.fullName || '—'),
+        'Email: ' + (data.email || '—'),
+        'Phone: ' + (data.phone || '—'),
+        'ID details received: Yes',
+        'Events selected: ' + eventsText,
+      ],
+      nextSteps: [
+        'Your registration will be verified by our team.',
+        'Please carry a valid ID (matching the details you submitted) when you arrive.',
+        'Event-day check-in and schedule updates will be shared closer to the summit.',
+      ],
+      closing:
+        'We look forward to welcoming you at Startup Confluence 2.0 in Prayagraj.',
+    };
+  }
+
+  // speaker
+  return {
+    subject: 'Speaker application received — Startup Confluence 2.0',
+    greetingName: data.speakerName || data.fullName || 'Speaker',
+    intro:
+      'Thank you for applying to speak at Startup Confluence 2.0. We have received your speaker application with the details below.',
+    summaryTitle: 'Your speaker application',
+    detailLines: [
+      'Speaker: ' + (data.speakerName || data.fullName || '—'),
+      'Organization: ' + (data.organization || '—'),
+      'Designation: ' + (data.designation || '—'),
+      'Email: ' + (data.email || '—'),
+      'Phone: ' + (data.phone || '—'),
+      'Proposed topic: ' + (data.speakerTopic || data.topicProposal || '—'),
+      data.expertise || data.areaOfExpertise
+        ? 'Expertise: ' + (data.expertise || data.areaOfExpertise)
+        : '',
+    ].filter(Boolean),
+    nextSteps: [
+      'Our curation team will review your profile and proposed topic.',
+      'If shortlisted, we will confirm session format, timing, and logistics by email.',
+      'You may reply with any additional bio, deck, or availability notes.',
+    ],
+    closing:
+      'Thank you for offering to share your expertise at Startup Confluence 2.0.',
+  };
 }
 
 function escapeHtml_(value) {

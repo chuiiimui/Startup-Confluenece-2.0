@@ -22,7 +22,8 @@ export const SOCIAL_LINKS = {
 
 export const CONTACT_INFO = {
   email: 'hello@startupconfluence.in',
-  phone: '+91 98765 43210',
+  phone: '+91-6390903018',
+  phones: ['+91-6390903018', '+91-89536 15232'],
   address: 'Convention Centre, Tech Park, Bangalore',
 };
 

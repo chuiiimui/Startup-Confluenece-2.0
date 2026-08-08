@@ -23,10 +23,10 @@ export default function BecomePartnerButton() {
           whileTap={{ scale: 0.97 }}
           transition={{ type: 'spring', stiffness: 380, damping: 28 }}
           data-cursor="link"
-          aria-label="Become a partner"
+          aria-label="Become a partner or sponsor"
         >
           <Handshake className="h-4 w-4 shrink-0" strokeWidth={2.2} />
-          <span className="whitespace-nowrap">Become Partner</span>
+          <span className="whitespace-nowrap">Partner / Sponsor</span>
         </motion.button>
       )}
     </AnimatePresence>

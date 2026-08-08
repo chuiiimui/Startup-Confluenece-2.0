@@ -108,8 +108,11 @@ export const Footer: React.FC = () => {
             <div className="space-y-6">
               <div className="flex flex-col items-center">
                 <span className="text-xs text-accent mb-1">Phone</span>
-                <a href="tel:+919876543210" className="text-sm font-medium transition-all active:scale-95" style={{ color: 'var(--text-primary)' }}>
-                  +91 98765 43210
+                <a href="tel:+916390903018" className="text-sm font-medium transition-all active:scale-95" style={{ color: 'var(--text-primary)' }}>
+                  +91-6390903018
+                </a>
+                <a href="tel:+918953615232" className="mt-1 text-sm font-medium transition-all active:scale-95" style={{ color: 'var(--text-primary)' }}>
+                  +91-89536 15232
                 </a>
               </div>
               
