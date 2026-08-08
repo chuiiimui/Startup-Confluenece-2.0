@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import RevealText from './RevealText';
+import { usePerfMode } from '../hooks/usePerfMode';
 
 export interface SectionHeadingProps {
   title: string;
@@ -21,13 +22,22 @@ const containerVariants = {
   },
 };
 
-const itemVariants = {
+const heavyItem = {
   hidden: { opacity: 0, y: 36, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
     y: 0,
     filter: 'blur(0px)',
     transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const lightItem = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -38,9 +48,45 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
   align,
   alignment,
 }) => {
+  const { reduceMotion, enableHeavyBlur } = usePerfMode();
   const resolvedAlign = align || alignment || 'center';
   const alignClasses =
     resolvedAlign === 'center' ? 'items-center text-center' : 'items-start text-left';
+  const itemVariants = enableHeavyBlur ? heavyItem : lightItem;
+
+  if (reduceMotion) {
+    return (
+      <div className={`mb-12 flex flex-col ${alignClasses}`}>
+        {badge && (
+          <div
+            className="mb-4 inline-flex items-center rounded-full px-3 py-1"
+            style={{
+              background: 'var(--badge-bg)',
+              border: '1px solid var(--badge-border)',
+            }}
+          >
+            <span
+              className="text-xs font-semibold uppercase tracking-widest"
+              style={{ color: 'var(--badge-text)' }}
+            >
+              {badge}
+            </span>
+          </div>
+        )}
+        <h2
+          className="mb-6 font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="max-w-2xl text-lg" style={{ color: 'var(--text-muted)' }}>
+            {subtitle}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -53,7 +99,9 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       {badge && (
         <motion.div
           variants={itemVariants}
-          className="mb-4 inline-flex items-center rounded-full px-3 py-1 backdrop-blur-md"
+          className={`mb-4 inline-flex items-center rounded-full px-3 py-1 ${
+            enableHeavyBlur ? 'backdrop-blur-md' : ''
+          }`}
           style={{
             background: 'var(--badge-bg)',
             border: '1px solid var(--badge-border)',

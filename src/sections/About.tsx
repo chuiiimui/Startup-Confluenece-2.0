@@ -4,7 +4,6 @@ import SectionHeading from '../components/SectionHeading';
 import AnimatedCounter from '../components/AnimatedCounter';
 import GlassCard from '../components/GlassCard';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import { LiquidMetalBlobScene } from '../components/interactive3d/scenes';
 
 const stats = [
   { value: 1000, suffix: '+', label: 'Expected Attendees' },
@@ -50,13 +49,12 @@ export default function About() {
     <section className="py-24 relative min-h-[100dvh] flex items-center justify-center overflow-hidden" id="about" >
       {/* Neon orange circular glow */}
       <div
-        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[680px] md:w-[680px]"
+        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[680px] md:w-[680px] max-md:opacity-70"
         style={{
           background:
             'radial-gradient(circle, rgba(255,122,0,0.38) 0%, rgba(255,122,0,0.16) 38%, rgba(255,122,0,0.05) 62%, transparent 72%)',
           boxShadow:
             '0 0 80px rgba(255,122,0,0.28), 0 0 160px rgba(255,122,0,0.16)',
-          filter: 'blur(8px)',
         }}
         aria-hidden
       />
@@ -65,16 +63,14 @@ export default function About() {
         style={{
           background:
             'radial-gradient(circle, rgba(255,180,80,0.45) 0%, rgba(255,122,0,0.18) 45%, transparent 70%)',
-          filter: 'blur(2px)',
         }}
         aria-hidden
       />
       <InteractiveCanvas
+        scene="liquidMetalBlob"
         className="absolute right-[-3%] bottom-[12%] z-[2] hidden h-[240px] w-[240px] opacity-75 lg:block xl:right-[2%]"
         camera={{ position: [0, 0, 4.2], fov: 40 }}
-      >
-        <LiquidMetalBlobScene />
-      </InteractiveCanvas>
+      />
       <div className="container mx-auto px-6 w-full relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           

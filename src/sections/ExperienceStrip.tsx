@@ -1,6 +1,6 @@
-import HorizontalScroll from '../components/HorizontalScroll';
 import RevealText from '../components/RevealText';
 import TiltCard from '../components/TiltCard';
+import HorizontalScroll from '../components/HorizontalScroll';
 import { Rocket, Handshake, Mic2, Trophy, Network, Lightbulb } from 'lucide-react';
 
 const cards = [
@@ -73,7 +73,7 @@ export default function ExperienceStrip() {
               }}
             >
               <div
-                className="flex h-14 w-14 items-center justify-center rounded-2xl border text-sky-600 shadow-sm backdrop-blur-md dark:text-sky-300"
+                className="flex h-14 w-14 items-center justify-center rounded-2xl border text-sky-700 shadow-sm"
                 style={{
                   borderColor: 'var(--border)',
                   background: 'var(--surface)',

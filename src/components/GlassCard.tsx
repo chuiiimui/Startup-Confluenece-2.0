@@ -25,7 +25,7 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
     const inner = (
       <motion.div
         ref={ref}
-        className={`group relative overflow-hidden rounded-2xl p-6 backdrop-blur-xl transition-colors ${
+        className={`group relative overflow-hidden rounded-2xl p-6 transition-colors ${
           glow ? 'hover:border-violet-400/40' : ''
         } ${className}`}
         style={{
@@ -40,7 +40,7 @@ const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
         transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         {...props}
       >
-        {/* Glass top reflection — kept in both themes */}
+        {/* Glass top reflection */}
         <div
           className="pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-70"
           style={{

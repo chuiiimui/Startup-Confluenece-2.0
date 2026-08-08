@@ -4,14 +4,15 @@ import { Menu, X, ChevronRight } from 'lucide-react';
 import { NAV_ITEMS } from '../constants';
 import { scrollToSection } from '../lib/utils';
 import { useRegistration } from '../context/RegistrationContext';
-import ThemeToggle from './ThemeToggle';
 import logo from '../assets/logo.png';
+import { usePerfMode } from '../hooks/usePerfMode';
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { openModal } = useRegistration();
+  const { enableHeavyBlur } = usePerfMode();
   const { scrollY } = useScroll();
   const navScale = useTransform(scrollY, [0, 120], [1, 0.97]);
 
@@ -74,12 +75,16 @@ export const Navbar = () => {
           style={{
             scale: isOpen ? 1 : navScale,
             background: isScrolled ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
-            backdropFilter: isScrolled
-              ? 'blur(48px) saturate(180%)'
-              : 'blur(28px) saturate(140%)',
-            WebkitBackdropFilter: isScrolled
-              ? 'blur(48px) saturate(180%)'
-              : 'blur(28px) saturate(140%)',
+            backdropFilter: enableHeavyBlur
+              ? isScrolled
+                ? 'blur(48px) saturate(180%)'
+                : 'blur(28px) saturate(140%)'
+              : 'none',
+            WebkitBackdropFilter: enableHeavyBlur
+              ? isScrolled
+                ? 'blur(48px) saturate(180%)'
+                : 'blur(28px) saturate(140%)'
+              : 'none',
             borderTop: isScrolled
               ? '1px solid var(--nav-border-top-scrolled)'
               : '1px solid var(--nav-border-top)',
@@ -153,7 +158,6 @@ export const Navbar = () => {
             </div>
 
             <div className="hidden lg:flex items-center gap-2.5">
-              <ThemeToggle />
               <motion.button
                 onClick={() => openModal()}
                 data-cursor="link"
@@ -183,7 +187,6 @@ export const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-1.5 lg:hidden">
-              <ThemeToggle />
               <button
                 className="p-2 -mr-2 rounded-full transition-colors"
                 style={{ color: 'var(--text-muted)' }}

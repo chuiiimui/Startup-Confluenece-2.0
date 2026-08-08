@@ -4,7 +4,6 @@ import { schedule } from '../data/schedule';
 import SectionHeading from '../components/SectionHeading';
 import ScheduleEventCard from '../components/ScheduleEventCard';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import { TimelineBeadsScene } from '../components/interactive3d/scenes';
 
 const Schedule = () => {
   const [activeDay, setActiveDay] = useState(schedule[0]?.id || 1);
@@ -25,16 +24,14 @@ const Schedule = () => {
 
         <div className="mx-auto mb-8 hidden h-[120px] w-full max-w-xl md:block">
           <InteractiveCanvas
+            scene="timelineBeads"
             className="h-full w-full"
             camera={{ position: [0, 0, 5], fov: 35 }}
-          >
-            <TimelineBeadsScene
-              onSelect={(i) => {
-                const day = schedule[Math.min(i, schedule.length - 1)];
-                if (day) setActiveDay(day.id);
-              }}
-            />
-          </InteractiveCanvas>
+            onSelect={(i) => {
+              const day = schedule[Math.min(i, schedule.length - 1)];
+              if (day) setActiveDay(day.id);
+            }}
+          />
         </div>
 
         {/* Day Tabs */}

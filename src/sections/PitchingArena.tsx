@@ -5,7 +5,6 @@ import SectionHeading from '../components/SectionHeading';
 import VisionCard from '../components/VisionCard';
 import RewardCard from '../components/RewardCard';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import { PitchPodiumScene } from '../components/interactive3d/scenes';
 import { pitchSteps } from '../data/pitchSteps';
 
 const MentorshipIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -53,11 +52,10 @@ export default function PitchingArena() {
   return (
     <section id="pitching-arena" className="py-24 relative z-10 overflow-hidden" >
       <InteractiveCanvas
+        scene="pitchPodium"
         className="absolute left-[-2%] top-[8%] z-[2] hidden h-[280px] w-[280px] opacity-90 lg:block"
         camera={{ position: [0, 0.3, 4.8], fov: 38 }}
-      >
-        <PitchPodiumScene />
-      </InteractiveCanvas>
+      />
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <SectionHeading badge="Pitch" title="Pitching Arena" />
         

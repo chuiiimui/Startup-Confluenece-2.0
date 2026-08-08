@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { usePerfMode } from '../../hooks/usePerfMode';
 
 interface DepthFrameProps {
   children: ReactNode;
@@ -8,19 +9,43 @@ interface DepthFrameProps {
   'data-cursor'?: string;
 }
 
-/** Gallery depth frame — 3D tilt + glow on hover/click */
+/** Gallery depth frame — 3D tilt on desktop; plain press target on mobile. */
 export default function DepthFrame({
   children,
   className = '',
   onClick,
   'data-cursor': dataCursor,
 }: DepthFrameProps) {
+  const { enableTilt } = usePerfMode();
   const ref = useRef<HTMLDivElement>(null);
   const [pressed, setPressed] = useState(false);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const rx = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), { stiffness: 200, damping: 18 });
   const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-12, 12]), { stiffness: 200, damping: 18 });
+
+  const handleClick = () => {
+    setPressed(true);
+    setTimeout(() => setPressed(false), 350);
+    onClick?.();
+  };
+
+  if (!enableTilt) {
+    return (
+      <div
+        className={`relative ${className}`}
+        data-cursor={dataCursor}
+        onClick={handleClick}
+        style={{
+          boxShadow: pressed
+            ? '0 0 40px rgba(255,122,0,0.45)'
+            : '0 20px 50px rgba(0,0,0,0.35)',
+        }}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -39,11 +64,7 @@ export default function DepthFrame({
         mx.set(0);
         my.set(0);
       }}
-      onClick={() => {
-        setPressed(true);
-        setTimeout(() => setPressed(false), 350);
-        onClick?.();
-      }}
+      onClick={handleClick}
       whileHover={{ y: -8, scale: 1.02 }}
       animate={{
         boxShadow: pressed

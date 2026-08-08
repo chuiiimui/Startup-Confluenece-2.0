@@ -3,11 +3,6 @@ import { motion } from 'framer-motion';
 import SectionHeading from '../components/SectionHeading';
 import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import {
-  HoloTicketScene,
-  HoloTickerRibbonScene,
-  OrbitingCoinsScene,
-} from '../components/interactive3d/scenes';
 import { ArrowRight } from 'lucide-react';
 import { useRegistration } from '../context/RegistrationContext';
 
@@ -17,24 +12,21 @@ export const Registration: React.FC = () => {
   return (
     <section id="register" className="py-24 relative overflow-hidden">
       <InteractiveCanvas
+        scene="holoTickerRibbon"
         className="absolute left-1/2 top-[8%] z-[1] hidden h-[200px] w-[min(720px,90vw)] -translate-x-1/2 opacity-50 md:block"
         interactive={false}
         camera={{ position: [0, 0.1, 5], fov: 38 }}
-      >
-        <HoloTickerRibbonScene />
-      </InteractiveCanvas>
+      />
       <InteractiveCanvas
+        scene="holoTicket"
         className="absolute left-[2%] top-[22%] z-[2] hidden h-[220px] w-[280px] opacity-90 lg:block"
         camera={{ position: [0, 0, 4.2], fov: 38 }}
-      >
-        <HoloTicketScene />
-      </InteractiveCanvas>
+      />
       <InteractiveCanvas
+        scene="orbitingCoins"
         className="absolute right-[2%] top-[28%] z-[2] hidden h-[200px] w-[200px] opacity-85 lg:block"
         camera={{ position: [0, 0.2, 4.5], fov: 40 }}
-      >
-        <OrbitingCoinsScene />
-      </InteractiveCanvas>
+      />
       <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
         <SectionHeading badge="Register" title="Join the Confluence" />
         

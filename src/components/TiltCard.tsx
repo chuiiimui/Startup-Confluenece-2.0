@@ -1,5 +1,6 @@
 import { useRef, useState, type ReactNode, type CSSProperties } from 'react';
 import { motion, useMotionTemplate, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { usePerfMode } from '../hooks/usePerfMode';
 
 interface TiltCardProps {
   children: ReactNode;
@@ -11,6 +12,7 @@ interface TiltCardProps {
 
 /**
  * 3D tilt card with glass reflection / glare follow.
+ * Disabled on touch / low-end — plain wrapper to avoid constant spring work.
  */
 export default function TiltCard({
   children,
@@ -19,6 +21,7 @@ export default function TiltCard({
   intensity = 12,
   glare = true,
 }: TiltCardProps) {
+  const { enableTilt } = usePerfMode();
   const ref = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState(false);
 
@@ -35,6 +38,14 @@ export default function TiltCard({
   const glareX = useTransform(mx, [-0.5, 0.5], [0, 100]);
   const glareY = useTransform(my, [-0.5, 0.5], [0, 100]);
   const glareBg = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.45) 0%, transparent 45%)`;
+
+  if (!enableTilt) {
+    return (
+      <div className={`relative ${className}`} style={style}>
+        {children}
+      </div>
+    );
+  }
 
   const onMove = (e: React.MouseEvent) => {
     const el = ref.current;

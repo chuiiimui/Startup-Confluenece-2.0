@@ -4,49 +4,40 @@ import logo from '../assets/logo.png';
 
 export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [step, setStep] = useState(0);
+  const [lite, setLite] = useState(false);
 
   useEffect(() => {
-    // Check reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
+    const mobile =
+      window.matchMedia('(pointer: coarse)').matches ||
+      window.matchMedia('(max-width: 768px)').matches ||
+      document.documentElement.getAttribute('data-perf') === 'low';
+
+    setLite(mobile || prefersReducedMotion);
+
+    if (prefersReducedMotion || mobile) {
       setStep(5);
-      setTimeout(() => {
+      const t1 = window.setTimeout(() => {
         setStep(6);
-        setTimeout(onComplete, 1000);
-      }, 1500);
-      return;
+        window.setTimeout(onComplete, mobile ? 280 : 600);
+      }, mobile ? 500 : 900);
+      return () => clearTimeout(t1);
     }
 
     const sequence = async () => {
-      // Step 1: Wait for initial blank screen and particles
-      await new Promise(r => setTimeout(r, 200));
-      
-      // Step 2: "UNITED INCUBATION HUB" + "Presents"
+      await new Promise((r) => setTimeout(r, 200));
       setStep(1);
-      
-      // Step 3: Logo scale up
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 800));
       setStep(2);
-      
-      // Step 4: Fade text, Logo moves up, "STARTUP CONFLUENCE"
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 800));
       setStep(3);
-      
-      // Step 5: "2.0", gradients
-      await new Promise(r => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 800));
       setStep(4);
-      
-      // Step 6: Tagline
-      await new Promise(r => setTimeout(r, 600));
+      await new Promise((r) => setTimeout(r, 600));
       setStep(5);
-      
-      // Step 7: Morph/fade out
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise((r) => setTimeout(r, 1200));
       setStep(6);
-      
-      await new Promise(r => setTimeout(r, 1000));
-      
-      // Done
+      await new Promise((r) => setTimeout(r, 1000));
       onComplete();
     };
 
@@ -67,7 +58,8 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
           exit={{ opacity: 0 }}
           transition={{ duration: 1, ease }}
         >
-          {/* Ambient Particles */}
+          {/* Ambient Particles — desktop only */}
+          {!lite && (
           <div className="absolute inset-0 pointer-events-none">
             {Array.from({ length: 15 }).map((_, i) => (
               <motion.div
@@ -92,6 +84,7 @@ export const PremiumLoader = ({ onComplete }: { onComplete: () => void }) => {
               />
             ))}
           </div>
+          )}
 
           {/* Gradients appearing in Step 4 */}
           <motion.div 

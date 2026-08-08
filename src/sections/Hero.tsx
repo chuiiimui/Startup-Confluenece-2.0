@@ -4,10 +4,6 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import GridPattern from '../components/GridPattern';
 import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import {
-  LiquidMetalBlobScene,
-  NodeConstellationScene,
-} from '../components/interactive3d/scenes';
 import { useRegistration } from '../context/RegistrationContext';
 
 const appleEase = [0.22, 1, 0.36, 1] as const;
@@ -80,22 +76,18 @@ const Hero = () => {
     >
       <GridPattern parallax={true} />
 
-      {/* Lightweight constellation — tablet/desktop only (skip on phones for scroll FPS) */}
+      {/* WebGL decor — gated by perf (skipped on mobile / Android / low-end) */}
       <InteractiveCanvas
+        scene="nodeConstellation"
         className="absolute inset-0 z-[1] hidden opacity-70 md:block"
         interactive={false}
         camera={{ position: [0, 0.35, 6.4], fov: 40 }}
-      >
-        <NodeConstellationScene />
-      </InteractiveCanvas>
-
-      {/* Liquid metal funding blob — desktop only */}
+      />
       <InteractiveCanvas
+        scene="liquidMetalBlob"
         className="absolute left-[-4%] top-[22%] z-[5] hidden h-[260px] w-[260px] opacity-80 lg:block xl:left-[1%] xl:h-[300px] xl:w-[300px]"
         camera={{ position: [0, 0, 4.2], fov: 40 }}
-      >
-        <LiquidMetalBlobScene />
-      </InteractiveCanvas>
+      />
 
       {/* Soft hero glass wash */}
       <div

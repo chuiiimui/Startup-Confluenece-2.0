@@ -1,20 +1,42 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light" class="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#070B1A" />
+    <meta name="theme-color" content="#EEF2FF" />
     <script>
       (function () {
         try {
-          var t = localStorage.getItem('sc-theme');
-          if (t !== 'light' && t !== 'dark') t = 'dark';
-          document.documentElement.setAttribute('data-theme', t);
-          document.documentElement.style.colorScheme = t;
-          document.documentElement.classList.toggle('dark', t === 'dark');
-          document.documentElement.classList.toggle('light', t === 'light');
+          localStorage.removeItem('sc-theme');
+          document.documentElement.setAttribute('data-theme', 'light');
+          document.documentElement.style.colorScheme = 'light';
+          document.documentElement.classList.add('light');
+          document.documentElement.classList.remove('dark');
         } catch (e) {}
+        /* Early perf flag — CSS can disable blur before React hydrates */
+        try {
+          var coarse = window.matchMedia('(pointer: coarse)').matches;
+          var narrow = window.matchMedia('(max-width: 768px)').matches;
+          var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          var android = /Android/i.test(navigator.userAgent);
+          var cores = navigator.hardwareConcurrency || 4;
+          var mem = navigator.deviceMemory || 8;
+          var saveData = !!(navigator.connection && navigator.connection.saveData);
+          var mobile = coarse || narrow;
+          var low =
+            reduce ||
+            saveData ||
+            mem <= 4 ||
+            cores <= 4 ||
+            mobile ||
+            (android && mobile);
+          document.documentElement.setAttribute('data-perf', low ? 'low' : 'high');
+          document.documentElement.setAttribute('data-mobile', mobile ? 'true' : 'false');
+          if (android) document.documentElement.setAttribute('data-android', 'true');
+        } catch (e2) {
+          document.documentElement.setAttribute('data-perf', 'low');
+        }
       })();
     </script>
     

@@ -17,7 +17,7 @@ export default function GlassChip3D({
 }: GlassChip3DProps) {
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-2xl border backdrop-blur-xl ${className}`}
+      className={`relative overflow-hidden rounded-2xl border ${className}`}
       style={{
         background: active
           ? 'linear-gradient(145deg, rgba(255,122,0,0.16), rgba(255,255,255,0.06))'

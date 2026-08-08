@@ -27,9 +27,9 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
       case 'keynote':
         return 'bg-violet-500/15 text-[color:var(--badge-text)] border-violet-400/35';
       case 'workshop':
-        return 'bg-sky-500/15 text-sky-700 dark:text-sky-200 border-sky-400/35';
+        return 'bg-sky-500/15 text-sky-700 border-sky-400/35';
       case 'networking':
-        return 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-200 border-emerald-400/35';
+        return 'bg-emerald-500/15 text-emerald-700 border-emerald-400/35';
       case 'pitch':
         return 'bg-violet-500/20 text-[color:var(--badge-text)] border-violet-400/40';
       case 'break':

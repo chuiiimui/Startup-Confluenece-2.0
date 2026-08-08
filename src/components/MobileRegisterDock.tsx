@@ -47,8 +47,8 @@ export default function MobileRegisterDock() {
             className="mx-auto flex max-w-md items-center gap-3 rounded-2xl px-3 py-3"
             style={{
               background: 'var(--nav-bg-scrolled)',
-              backdropFilter: 'blur(28px) saturate(160%)',
-              WebkitBackdropFilter: 'blur(28px) saturate(160%)',
+              backdropFilter: 'none',
+              WebkitBackdropFilter: 'none',
               border: '1px solid var(--border)',
               boxShadow: 'var(--nav-shadow-scrolled)',
             }}

@@ -295,8 +295,8 @@ function StartupForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(submitStartup, scrollFormToFirstError)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(submitStartup, scrollFormToFirstError)} className="space-y-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Startup Name <span className="text-red-400">*</span>
@@ -328,7 +328,7 @@ function StartupForm({
         </FieldWrapper>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Email <span className="text-red-400">*</span>
@@ -376,7 +376,7 @@ function StartupForm({
         />
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Startup Stage <span className="text-red-400">*</span>
@@ -441,7 +441,7 @@ function StartupForm({
         )}
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Team Size <span className="text-red-400">*</span>
@@ -479,7 +479,7 @@ function StartupForm({
         </FieldWrapper>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Has your startup received any funding?{' '}
@@ -520,7 +520,7 @@ function StartupForm({
 
       {wantPitch === 'Yes' && (
         <div
-          className="space-y-4 rounded-2xl border p-4"
+          className="space-y-2.5 rounded-xl border p-3"
           style={{
             borderColor: 'var(--border-strong)',
             background: 'var(--surface)',
@@ -607,8 +607,8 @@ function SponsorForm({
   }, [watch]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Organization Name <span className="text-red-400">*</span>
@@ -642,7 +642,7 @@ function SponsorForm({
         </FieldWrapper>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Email <span className="text-red-400">*</span>
@@ -778,8 +778,8 @@ function SpeakerForm({
   }, [watch]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Full Name <span className="text-red-400">*</span>
@@ -828,7 +828,7 @@ function SpeakerForm({
         )}
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
           <label className={labelClass}>
             Email <span className="text-red-400">*</span>
@@ -1137,7 +1137,7 @@ export const RegistrationModal: React.FC = () => {
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-end justify-center px-0 sm:items-center sm:px-4"
+          className="fixed inset-0 z-[80] flex items-start justify-center px-0 pt-[6.5rem] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:items-center sm:px-4 sm:pt-24 sm:pb-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -1153,9 +1153,9 @@ export const RegistrationModal: React.FC = () => {
             exit={{ opacity: 0 }}
           />
 
-          {/* Modal — flex column: sticky chrome + scrollable form body */}
+          {/* Modal — shorter so header/X clear the floating nav */}
           <motion.div
-            className="form-glass-panel relative z-10 flex max-h-[min(92dvh,920px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[28px] sm:rounded-[32px]"
+            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-7.5rem),680px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[28px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}

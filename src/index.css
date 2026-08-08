@@ -1,121 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   THEME DESIGN TOKENS
-   Dark (default) + light via [data-theme]
-   Glass/hover structure stays; colors swap
+   THEME DESIGN TOKENS — light only
    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-:root,
-html[data-theme='dark'] {
-  --bg: #070B1A;
-  --bg-alt: rgba(15, 23, 42, 0.72);
-  --bg-elevated: rgba(30, 41, 59, 0.78);
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-hover: rgba(255, 255, 255, 0.14);
-  --surface-active: rgba(255, 255, 255, 0.18);
-  --border: rgba(255, 255, 255, 0.12);
-  --border-strong: rgba(167, 139, 250, 0.35);
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-inverse: #0B1229;
-  --shadow-card: 0 16px 48px rgba(0, 0, 0, 0.35);
-  --shadow-glow: 0 0 32px rgba(139, 92, 246, 0.28);
-  --glass-blur: 24px;
-  --particle-color: rgba(167, 139, 250, 0.22);
-  --particle-glow: rgba(96, 165, 250, 0.14);
-  --gradient-mesh-1: rgba(124, 58, 237, 0.22);
-  --gradient-mesh-2: rgba(59, 130, 246, 0.16);
-  --gradient-mesh-3: rgba(168, 85, 247, 0.14);
-  --gradient-hero-from: transparent;
-  --gradient-hero-to: transparent;
-  --cursor-glow: rgba(167, 139, 250, 0.22);
-  --grid-line: #A5B4FC;
-  --grid-opacity: 0.06;
-  --scrollbar-track: #0B1229;
-  --scrollbar-thumb: rgba(167, 139, 250, 0.35);
-  --scrollbar-thumb-hover: rgba(167, 139, 250, 0.55);
-  --overlay-bg: rgba(7, 11, 26, 0.72);
-  --heading-gradient-from: #F8FAFC;
-  --heading-gradient-via: #C4B5FD;
-  --heading-gradient-to: #93C5FD;
-  --badge-bg: rgba(167, 139, 250, 0.14);
-  --badge-border: rgba(196, 181, 253, 0.40);
-  --badge-text: #C4B5FD;
-  --accent-link: #7DD3FC;
-
-  /* Glass system (shared structure for dark) */
-  --glass-highlight: rgba(255, 255, 255, 0.16);
-  --glass-highlight-strong: rgba(255, 255, 255, 0.22);
-  --glass-card-from: rgba(255, 255, 255, 0.12);
-  --glass-card-to: rgba(255, 255, 255, 0.04);
-  --glass-card-hover-from: rgba(255, 255, 255, 0.18);
-  --glass-card-hover-to: rgba(255, 255, 255, 0.07);
-  --glass-card-border: rgba(255, 255, 255, 0.14);
-  --clay-from: rgba(91, 33, 182, 0.38);
-  --clay-mid: rgba(55, 48, 163, 0.28);
-  --clay-to: rgba(30, 27, 75, 0.42);
-  --clay-hover-from: rgba(91, 33, 182, 0.48);
-  --clay-hover-mid: rgba(55, 48, 163, 0.36);
-  --clay-hover-to: rgba(30, 27, 75, 0.5);
-  --clay-border: rgba(196, 181, 253, 0.32);
-  --clay-border-hover: rgba(196, 181, 253, 0.48);
-  --clay-shadow: 0 14px 40px rgba(0, 0, 0, 0.35);
-  --clay-shadow-hover: 0 20px 48px rgba(0, 0, 0, 0.42), 0 0 32px rgba(167, 139, 250, 0.22);
-  --clay-text: #F8FAFC;
-  --timer-shell-from: rgba(91, 33, 182, 0.28);
-  --timer-shell-mid: rgba(55, 48, 163, 0.22);
-  --timer-shell-to: rgba(167, 139, 250, 0.16);
-  --timer-cell-from: rgba(91, 33, 182, 0.42);
-  --timer-cell-mid: rgba(55, 48, 163, 0.32);
-  --timer-cell-to: rgba(30, 27, 75, 0.45);
-  --timer-cell-hover-from: rgba(91, 33, 182, 0.52);
-  --timer-cell-hover-mid: rgba(55, 48, 163, 0.4);
-  --timer-cell-hover-to: rgba(30, 27, 75, 0.5);
-  --timer-value: #FFFFFF;
-  --timer-label: #DDD6FE;
-  --form-panel-from: rgba(91, 33, 182, 0.28);
-  --form-panel-mid: rgba(30, 27, 75, 0.72);
-  --form-panel-to: rgba(15, 23, 42, 0.85);
-  --form-input-bg: rgba(15, 23, 42, 0.45);
-  --form-input-bg-focus: rgba(30, 27, 75, 0.55);
-  --form-input-text: #F8FAFC;
-  --form-input-placeholder: rgba(203, 213, 225, 0.55);
-  --form-label: #DDD6FE;
-  --form-option-bg: rgba(15, 23, 42, 0.35);
-  --form-option-hover: rgba(91, 33, 182, 0.18);
-  --form-option-selected: rgba(91, 33, 182, 0.28);
-  --nav-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.72), rgba(30, 41, 59, 0.55));
-  --nav-bg-scrolled: linear-gradient(135deg, rgba(7, 11, 26, 0.92), rgba(15, 23, 42, 0.86));
-  --nav-border-top: rgba(255, 255, 255, 0.14);
-  --nav-border-top-scrolled: rgba(196, 181, 253, 0.22);
-  --nav-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  --nav-shadow-scrolled: 0 18px 48px -12px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(139, 92, 246, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  --page-fade: #070B1A;
-  --bg-base-gradient: radial-gradient(110% 70% at 12% 8%, #4C1D95 0%, transparent 48%), radial-gradient(90% 60% at 88% 18%, #1E3A8A 0%, transparent 50%), radial-gradient(80% 70% at 50% 100%, #312E81 0%, transparent 55%), linear-gradient(165deg, #070B1A 0%, #0B1229 32%, #111827 68%, #0A0F1E 100%);
-  --bg-atmosphere: radial-gradient(70% 50% at 50% 20%, rgba(99, 102, 241, 0.18) 0%, transparent 55%), linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(2, 6, 23, 0.55) 100%);
-  --bg-vignette: radial-gradient(ellipse at center, transparent 30%, rgba(2, 6, 23, 0.55) 100%);
-  --orb-1: radial-gradient(circle, rgba(139, 92, 246, 0.38) 0%, rgba(67, 56, 202, 0.16) 42%, transparent 70%);
-  --orb-2: radial-gradient(circle, rgba(37, 99, 235, 0.36) 0%, rgba(30, 64, 175, 0.16) 45%, transparent 70%);
-  --orb-3: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(59, 130, 246, 0.14) 45%, transparent 70%);
-  --orb-4: radial-gradient(circle, rgba(255, 122, 0, 0.12) 0%, transparent 65%);
-  --panel-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.02) 55%, rgba(139, 92, 246, 0.10) 100%);
-  --sheen: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
-  --hero-startup-glow: 0 0 18px rgba(255, 255, 255, 0.55), 0 0 42px rgba(147, 197, 253, 0.40), 0 0 72px rgba(139, 92, 246, 0.28);
-  --hero-confluence-from: #7DD3FC;
-  --hero-confluence-via: #C4B5FD;
-  --hero-confluence-to: #818CF8;
-  --hero-version-from: #FF7A00;
-  --hero-version-to: #FB923C;
-  --color-scheme: dark;
-}
-
-html[data-theme='light'] {
+:root {
   --bg: #EEF2FF;
   --bg-alt: rgba(255, 255, 255, 0.78);
   --bg-elevated: rgba(255, 255, 255, 0.9);
@@ -136,6 +29,8 @@ html[data-theme='light'] {
   --gradient-mesh-1: rgba(124, 58, 237, 0.12);
   --gradient-mesh-2: rgba(59, 130, 246, 0.10);
   --gradient-mesh-3: rgba(168, 85, 247, 0.08);
+  --gradient-hero-from: transparent;
+  --gradient-hero-to: transparent;
   --cursor-glow: rgba(124, 58, 237, 0.16);
   --grid-line: #6366F1;
   --grid-opacity: 0.08;
@@ -536,19 +431,11 @@ html[data-theme='light'] {
     animation: none;
   }
 
-  /* Soft glow only in dark mode — filter is safe enough on dark surfaces */
-  html[data-theme='dark'] .hero-glow-confluence {
-    filter:
-      drop-shadow(0 0 14px rgba(147, 197, 253, 0.45))
-      drop-shadow(0 0 28px rgba(167, 139, 250, 0.28));
-    animation: heroTitleGlowSoft 5s ease-in-out infinite;
-  }
-
-  html[data-theme='dark'] .hero-glow-version {
-    filter:
-      drop-shadow(0 0 12px rgba(255, 122, 0, 0.5))
-      drop-shadow(0 0 28px rgba(255, 122, 0, 0.28));
-    animation: heroTitleGlowAccent 4s ease-in-out infinite;
+  /* Soft glow avoided in light mode — filter + bg-clip can muddy text */
+  .hero-glow-confluence,
+  .hero-glow-version {
+    filter: none;
+    animation: none;
   }
 
   @keyframes heroTitleGlow {
@@ -557,34 +444,8 @@ html[data-theme='light'] {
     }
     50% {
       text-shadow:
-        0 0 22px rgba(147, 197, 253, 0.35),
-        0 0 48px rgba(139, 92, 246, 0.28);
-    }
-  }
-
-  @keyframes heroTitleGlowSoft {
-    0%, 100% {
-      filter:
-        drop-shadow(0 0 12px rgba(147, 197, 253, 0.4))
-        drop-shadow(0 0 26px rgba(167, 139, 250, 0.25));
-    }
-    50% {
-      filter:
-        drop-shadow(0 0 16px rgba(147, 197, 253, 0.55))
-        drop-shadow(0 0 36px rgba(167, 139, 250, 0.35));
-    }
-  }
-
-  @keyframes heroTitleGlowAccent {
-    0%, 100% {
-      filter:
-        drop-shadow(0 0 10px rgba(255, 122, 0, 0.45))
-        drop-shadow(0 0 24px rgba(255, 122, 0, 0.25));
-    }
-    50% {
-      filter:
-        drop-shadow(0 0 14px rgba(255, 122, 0, 0.65))
-        drop-shadow(0 0 34px rgba(255, 122, 0, 0.38));
+        0 0 18px rgba(99, 102, 241, 0.28),
+        0 0 36px rgba(124, 58, 237, 0.18);
     }
   }
 
@@ -686,7 +547,62 @@ body {
 
   /* Cheaper glass on mobile — heavy blur kills scroll FPS */
   :root {
-    --glass-blur: 10px;
+    --glass-blur: 0px;
+  }
+}
+
+/* Low-end / Android / mobile: strip compositor-expensive effects */
+html[data-perf='low'] {
+  --glass-blur: 0px;
+}
+
+html[data-perf='low'] .glass-card,
+html[data-perf='low'] .glass,
+html[data-perf='low'] .clay-card,
+html[data-perf='low'] .clay-timer-shell,
+html[data-perf='low'] .clay-timer-cell,
+html[data-perf='low'] .form-glass-panel,
+html[data-perf='low'] .form-glass-input {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html[data-perf='low'] .hero-glow-startup,
+html[data-perf='low'] .hero-glow-confluence,
+html[data-perf='low'] .hero-glow-version {
+  animation: none !important;
+  filter: none !important;
+}
+
+html[data-perf='low'] .backdrop-blur-xl,
+html[data-perf='low'] .backdrop-blur-md,
+html[data-perf='low'] .backdrop-blur-sm,
+html[data-perf='low'] .backdrop-blur-lg,
+html[data-perf='low'] .backdrop-blur {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* content-visibility helps Android paint less offscreen content */
+html[data-perf='low'] main > section,
+html[data-mobile='true'] main > section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 720px;
+}
+
+html[data-perf='low'] main > section:first-of-type,
+html[data-mobile='true'] main > section:first-of-type {
+  content-visibility: visible;
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+  .glass-card:hover,
+  .clay-card:hover {
+    transform: none;
+  }
+
+  .glow-hover:hover {
+    transform: none;
   }
 }
 
