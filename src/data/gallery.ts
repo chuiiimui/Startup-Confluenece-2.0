@@ -17,6 +17,9 @@ import img13 from '../assets/gallery/whatsapp-2.jpg';
 import img14 from '../assets/gallery/whatsapp-3.jpg';
 
 export const gallery: GalleryImage[] = [
+  { id: 'gal-12', src: img12, title: 'Event Moment 12', category: 'expo', alt: 'Event Moment 12' },
+  { id: 'gal-13', src: img13, title: 'Event Moment 13', category: 'workshops', alt: 'Event Moment 13' },
+  { id: 'gal-14', src: img14, title: 'Event Moment 14', category: 'speakers', alt: 'Event Moment 14' },
   { id: 'gal-0', src: img0, title: 'Event Moment 0', category: 'expo', alt: 'Event Moment 0' },
   { id: 'gal-1', src: img1, title: 'Event Moment 1', category: 'workshops', alt: 'Event Moment 1' },
   { id: 'gal-2', src: img2, title: 'Event Moment 2', category: 'speakers', alt: 'Event Moment 2' },
@@ -29,7 +32,4 @@ export const gallery: GalleryImage[] = [
   { id: 'gal-9', src: img9, title: 'Event Moment 9', category: 'workshops', alt: 'Event Moment 9' },
   { id: 'gal-10', src: img10, title: 'Event Moment 10', category: 'speakers', alt: 'Event Moment 10' },
   { id: 'gal-11', src: img11, title: 'Event Moment 11', category: 'audience', alt: 'Event Moment 11' },
-  { id: 'gal-12', src: img12, title: 'Event Moment 12', category: 'expo', alt: 'Event Moment 12' },
-  { id: 'gal-13', src: img13, title: 'Event Moment 13', category: 'workshops', alt: 'Event Moment 13' },
-  { id: 'gal-14', src: img14, title: 'Event Moment 14', category: 'speakers', alt: 'Event Moment 14' }
 ];

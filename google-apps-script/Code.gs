@@ -3,7 +3,7 @@
  *
  * RECOMMENDED SETUP (avoids permission errors):
  * 1. Create a NEW Google Sheet under YOUR Google account
- * 2. Rename 3 tabs to: Startup, Sponsor, Speaker
+ * 2. Rename tabs to: Startup, Sponsor, Partner, Speaker
  * 3. Copy the Sheet ID from the URL:
  *    https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit
  * 4. Paste that ID into SPREADSHEET_ID below
@@ -27,6 +27,7 @@ var SPREADSHEET_ID = '11mb5ve-0zL5jlt4KhEjHgnNdlH9tlfULf7u7Z1o8Qmw';
 var SHEET_NAMES = {
   startup: 'Startup',
   sponsor: 'Sponsor',
+  partner: 'Partner',
   speaker: 'Speaker',
 };
 
@@ -54,7 +55,7 @@ function doPost(e) {
     if (!SHEET_NAMES[type]) {
       return json_({
         ok: false,
-        error: 'Invalid registrationType. Use startup, sponsor, or speaker.',
+        error: 'Invalid registrationType. Use startup, sponsor, partner, or speaker.',
       });
     }
 
@@ -128,7 +129,7 @@ function getSheet_(type) {
     throw new Error(
       'Missing sheet tab "' +
         name +
-        '". Create tabs named Startup, Sponsor, and Speaker.'
+        '". Create tabs named Startup, Sponsor, Partner, and Speaker.'
     );
   }
   return sheet;
@@ -183,6 +184,9 @@ function appendToSheet_(type, data, emailMeta) {
       'LinkedIn',
       'Email Sent',
       'Email Quota Left',
+      'Stall Required',
+      'Accommodation Required',
+      'Accommodation Details',
     ];
     ensureHeaders_(sheet, startupHeaders);
     sheet.appendRow([
@@ -196,13 +200,16 @@ function appendToSheet_(type, data, emailMeta) {
       data.industry || '',
       data.description || '',
       data.teamSize || '',
-      data.needStall || '',
+      data.needStall || data.stallRequired || '',
       data.fundingGrant || '',
       data.wantPitch || '',
       pitchDeckLink || data.pitchDeckUrl || '',
       data.linkedIn || data.linkedin || '',
       emailSent,
       emailQuotaLeft,
+      data.stallRequired || data.needStall || '',
+      data.accommodationRequired || '',
+      data.accommodationDetails || '',
     ]);
     return;
   }
@@ -221,6 +228,8 @@ function appendToSheet_(type, data, emailMeta) {
       'Additional Notes',
       'Email Sent',
       'Email Quota Left',
+      'Sponsorship Type',
+      'Sponsorship Amount',
     ];
     ensureHeaders_(sheet, sponsorHeaders);
     sheet.appendRow([
@@ -230,9 +239,42 @@ function appendToSheet_(type, data, emailMeta) {
       data.email || '',
       data.phone || '',
       data.website || '',
-      data.sponsorshipCategory || '',
+      data.sponsorshipCategory || data.sponsorshipType || '',
       data.companyDescription || '',
       data.expectedContribution || '',
+      data.additionalNotes || '',
+      emailSent,
+      emailQuotaLeft,
+      data.sponsorshipType || data.sponsorshipCategory || '',
+      data.sponsorshipAmount || '',
+    ]);
+    return;
+  }
+
+  if (type === 'partner') {
+    var partnerHeaders = [
+      'Timestamp',
+      'Organization',
+      'Contact Person',
+      'Email',
+      'Phone',
+      'Website',
+      'Partner Category',
+      'Company Description',
+      'Additional Notes',
+      'Email Sent',
+      'Email Quota Left',
+    ];
+    ensureHeaders_(sheet, partnerHeaders);
+    sheet.appendRow([
+      ts,
+      data.organizationName || data.orgName || '',
+      data.contactPerson || '',
+      data.email || '',
+      data.phone || '',
+      data.website || '',
+      data.partnerCategory || '',
+      data.companyDescription || '',
       data.additionalNotes || '',
       emailSent,
       emailQuotaLeft,
@@ -256,11 +298,13 @@ function appendToSheet_(type, data, emailMeta) {
     'Personal Website',
     'Email Sent',
     'Email Quota Left',
+    'Speaker Name',
+    'Speaker Topic',
   ];
   ensureHeaders_(sheet, speakerHeaders);
   sheet.appendRow([
     ts,
-    data.fullName || '',
+    data.fullName || data.speakerName || '',
     data.organization || '',
     data.designation || '',
     data.email || '',
@@ -268,11 +312,13 @@ function appendToSheet_(type, data, emailMeta) {
     data.linkedIn || data.linkedin || '',
     data.speakerBio || '',
     data.areaOfExpertise || data.expertise || '',
-    data.topicProposal || '',
+    data.topicProposal || data.speakerTopic || '',
     data.previousSpeakingExperience || data.previousExperience || '',
     data.personalWebsite || '',
     emailSent,
     emailQuotaLeft,
+    data.speakerName || data.fullName || '',
+    data.speakerTopic || data.topicProposal || '',
   ]);
 }
 
@@ -298,6 +344,8 @@ function sendConfirmationEmail_(type, data) {
       'Startup: ' + (data.startupName || '—'),
       'Stage: ' + (data.startupStage || '—'),
       'Industry: ' + (data.industry || '—'),
+      'Stall Required: ' + (data.stallRequired || data.needStall || '—'),
+      'Accommodation: ' + (data.accommodationRequired || '—'),
       'Received Funding: ' + (data.fundingGrant || '—'),
       'Want to Pitch: ' + (data.wantPitch || '—'),
     ];
@@ -307,15 +355,25 @@ function sendConfirmationEmail_(type, data) {
     detailLines = [
       'Registration type: Sponsor',
       'Organization: ' + (data.organizationName || data.orgName || '—'),
-      'Category: ' + (data.sponsorshipCategory || '—'),
+      'Sponsorship Type: ' + (data.sponsorshipType || data.sponsorshipCategory || '—'),
+      'Sponsorship Amount: ' + (data.expectedContribution || data.sponsorshipAmount || '—'),
+    ];
+  } else if (type === 'partner') {
+    subject = 'Partner application received — Startup Confluence 2.0';
+    greetingName = data.contactPerson || 'Partner';
+    detailLines = [
+      'Registration type: Partner',
+      'Organization: ' + (data.organizationName || data.orgName || '—'),
+      'Partner Category: ' + (data.partnerCategory || '—'),
     ];
   } else {
     subject = 'Speaker application received — Startup Confluence 2.0';
-    greetingName = data.fullName || 'Speaker';
+    greetingName = data.speakerName || data.fullName || 'Speaker';
     detailLines = [
       'Registration type: Speaker',
+      'Speaker: ' + (data.speakerName || data.fullName || '—'),
       'Organization: ' + (data.organization || '—'),
-      'Topic: ' + (data.topicProposal || '—'),
+      'Topic: ' + (data.speakerTopic || data.topicProposal || '—'),
     ];
   }
 

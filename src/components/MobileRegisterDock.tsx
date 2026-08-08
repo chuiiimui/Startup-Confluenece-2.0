@@ -6,7 +6,7 @@ import { useRegistration } from '../context/RegistrationContext';
  * Sticky mobile Register CTA that stays available while browsing.
  */
 export default function MobileRegisterDock() {
-  const { openModal, isOpen } = useRegistration();
+  const { openModal, isOpen, isPartnerOpen } = useRegistration();
   const [show, setShow] = useState(false);
   const [overRegister, setOverRegister] = useState(false);
 
@@ -31,7 +31,7 @@ export default function MobileRegisterDock() {
     return () => observer.disconnect();
   }, []);
 
-  const visible = show && !isOpen && !overRegister;
+  const visible = show && !isOpen && !isPartnerOpen && !overRegister;
 
   return (
     <AnimatePresence>

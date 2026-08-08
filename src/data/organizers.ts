@@ -13,20 +13,20 @@ export const organizers: TeamMember[] = [
   },
   {
     id: 'org-2',
+    name: 'Shivesh Gaur',
+    role: 'Organizer',
+    image: shiveshImage,
+  },
+  {
+    id: 'org-3',
     name: 'Mr. Amitabh Srivastava',
     role: 'Organizer',
     image: amitabhImage,
   },
   {
-    id: 'org-3',
+    id: 'org-4',
     name: 'Ms. Gargi Agrawal',
     role: 'Organizer',
     image: gargiImage,
-  },
-  {
-    id: 'org-4',
-    name: 'Shivesh Gaur',
-    role: 'Organizer',
-    image: shiveshImage,
   },
 ];

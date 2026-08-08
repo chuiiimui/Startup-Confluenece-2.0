@@ -11,6 +11,7 @@ import PremiumBackground from './components/PremiumBackground';
 import SmoothScroll from './components/SmoothScroll';
 import SectionReveal from './components/SectionReveal';
 import MobileRegisterDock from './components/MobileRegisterDock';
+import BecomePartnerButton from './components/BecomePartnerButton';
 import { Hero } from './sections';
 import { RegistrationProvider } from './context/RegistrationContext';
 import { usePerfMode } from './hooks/usePerfMode';
@@ -42,6 +43,7 @@ const Footer = lazy(() =>
   import('./sections/Footer').then((m) => ({ default: m.Footer }))
 );
 const RegistrationModal = lazy(() => import('./components/RegistrationModal'));
+const PartnerModal = lazy(() => import('./components/PartnerModal'));
 
 function Section({ children }: { children: React.ReactNode }) {
   return (
@@ -141,12 +143,18 @@ function AppShell() {
           )}
           {!isLoading && (
             <Suspense fallback={null}>
+              <PartnerModal />
+            </Suspense>
+          )}
+          {!isLoading && (
+            <Suspense fallback={null}>
               <Footer />
             </Suspense>
           )}
         </div>
 
         {!isLoading && <MobileRegisterDock />}
+        {!isLoading && <BecomePartnerButton />}
       </div>
     </SmoothScroll>
   );

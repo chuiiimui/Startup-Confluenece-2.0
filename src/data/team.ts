@@ -4,6 +4,7 @@ import harshImage from '../assets/team/harsh-srivastava.png';
 import ayushImage from '../assets/team/ayush-yadav.png';
 import shanuImage from '../assets/team/shanu-srivastava.png';
 import yasirImage from '../assets/team/mohammad-yasir-siddiqui.png';
+import adarshImage from '../assets/team/adarsh srivastava.jpeg';
 
 export const teamMembers: TeamMember[] = [
   {
@@ -38,8 +39,8 @@ export const teamMembers: TeamMember[] = [
   },
   {
     id: 'tm-6',
-    name: 'Reveal Soon',
+    name: 'Adarsh Srivastava',
     role: 'Organizer',
-    image: ''
+    image: adarshImage
   }
 ];
