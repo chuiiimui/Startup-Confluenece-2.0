@@ -738,7 +738,7 @@ export default function PartnerModal() {
     <AnimatePresence>
       {isPartnerOpen && (
         <motion.div
-          className="fixed inset-0 z-[80] flex items-start justify-center px-0 pt-[6.5rem] pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:items-center sm:px-4 sm:pt-24 sm:pb-6"
+          className="fixed inset-0 z-[80] flex items-stretch justify-center p-0 sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -754,7 +754,7 @@ export default function PartnerModal() {
           />
 
           <motion.div
-            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-6.5rem),720px)] w-full max-w-2xl flex-col overflow-hidden rounded-t-[24px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
+            className="form-glass-panel relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-2xl flex-col overflow-hidden rounded-none sm:h-[min(100dvh-2rem,920px)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -765,7 +765,7 @@ export default function PartnerModal() {
             aria-labelledby="partner-modal-title"
           >
             <div
-              className="relative z-20 shrink-0 border-b px-6 pb-4 pt-5"
+              className="relative z-20 shrink-0 border-b px-6 pb-4 pt-[max(1.25rem,env(safe-area-inset-top))] sm:pt-5"
               style={{
                 borderColor: 'var(--border)',
                 background: 'var(--bg-alt)',

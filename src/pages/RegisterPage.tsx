@@ -201,9 +201,9 @@ export default function RegisterPage() {
         }}
       >
         <Button
-          size="lg"
-          className="w-full"
-          icon={<ArrowRight className="h-5 w-5" />}
+          size="md"
+          className="w-full !px-4 !py-2.5 !text-sm"
+          icon={<ArrowRight className="h-4 w-4" />}
           onClick={() => openModal(active.type)}
         >
           Continue as {active.title}
