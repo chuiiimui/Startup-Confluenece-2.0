@@ -94,18 +94,10 @@ function doPost(e) {
       emailResult = { sent: false, reason: String(mailErr) };
     }
 
-    var quotaLeft = '';
-    try {
-      quotaLeft = MailApp.getRemainingDailyQuota();
-    } catch (quotaErr) {
-      quotaLeft = 'n/a';
-    }
-    emailResult.quotaLeft = quotaLeft;
-
-    // Write row after email attempt so quota reflects remaining sends today
     appendToSheet_(type, data, {
-      emailSent: emailResult.sent ? 'Yes' : 'No',
-      emailQuotaLeft: quotaLeft,
+      emailSent: emailResult.sent
+        ? 'Yes'
+        : 'No' + (emailResult.reason ? ' (' + emailResult.reason + ')' : ''),
     });
 
     return json_({
@@ -165,6 +157,8 @@ function ensureHeaders_(sheet, headers) {
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(headers);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
+    // Seed Phone / ID columns as text so new rows keep formatting
+    ensureTextColumns_(sheet, headers, ['Phone', 'Aadhaar / ID Details']);
     return;
   }
 
@@ -177,6 +171,45 @@ function ensureHeaders_(sheet, headers) {
     for (var i = existing.length; i < headers.length; i++) {
       sheet.getRange(1, i + 1).setValue(headers[i]).setFontWeight('bold');
     }
+  }
+}
+
+/**
+ * Format named columns as plain text (phones / Aadhaar stay readable).
+ */
+function ensureTextColumns_(sheet, headers, names) {
+  var lastDataRow = Math.max(sheet.getMaxRows(), 2);
+  for (var n = 0; n < names.length; n++) {
+    var idx = headers.indexOf(names[n]);
+    if (idx === -1) continue;
+    var col = idx + 1;
+    sheet.getRange(2, col, lastDataRow, col).setNumberFormat('@');
+  }
+}
+
+/**
+ * Force a value to stay as text when written via appendRow.
+ * Leading apostrophe is hidden in the cell display but keeps digits intact
+ * (no scientific notation, no dropped "+", no leading-zero loss).
+ */
+function asSheetText_(value) {
+  var s = String(value == null ? '' : value).trim();
+  if (!s) return '';
+  return "'" + s;
+}
+
+/**
+ * After appendRow, re-assert Phone / ID cells as plain text.
+ */
+function lockTextCellsOnLastRow_(sheet, headers, names) {
+  var row = sheet.getLastRow();
+  if (row < 2) return;
+  for (var n = 0; n < names.length; n++) {
+    var idx = headers.indexOf(names[n]);
+    if (idx === -1) continue;
+    var cell = sheet.getRange(row, idx + 1);
+    var value = cell.getDisplayValue() || String(cell.getValue() || '');
+    cell.setNumberFormat('@').setValue(value);
   }
 }
 
@@ -200,10 +233,6 @@ function appendToSheet_(type, data, emailMeta) {
   var sheet = getSheet_(type);
   var ts = data.timestamp || new Date().toISOString();
   var emailSent = (emailMeta && emailMeta.emailSent) || 'No';
-  var emailQuotaLeft =
-    emailMeta && emailMeta.emailQuotaLeft !== undefined
-      ? emailMeta.emailQuotaLeft
-      : '';
 
   if (type === 'startup') {
     var pitchDeckLink = savePitchDeck_(data);
@@ -224,7 +253,6 @@ function appendToSheet_(type, data, emailMeta) {
       'Pitch Deck',
       'LinkedIn',
       'Email Sent',
-      'Email Quota Left',
       'Stall Required',
       'Accommodation Required',
       'Accommodation Details',
@@ -235,7 +263,7 @@ function appendToSheet_(type, data, emailMeta) {
       data.startupName || '',
       data.founderName || '',
       data.email || '',
-      data.phone || '',
+      asSheetText_(data.phone),
       data.website || '',
       data.startupStage || '',
       data.industry || '',
@@ -247,11 +275,11 @@ function appendToSheet_(type, data, emailMeta) {
       pitchDeckLink || data.pitchDeckUrl || '',
       data.linkedIn || data.linkedin || '',
       emailSent,
-      emailQuotaLeft,
       data.stallRequired || data.needStall || '',
       data.accommodationRequired || '',
       data.accommodationDetails || '',
     ]);
+    lockTextCellsOnLastRow_(sheet, startupHeaders, ['Phone']);
     return;
   }
 
@@ -268,7 +296,6 @@ function appendToSheet_(type, data, emailMeta) {
       'Expected Contribution',
       'Additional Notes',
       'Email Sent',
-      'Email Quota Left',
       'Sponsorship Type',
       'Sponsorship Amount',
     ];
@@ -278,17 +305,17 @@ function appendToSheet_(type, data, emailMeta) {
       data.organizationName || data.orgName || '',
       data.contactPerson || '',
       data.email || '',
-      data.phone || '',
+      asSheetText_(data.phone),
       data.website || '',
       data.sponsorshipCategory || data.sponsorshipType || '',
       data.companyDescription || '',
       formatSponsorAmount_(data),
       data.additionalNotes || '',
       emailSent,
-      emailQuotaLeft,
       data.sponsorshipType || data.sponsorshipCategory || '',
       data.sponsorshipAmount || '',
     ]);
+    lockTextCellsOnLastRow_(sheet, sponsorHeaders, ['Phone']);
     return;
   }
 
@@ -304,7 +331,6 @@ function appendToSheet_(type, data, emailMeta) {
       'Company Description',
       'Additional Notes',
       'Email Sent',
-      'Email Quota Left',
     ];
     ensureHeaders_(sheet, partnerHeaders);
     sheet.appendRow([
@@ -312,14 +338,14 @@ function appendToSheet_(type, data, emailMeta) {
       data.organizationName || data.orgName || '',
       data.contactPerson || '',
       data.email || '',
-      data.phone || '',
+      asSheetText_(data.phone),
       data.website || '',
       data.partnerCategory || '',
       data.companyDescription || '',
       data.additionalNotes || '',
       emailSent,
-      emailQuotaLeft,
     ]);
+    lockTextCellsOnLastRow_(sheet, partnerHeaders, ['Phone']);
     return;
   }
 
@@ -341,18 +367,20 @@ function appendToSheet_(type, data, emailMeta) {
       'Aadhaar / ID Details',
       'Events',
       'Email Sent',
-      'Email Quota Left',
     ];
     ensureHeaders_(sheet, delegateHeaders);
     sheet.appendRow([
       ts,
       data.fullName || '',
       data.email || '',
-      data.phone || '',
-      data.idDetails || '',
+      asSheetText_(data.phone),
+      asSheetText_(data.idDetails),
       eventsValue,
       emailSent,
-      emailQuotaLeft,
+    ]);
+    lockTextCellsOnLastRow_(sheet, delegateHeaders, [
+      'Phone',
+      'Aadhaar / ID Details',
     ]);
     return;
   }
@@ -373,7 +401,6 @@ function appendToSheet_(type, data, emailMeta) {
     'Previous Experience',
     'Personal Website',
     'Email Sent',
-    'Email Quota Left',
     'Speaker Name',
     'Speaker Topic',
   ];
@@ -384,7 +411,7 @@ function appendToSheet_(type, data, emailMeta) {
     data.organization || '',
     data.designation || '',
     data.email || '',
-    data.phone || '',
+    asSheetText_(data.phone),
     data.linkedIn || data.linkedin || '',
     data.speakerBio || '',
     data.areaOfExpertise || data.expertise || '',
@@ -392,16 +419,21 @@ function appendToSheet_(type, data, emailMeta) {
     data.previousSpeakingExperience || data.previousExperience || '',
     data.personalWebsite || '',
     emailSent,
-    emailQuotaLeft,
     data.speakerName || data.fullName || '',
     speakerTopic,
   ]);
+  lockTextCellsOnLastRow_(sheet, speakerHeaders, ['Phone']);
 }
 
 function isValidEmail_(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
 }
 
+/**
+ * Send confirmation with the classic MailApp API.
+ * Falls back to GmailApp if MailApp is blocked (common on some Workspace accounts).
+ * Run testSendMail_() from the Apps Script editor to verify permissions.
+ */
 function sendConfirmationEmail_(type, data) {
   var to = String(data.email || '').trim();
   if (!isValidEmail_(to)) {
@@ -478,16 +510,47 @@ function sendConfirmationEmail_(type, data) {
     CONTACT_EMAIL +
     ' | +91-6390903018 | +91-89536 15232\n';
 
-  MailApp.sendEmail({
-    to: to,
-    subject: content.subject,
+  var options = {
     htmlBody: html,
-    body: text,
     name: 'Startup Confluence 2.0',
     replyTo: CONTACT_EMAIL,
-  });
+  };
 
-  return { sent: true, to: to };
+  // Classic MailApp (to, subject, body, options) — same as older scripts
+  try {
+    MailApp.sendEmail(to, content.subject, text, options);
+    return { sent: true, to: to, via: 'MailApp' };
+  } catch (mailErr) {
+    // Fallback for accounts where MailApp is restricted
+    try {
+      GmailApp.sendEmail(to, content.subject, text, options);
+      return { sent: true, to: to, via: 'GmailApp' };
+    } catch (gmailErr) {
+      throw new Error(
+        'MailApp: ' + mailErr + ' | GmailApp: ' + gmailErr
+      );
+    }
+  }
+}
+
+/**
+ * Manual test from Apps Script editor:
+ * 1. Change TEST_EMAIL below to your address
+ * 2. Select testSendMail_ → Run → Allow permissions
+ * 3. Check Inbox / Spam
+ */
+function testSendMail_() {
+  var TEST_EMAIL = Session.getActiveUser().getEmail() || CONTACT_EMAIL;
+  MailApp.sendEmail(
+    TEST_EMAIL,
+    'Startup Confluence 2.0 — mail test',
+    'If you received this, MailApp is working.',
+    {
+      name: 'Startup Confluence 2.0',
+      replyTo: CONTACT_EMAIL,
+    }
+  );
+  Logger.log('Test mail sent to: ' + TEST_EMAIL);
 }
 
 function buildFormEmailContent_(type, data) {
