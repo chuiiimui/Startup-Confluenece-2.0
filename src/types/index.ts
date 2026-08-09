@@ -58,7 +58,12 @@ export interface ExpoCategory {
 
 export interface GalleryImage {
   id: string;
+  /** Full / high-res (desktop lightbox) */
   src: string;
+  /** Compressed grid thumbnail */
+  thumb: string;
+  /** Medium WebP for mobile / low-end lightbox */
+  preview: string;
   alt: string;
   category: string;
   title: string;

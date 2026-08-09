@@ -1,91 +1,95 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gallery } from '../data/gallery';
-
+import type { GalleryImage } from '../types';
 import SectionHeading from '../components/SectionHeading';
 import ImageReveal from '../components/ImageReveal';
 import DepthFrame from '../components/interactive3d/DepthFrame';
+import { usePerfMode } from '../hooks/usePerfMode';
 import { FiX, FiZoomIn } from 'react-icons/fi';
 
 const Gallery = () => {
-  const [selectedImage, setSelectedImage] = useState<typeof gallery[0] | null>(null);
+  const { isMobile, isAndroid, isLowEnd, reduceMotion } = usePerfMode();
+  const lite = isMobile || isAndroid || isLowEnd || reduceMotion;
+  const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
   const [showAll, setShowAll] = useState(false);
 
-  const displayedImages = showAll ? gallery : gallery.slice(0, 9);
+  const initialCount = lite ? 6 : 9;
+  const displayedImages = useMemo(
+    () => (showAll ? gallery : gallery.slice(0, initialCount)),
+    [showAll, initialCount]
+  );
 
-  // Generate a random gradient for placeholders since we don't have images
-  const getGradient = (id: string | number) => {
-    const gradients = [
-      'from-blue-500/20 to-purple-500/20',
-      'from-accent/20 to-orange-500/20',
-      'from-emerald-500/20 to-teal-500/20',
-      'from-rose-500/20 to-pink-500/20',
-      'from-indigo-500/20 to-cyan-500/20',
-    ];
-    const index = parseInt(id.toString().replace(/\D/g, '')) % gradients.length || 0;
-    return gradients[index];
-  };
+  const lightboxSrc = (image: GalleryImage) =>
+    lite ? image.preview || image.thumb : image.src;
 
   return (
-    <section id="gallery" className="py-24 relative overflow-hidden" >
-      <div className="absolute bottom-0 left-0 w-1/2 h-[400px] bg-primary/5 rounded-full blur-[150px] translate-y-1/2 -translate-x-1/4 pointer-events-none" />
-      
-      <div className="container mx-auto px-6 relative z-10 max-w-7xl">
-        <SectionHeading 
-          badge="Gallery" 
-          title="Previous Event Gallery" 
+    <section id="gallery" className="relative overflow-hidden py-24">
+      {!lite && (
+        <div className="pointer-events-none absolute bottom-0 left-0 h-[400px] w-1/2 -translate-x-1/4 translate-y-1/2 rounded-full bg-primary/5 blur-[150px]" />
+      )}
+
+      <div className="container relative z-10 mx-auto max-w-7xl px-6">
+        <SectionHeading
+          badge="Gallery"
+          title="Previous Event Gallery"
           alignment="center"
         />
 
-
-        {/* Image Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          <AnimatePresence>
-            {displayedImages.map((image) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
-                key={image.id}
-                className="relative break-inside-avoid"
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
+          {displayedImages.map((image) => (
+            <div
+              key={image.id}
+              className="relative"
+              style={
+                lite
+                  ? {
+                      contentVisibility: 'auto',
+                      containIntrinsicSize: '400px 300px',
+                    }
+                  : undefined
+              }
+            >
+              <DepthFrame
+                className="group cursor-pointer overflow-hidden rounded-2xl border"
+                style={{ borderColor: 'var(--border)' }}
+                data-cursor="image"
+                onClick={() => setSelectedImage(image)}
               >
-                <DepthFrame
-                  className="group cursor-pointer overflow-hidden rounded-2xl border"
-                  style={{ borderColor: 'var(--border)' }}
-                  data-cursor="image"
-                  onClick={() => setSelectedImage(image)}
+                <div
+                  className="relative aspect-[4/3] w-full overflow-hidden"
+                  style={{ background: 'var(--surface)' }}
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-800/40">
-                    {image.src ? (
-                      <ImageReveal
-                        src={image.src}
-                        alt={image.title}
-                        className="absolute inset-0 h-full w-full"
-                        imgClassName="transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                    ) : null}
+                  <ImageReveal
+                    src={image.thumb || image.src}
+                    alt={image.alt || image.title}
+                    className="absolute inset-0 h-full w-full"
+                    imgClassName={
+                      lite
+                        ? ''
+                        : 'transition-transform duration-700 ease-out group-hover:scale-110'
+                    }
+                    lite={lite}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                  {!lite && (
                     <div className="absolute inset-0 flex items-center justify-center bg-violet-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                       <div className="flex h-12 w-12 scale-75 items-center justify-center rounded-full bg-white/25 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-100">
                         <FiZoomIn size={24} />
                       </div>
                     </div>
-                  </div>
-                </DepthFrame>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                  )}
+                </div>
+              </DepthFrame>
+            </div>
+          ))}
+        </div>
 
-        {/* Show More Button */}
-        {gallery.length > 9 && (
-          <div className="mt-16 text-center">
+        {gallery.length > initialCount && (
+          <div className="mt-10 text-center sm:mt-16">
             <button
-              onClick={() => setShowAll(!showAll)}
+              type="button"
+              onClick={() => setShowAll((v) => !v)}
               className="rounded-full border px-8 py-3 font-medium shadow-sm transition-colors"
               style={{
                 borderColor: 'var(--border)',
@@ -99,45 +103,55 @@ const Gallery = () => {
         )}
       </div>
 
-      {/* Lightbox Modal */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={lite ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 backdrop-blur-xl"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.8)' }} // Kept dark for lightbox
+            exit={lite ? undefined : { opacity: 0 }}
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 ${
+              lite ? '' : 'backdrop-blur-xl'
+            }`}
+            style={{ backgroundColor: lite ? 'rgba(0,0,0,0.92)' : 'rgba(0,0,0,0.8)' }}
             onClick={() => setSelectedImage(null)}
           >
-            <button 
-              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-full transition-colors z-50"
+            <button
+              type="button"
+              className="absolute right-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-full sm:right-6 sm:top-6 sm:h-12 sm:w-12"
               style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
-              onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedImage(null);
+              }}
+              aria-label="Close gallery image"
             >
               <FiX size={24} />
             </button>
-            
+
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              initial={lite ? false : { scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-5xl aspect-video max-h-[85vh] rounded-2xl overflow-hidden glass border flex flex-col"
-              style={{ borderColor: 'var(--border)' }}
+              exit={lite ? undefined : { scale: 0.9, opacity: 0, y: 20 }}
+              transition={
+                lite
+                  ? { duration: 0.15 }
+                  : { type: 'spring', damping: 25, stiffness: 300 }
+              }
+              className="relative flex aspect-video max-h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border"
+              style={{
+                borderColor: 'var(--border)',
+                background: 'var(--surface)',
+              }}
               onClick={(e) => e.stopPropagation()}
             >
-               <div className={`w-full h-full bg-gradient-to-br ${getGradient(selectedImage.id)} relative flex items-center justify-center`}>
-                  {selectedImage.src ? (
-                    <img 
-                      src={selectedImage.src} 
-                      alt={selectedImage.title}
-                      className="absolute inset-0 w-full h-full object-contain"
-                    />
-                  ) : (
-                    <span className="font-heading text-4xl" style={{ color: 'var(--text-muted)' }}>Image Placeholder</span>
-                  )}
-               </div>
+              <img
+                src={lightboxSrc(selectedImage)}
+                alt={selectedImage.alt || selectedImage.title}
+                className="absolute inset-0 h-full w-full object-contain"
+                decoding="async"
+                fetchPriority="high"
+                draggable={false}
+              />
             </motion.div>
           </motion.div>
         )}
