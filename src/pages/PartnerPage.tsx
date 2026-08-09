@@ -41,7 +41,7 @@ export default function PartnerPage() {
       {!isMobile && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-20 top-16 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-          <div className="absolute -left-16 bottom-20 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl" />
+          <div className="absolute -left-16 bottom-20 h-80 w-80 rounded-full bg-orange-400/15 blur-3xl" />
         </div>
       )}
 
@@ -86,10 +86,7 @@ export default function PartnerPage() {
           </a>
         </div>
 
-        <div
-          className="mt-6 grid w-full grid-cols-2 gap-1.5 rounded-2xl border p-1.5 sm:mt-8 sm:max-w-md"
-          style={{ borderColor: 'var(--border)', background: 'var(--bg-alt)' }}
-        >
+        <div className="clay-pill mt-6 grid w-full grid-cols-2 gap-1.5 rounded-2xl p-1.5 sm:mt-8 sm:max-w-md">
           <button
             type="button"
             onClick={() => setTab('sponsor')}

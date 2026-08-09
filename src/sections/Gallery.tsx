@@ -51,15 +51,11 @@ const Gallery = () => {
               }
             >
               <DepthFrame
-                className="group cursor-pointer overflow-hidden rounded-2xl border"
-                style={{ borderColor: 'var(--border)' }}
+                className="clay-card group cursor-pointer overflow-hidden rounded-2xl"
                 data-cursor="image"
                 onClick={() => setSelectedImage(image)}
               >
-                <div
-                  className="relative aspect-[4/3] w-full overflow-hidden"
-                  style={{ background: 'var(--surface)' }}
-                >
+                <div className="clay-surface relative aspect-[4/3] w-full overflow-hidden">
                   <ImageReveal
                     src={image.thumb || image.src}
                     alt={image.alt || image.title}
@@ -73,8 +69,14 @@ const Gallery = () => {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   {!lite && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-violet-950/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      <div className="flex h-12 w-12 scale-75 items-center justify-center rounded-full bg-white/25 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-100">
+                    <div
+                      className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, color-mix(in srgb, var(--brand-sky) 25%, transparent), color-mix(in srgb, var(--brand-orange) 35%, transparent))',
+                      }}
+                    >
+                      <div className="flex h-12 w-12 scale-75 items-center justify-center rounded-full bg-white/30 text-white shadow-lg backdrop-blur-md transition-transform duration-300 group-hover:scale-100">
                         <FiZoomIn size={24} />
                       </div>
                     </div>
@@ -90,12 +92,8 @@ const Gallery = () => {
             <button
               type="button"
               onClick={() => setShowAll((v) => !v)}
-              className="rounded-full border px-8 py-3 font-medium shadow-sm transition-colors"
-              style={{
-                borderColor: 'var(--border)',
-                background: 'var(--surface)',
-                color: 'var(--text-primary)',
-              }}
+              className="clay-pill rounded-full px-8 py-3 font-medium transition-colors"
+              style={{ color: 'var(--text-primary)' }}
             >
               {showAll ? 'Show Less' : 'View All Images'}
             </button>
@@ -117,8 +115,8 @@ const Gallery = () => {
           >
             <button
               type="button"
-              className="absolute right-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-full sm:right-6 sm:top-6 sm:h-12 sm:w-12"
-              style={{ background: 'var(--surface)', color: 'var(--text-primary)' }}
+              className="clay-chip absolute right-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-full sm:right-6 sm:top-6 sm:h-12 sm:w-12"
+              style={{ color: 'var(--text-primary)' }}
               onClick={(e) => {
                 e.stopPropagation();
                 setSelectedImage(null);
@@ -137,11 +135,7 @@ const Gallery = () => {
                   ? { duration: 0.15 }
                   : { type: 'spring', damping: 25, stiffness: 300 }
               }
-              className="relative flex aspect-video max-h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border"
-              style={{
-                borderColor: 'var(--border)',
-                background: 'var(--surface)',
-              }}
+              className="clay-card relative flex aspect-video max-h-[85vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <img

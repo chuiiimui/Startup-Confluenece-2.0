@@ -25,17 +25,17 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
   const getBadgeColor = (type: string) => {
     switch (type.toLowerCase()) {
       case 'keynote':
-        return 'bg-violet-500/15 text-[color:var(--badge-text)] border-violet-400/35';
+        return 'bg-orange-500/20 text-orange-200 border-orange-400/40';
       case 'workshop':
-        return 'bg-sky-500/15 text-sky-700 border-sky-400/35';
+        return 'bg-violet-500/20 text-violet-200 border-violet-400/40';
       case 'networking':
-        return 'bg-emerald-500/15 text-emerald-700 border-emerald-400/35';
+        return 'bg-teal-500/20 text-teal-200 border-teal-400/40';
       case 'pitch':
-        return 'bg-violet-500/20 text-[color:var(--badge-text)] border-violet-400/40';
+        return 'bg-amber-500/20 text-amber-200 border-amber-400/40';
       case 'break':
         return 'bg-[color:var(--surface)] text-[color:var(--text-secondary)] border-[color:var(--border)]';
       default:
-        return 'bg-violet-500/15 text-[color:var(--badge-text)] border-violet-400/35';
+        return 'bg-fuchsia-500/20 text-fuchsia-200 border-fuchsia-400/35';
     }
   };
 
@@ -161,12 +161,8 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
                   </p>
                   {event.speaker && (
                     <p
-                      className="text-sm mt-3 font-medium inline-block rounded-xl border px-3 py-1.5"
-                      style={{
-                        borderColor: 'var(--border-strong)',
-                        background: 'var(--surface)',
-                        color: 'var(--text-secondary)',
-                      }}
+                      className="clay-pill clay-pill--amber mt-3 inline-block rounded-xl px-3 py-1.5 text-sm font-medium"
+                      style={{ color: 'var(--text-secondary)' }}
                     >
                       Speaker:{' '}
                       <span style={{ color: 'var(--text-primary)' }}>{event.speaker}</span>
@@ -196,7 +192,7 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
             transition={{ duration: 0.8, ease: 'easeInOut' }}
             style={{
               background:
-                'linear-gradient(90deg, transparent 0%, rgba(196,181,253,0.4) 50%, transparent 100%)',
+                'linear-gradient(90deg, transparent 0%, rgba(255,179,102,0.45) 50%, transparent 100%)',
               width: '50%',
             }}
           />

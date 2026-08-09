@@ -35,7 +35,7 @@ export const Registration: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="clay-card inline-block w-full max-w-xl rounded-[28px] p-8 md:p-12"
+            className="clay-card clay-card--coral inline-block w-full max-w-xl rounded-[28px] p-8 md:p-12"
           >
             <h3 className="mb-3 font-heading text-lg font-bold sm:mb-4 sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
               Ready to accelerate your startup journey?

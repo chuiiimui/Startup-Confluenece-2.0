@@ -1,146 +1,143 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2 } from 'lucide-react';
-import SectionHeading from '../components/SectionHeading';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 import AnimatedCounter from '../components/AnimatedCounter';
 import GlassCard from '../components/GlassCard';
-import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import PillCta from '../components/PillCta';
+import SlideIn from '../components/SlideIn';
+import { scrollToSection } from '../lib/utils';
 
 const stats = [
-  { value: 1000, suffix: '+', label: 'Expected Attendees' },
+  { value: 1000, suffix: '+', label: 'Attendees' },
   { value: 50, suffix: '+', label: 'Startups' },
-  { value: 5, suffix: '+', label: 'Keynote Speakers' },
-  { value: 5, suffix: '+', label: 'Investors' },
+  { value: 5, suffix: '+', label: 'Speakers' },
   { value: 2, suffix: '', label: 'Days' },
-  { value: 4, suffix: '', label: 'Events' },
 ];
 
 const purposes = [
   'Networking with industry leaders',
   'Funding opportunities for startups',
   'Innovation showcases and demos',
-  'Collaboration across sectors',
-  'Startup Growth and mentoring',
-];
-
-const organizers = [
-  'United Incubation Hub',
-  'United Institute of Technology'
+  'Mentorship and collaboration',
 ];
 
 export default function About() {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
-    }
-  };
-
   return (
-    <section className="py-24 relative min-h-[100dvh] flex items-center justify-center overflow-hidden" id="about" >
-      {/* Neon orange circular glow */}
+    <section
+      id="about"
+      className="relative flex min-h-[100dvh] items-center overflow-hidden py-24 lg:py-28"
+    >
       <div
-        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[520px] w-[520px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[680px] md:w-[680px] max-md:opacity-70"
+        className="pointer-events-none absolute right-[-4%] top-1/2 z-0 -translate-y-1/2 select-none font-heading text-[clamp(5rem,22vw,16rem)] font-black uppercase leading-none tracking-tighter text-transparent"
         style={{
-          background:
-            'radial-gradient(circle, rgba(255,122,0,0.38) 0%, rgba(255,122,0,0.16) 38%, rgba(255,122,0,0.05) 62%, transparent 72%)',
-          boxShadow:
-            '0 0 80px rgba(255,122,0,0.28), 0 0 160px rgba(255,122,0,0.16)',
+          WebkitTextStroke: '1.5px color-mix(in srgb, var(--text-primary) 12%, transparent)',
         }}
         aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute left-[28%] top-1/2 z-[1] h-[220px] w-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full md:left-[32%] md:h-[280px] md:w-[280px]"
-        style={{
-          background:
-            'radial-gradient(circle, rgba(255,180,80,0.45) 0%, rgba(255,122,0,0.18) 45%, transparent 70%)',
-        }}
-        aria-hidden
-      />
-      <InteractiveCanvas
-        scene="liquidMetalBlob"
-        className="absolute right-[-3%] bottom-[12%] z-[2] hidden h-[240px] w-[240px] opacity-75 lg:block xl:right-[2%]"
-        camera={{ position: [0, 0, 4.2], fov: 40 }}
-      />
-      <div className="container mx-auto px-6 w-full relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
-          {/* Left Column - Text */}
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
+      >
+        About
+      </div>
+
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-5 sm:px-8 lg:px-12">
+        <SlideIn direction="left">
+          <p
+            className="mb-3 text-xs font-extrabold uppercase tracking-[0.32em]"
+            style={{ color: 'var(--brand-orange)' }}
           >
-            <SectionHeading 
-              badge="About"
-              title="About Startup Confluence 2.0"
-              align="left"
-            />
-            
-            <motion.p variants={itemVariants} className="font-body text-lg mb-8 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-              Startup Confluence 2.0 is the premier gathering for innovators, entrepreneurs, and investors. 
-              Join us for two days of groundbreaking ideas, transformative networking, and unparalleled opportunities to accelerate your startup journey.
-            </motion.p>
-
-            <div className="space-y-4 mb-10">
-              {purposes.map((purpose, index) => (
-                <motion.div key={index} variants={itemVariants} className="flex items-center space-x-3">
-                  <CheckCircle2 className="text-[#22C55E] w-6 h-6 flex-shrink-0" />
-                  <span className="font-body" style={{ color: 'var(--text-primary)' }}>{purpose}</span>
-                </motion.div>
-              ))}
-            </div>
-
-            <motion.div variants={itemVariants}>
-              <h3 className="text-[#FF7A00] font-heading font-bold text-xl mb-4">Organized By</h3>
-              <div className="flex flex-wrap gap-4">
-                {organizers.map((org, index) => (
-                  <div key={index} className="px-4 py-2 rounded-full border text-sm font-medium" style={{ background: 'var(--surface)', borderColor: 'var(--border)', color: 'var(--text-secondary)' }}>
-                    {org}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Right Column - Stats Grid */}
-          <motion.div 
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-4"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            variants={containerVariants}
+            Who We Are
+          </p>
+          <h2
+            className="max-w-3xl font-heading text-2xl font-black leading-tight tracking-tight sm:text-4xl lg:text-[2.65rem]"
+            style={{ color: 'var(--text-primary)' }}
           >
-            {stats.map((stat, index) => (
-              <motion.div key={index} variants={itemVariants}>
-                <GlassCard className="p-6 flex flex-col items-center justify-center text-center h-full aspect-square">
-                  <div className="flex items-baseline mb-2">
-                    <AnimatedCounter 
-                      value={stat.value} 
-                      prefix={stat.prefix}
-                      className="font-heading text-2xl font-extrabold sm:text-4xl"
-                      style={{ color: 'var(--text-primary)' }}
-                    />
-                    <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>
-                  </div>
-                  <p className="font-body text-sm uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>{stat.label}</p>
-                </GlassCard>
-              </motion.div>
-            ))}
-          </motion.div>
-          
+            Providing a premier stage for founders, investors, and innovators to build the future.
+          </h2>
+        </SlideIn>
+
+        <SlideIn direction="right" delay={0.1} className="mt-5">
+          <p
+            className="max-w-2xl text-sm font-semibold leading-relaxed sm:text-base"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            Startup Confluence 2.0 brings together India&apos;s startup ecosystem for two days of
+            pitches, mentorship, expo showcases, and high-signal networking at United Incubation Hub.
+          </p>
+        </SlideIn>
+
+        <ul className="mt-8 space-y-3">
+          {purposes.map((item, i) => (
+            <SlideIn key={item} direction="up" delay={0.12 + i * 0.06}>
+              <li className="clay-card group flex items-start gap-3 rounded-2xl px-4 py-3 transition-all duration-300 hover:-translate-x-1">
+                <CheckCircle2
+                  className="mt-0.5 h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110"
+                  style={{ color: 'var(--brand-blue-deep)', strokeWidth: 2.5 }}
+                />
+                <span
+                  className="text-sm font-bold sm:text-base"
+                  style={{ color: 'var(--text-primary)' }}
+                >
+                  {item}
+                </span>
+              </li>
+            </SlideIn>
+          ))}
+        </ul>
+
+        <SlideIn direction="up" delay={0.35} className="mt-8">
+          <PillCta
+            tone="gradient"
+            onClick={() => scrollToSection('team')}
+            icon={<ArrowRight className="h-5 w-5" />}
+          >
+            Meet Team
+          </PillCta>
+        </SlideIn>
+
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {stats.map((stat, i) => (
+            <SlideIn key={stat.label} direction="up" delay={0.2 + i * 0.08}>
+              <GlassCard
+                tilt={false}
+                className="clay-card--sky flex aspect-auto flex-col items-center justify-center rounded-2xl p-4 text-center transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="flex items-baseline">
+                  <AnimatedCounter
+                    value={stat.value}
+                    className="font-heading text-2xl font-extrabold text-[color:var(--text-primary)] sm:text-3xl"
+                  />
+                  <span
+                    className="font-heading text-xl font-extrabold"
+                    style={{ color: 'var(--brand-orange)' }}
+                  >
+                    {stat.suffix}
+                  </span>
+                </div>
+                <p
+                  className="mt-1 text-[10px] font-semibold uppercase tracking-wider"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  {stat.label}
+                </p>
+              </GlassCard>
+            </SlideIn>
+          ))}
         </div>
       </div>
+
+      <motion.div
+        className="absolute bottom-8 right-8 z-10 hidden items-center gap-3 text-xs font-bold tracking-[0.2em] md:flex"
+        style={{ color: 'var(--text-muted)' }}
+        initial={{ opacity: 0, x: 20 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        viewport={{ once: true }}
+      >
+        <span>01</span>
+        <span
+          className="h-px w-16"
+          style={{
+            background:
+              'linear-gradient(90deg, var(--brand-sky), var(--brand-orange))',
+          }}
+        />
+      </motion.div>
     </section>
   );
 }

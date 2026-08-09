@@ -15,10 +15,12 @@ export default {
     },
     extend: {
       colors: {
-        primary: '#93C5FD',
-        accent: '#FF7A00',
-        light: '#F8FAFC',
-        dark: '#070B1A',
+        primary: 'var(--brand-orange-deep)',
+        accent: 'var(--brand-orange)',
+        secondary: 'var(--brand-blue)',
+        skybrand: 'var(--brand-sky)',
+        light: '#FFFFFF',
+        dark: 'var(--text-primary)',
         surface: {
           glass: 'var(--surface)',
           glassBorder: 'var(--border)',
@@ -31,7 +33,7 @@ export default {
       },
       fontFamily: {
         heading: ['"Space Grotesk"', 'sans-serif'],
-        body: ['"Inter"', 'sans-serif'],
+        body: ['"Outfit"', 'sans-serif'],
       },
       animation: {
         float: 'float 6s ease-in-out infinite',
@@ -51,8 +53,8 @@ export default {
           '50%': { transform: 'translateY(-20px)' },
         },
         glow: {
-          '0%': { boxShadow: '0 0 10px rgba(11, 42, 107, 0.5)' },
-          '100%': { boxShadow: '0 0 30px rgba(255, 122, 0, 0.8)' },
+          '0%': { boxShadow: '0 0 10px rgba(234, 88, 12, 0.35)' },
+          '100%': { boxShadow: '0 0 30px rgba(255, 122, 0, 0.75)' },
         },
         shimmer: {
           '0%': { backgroundPosition: '-1000px 0' },

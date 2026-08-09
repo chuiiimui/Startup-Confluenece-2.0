@@ -6,7 +6,7 @@ export const expoCategories: ExpoCategory[] = [
     name: 'AI & Machine Learning',
     description: 'Next-gen intelligence and automation startups.',
     icon: 'Cpu',
-    color: 'text-blue-500',
+    color: 'text-orange-500',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800'
   },
   {
@@ -38,7 +38,7 @@ export const expoCategories: ExpoCategory[] = [
     name: 'EdTech',
     description: 'Transforming education and learning.',
     icon: 'BookOpen',
-    color: 'text-purple-500',
+    color: 'text-amber-300',
     image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800'
   },
   {
@@ -62,7 +62,7 @@ export const expoCategories: ExpoCategory[] = [
     name: 'Manufacturing',
     description: 'Industry 4.0 and smart production.',
     icon: 'Layers',
-    color: 'text-indigo-500',
+    color: 'text-orange-300',
     image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800'
   },
   {

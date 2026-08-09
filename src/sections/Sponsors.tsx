@@ -8,7 +8,7 @@ import { usePerfMode } from '../hooks/usePerfMode';
 function SponsorTile({ sponsor }: { sponsor: any }) {
   return (
     <div
-      className="relative flex h-32 w-48 shrink-0 items-center justify-center overflow-hidden rounded-2xl border glass transition-colors hover:border-[color:var(--border-strong)] sm:w-64"
+      className="clay-card relative flex h-32 w-48 shrink-0 items-center justify-center overflow-hidden rounded-2xl border transition-colors sm:w-64"
       style={{ borderColor: 'var(--border)' }}
     >
       <div
@@ -73,7 +73,7 @@ const MarqueeRow = ({
     <div className="relative mb-16 w-full">
       <div className="mb-6 text-center">
         <span
-          className={`inline-block rounded-full border px-4 py-1 text-xs font-bold uppercase tracking-widest glass ${tierClass}`}
+          className={`clay-pill inline-block rounded-full border px-4 py-1 text-xs font-bold uppercase tracking-widest ${tierClass}`}
           style={{ borderColor: 'var(--border)' }}
         >
           {name}
@@ -150,7 +150,7 @@ const Sponsors = () => {
             )}
             speed={35}
             direction="left"
-            tierClass="border-purple-500/20 bg-purple-500/10 text-purple-400"
+            tierClass="border-orange-400/40 bg-orange-500/15 text-orange-200"
           />
 
           <MarqueeRow
@@ -160,7 +160,7 @@ const Sponsors = () => {
             )}
             speed={45}
             direction="right"
-            tierClass="border-cyan-500/20 bg-cyan-500/10 text-cyan-400"
+            tierClass="border-violet-400/40 bg-violet-500/15 text-violet-200"
           />
 
           <MarqueeRow

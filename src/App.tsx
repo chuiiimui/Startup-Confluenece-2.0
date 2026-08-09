@@ -9,33 +9,22 @@ import {
   PremiumLoader,
 } from './components';
 import PremiumBackground from './components/PremiumBackground';
+import CursorTrail from './components/CursorTrail';
 import SmoothScroll from './components/SmoothScroll';
-import SectionReveal from './components/SectionReveal';
+import { Section } from './components/PageLayout';
 import MobileRegisterDock from './components/MobileRegisterDock';
 import BecomePartnerButton from './components/BecomePartnerButton';
 import { Hero } from './sections';
 import { RegistrationProvider } from './context/RegistrationContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { usePerfMode } from './hooks/usePerfMode';
 
 const About = lazy(() => import('./sections/About'));
 const EventHighlights = lazy(() => import('./sections/EventHighlights'));
 const WhyAttend = lazy(() => import('./sections/WhyAttend'));
-const Speakers = lazy(() => import('./sections/Speakers'));
-const ExperienceStrip = lazy(() => import('./sections/ExperienceStrip'));
-const StartupExpo = lazy(() => import('./sections/StartupExpo'));
-const PitchingArena = lazy(() => import('./sections/PitchingArena'));
-const Schedule = lazy(() => import('./sections/Schedule'));
-const Gallery = lazy(() => import('./sections/Gallery'));
-const Sponsors = lazy(() => import('./sections/Sponsors'));
 const Team = lazy(() => import('./sections/Team'));
 const Registration = lazy(() =>
   import('./sections/Registration').then((m) => ({ default: m.Registration }))
-);
-const Venue = lazy(() =>
-  import('./sections/Venue').then((m) => ({ default: m.Venue }))
-);
-const FAQ = lazy(() =>
-  import('./sections/FAQ').then((m) => ({ default: m.FAQ }))
 );
 const Contact = lazy(() =>
   import('./sections/Contact').then((m) => ({ default: m.Contact }))
@@ -47,14 +36,14 @@ const RegistrationModal = lazy(() => import('./components/RegistrationModal'));
 const PartnerModal = lazy(() => import('./components/PartnerModal'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const PartnerPage = lazy(() => import('./pages/PartnerPage'));
-
-function Section({ children }: { children: React.ReactNode }) {
-  return (
-    <SectionReveal>
-      <Suspense fallback={null}>{children}</Suspense>
-    </SectionReveal>
-  );
-}
+const SpeakersPage = lazy(() => import('./pages/SpeakersPage'));
+const ExperiencePage = lazy(() => import('./pages/ExperiencePage'));
+const SchedulePage = lazy(() => import('./pages/SchedulePage'));
+const ExpoPage = lazy(() => import('./pages/ExpoPage'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage'));
+const SponsorsPage = lazy(() => import('./pages/SponsorsPage'));
+const TeamPage = lazy(() => import('./pages/TeamPage'));
+const VenuePage = lazy(() => import('./pages/VenuePage'));
 
 function HomePage({ revealed }: { revealed: boolean }) {
   const { isMobile, reduceMotion } = usePerfMode();
@@ -62,57 +51,28 @@ function HomePage({ revealed }: { revealed: boolean }) {
   return (
     <>
       <SEO />
-      {/* Avoid transform on <main> — it breaks sticky horizontal scroll */}
       <main
         className={`relative z-10 pb-[4.5rem] transition-opacity duration-500 md:pb-0 ${
           revealed || reduceMotion || isMobile ? 'opacity-100' : 'opacity-90'
         }`}
       >
         <Hero />
-        <Section>
+        <Section band="cream">
           <About />
         </Section>
-        <Section>
+        <Section band="cyan">
           <EventHighlights />
         </Section>
-        <Section>
+        <Section band="peach">
           <WhyAttend />
         </Section>
-        <Section>
-          <Speakers />
-        </Section>
-        {/* No SectionReveal wrapper — sticky pin needs a transform-free ancestor */}
-        <Suspense fallback={null}>
-          <ExperienceStrip />
-        </Suspense>
-        <Section>
-          <PitchingArena />
-        </Section>
-        <Section>
-          <StartupExpo />
-        </Section>
-        <Section>
-          <Schedule />
-        </Section>
-        <Section>
-          <Gallery />
-        </Section>
-        <Section>
-          <Sponsors />
-        </Section>
-        <Section>
+        <Section band="cream">
           <Team />
         </Section>
-        <Section>
+        <Section band="cyan">
           <Registration />
         </Section>
-        <Section>
-          <Venue />
-        </Section>
-        <Section>
-          <FAQ />
-        </Section>
-        <Section>
+        <Section band="peach">
           <Contact />
         </Section>
       </main>
@@ -144,12 +104,16 @@ function AppShell() {
       {showLoader && <PremiumLoader onComplete={finishLoading} />}
 
       <div
-        className={`relative min-h-[100dvh] font-inter ${
+        className={`relative min-h-[100dvh] font-body ${
           isLoading ? 'h-[100dvh] overflow-hidden' : ''
         }`}
-        style={{ color: 'var(--text-primary)', backgroundColor: 'var(--bg)' }}
+        style={{
+          color: 'var(--text-primary)',
+          backgroundColor: 'var(--bg)',
+        }}
       >
         <PremiumBackground />
+        {!isMobile && <CursorTrail />}
 
         <AnimatePresence>
           {revealed && lightEffects && (
@@ -174,6 +138,14 @@ function AppShell() {
           <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<HomePage revealed={revealed} />} />
+              <Route path="/speakers" element={<SpeakersPage />} />
+              <Route path="/experience" element={<ExperiencePage />} />
+              <Route path="/schedule" element={<SchedulePage />} />
+              <Route path="/expo" element={<ExpoPage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/sponsors" element={<SponsorsPage />} />
+              <Route path="/team" element={<TeamPage />} />
+              <Route path="/venue" element={<VenuePage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/partner" element={<PartnerPage />} />
             </Routes>
@@ -188,7 +160,6 @@ function AppShell() {
         </Suspense>
       </div>
 
-      {/* Fixed UI outside transformed shell */}
       {!isLoading && <BecomePartnerButton />}
       {!isLoading && <MobileRegisterDock />}
     </SmoothScroll>
@@ -199,9 +170,11 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
-        <RegistrationProvider>
-          <AppShell />
-        </RegistrationProvider>
+        <ThemeProvider>
+          <RegistrationProvider>
+            <AppShell />
+          </RegistrationProvider>
+        </ThemeProvider>
       </BrowserRouter>
     </HelmetProvider>
   );

@@ -73,17 +73,12 @@ const VisionCard: React.FC<VisionCardProps> = ({ children, className = '' }) => 
         animate={{
           scale: isHovered ? 1.02 : 1,
           y: isHovered ? -8 : 0,
-          boxShadow: isHovered 
-            ? '0 30px 60px -12px rgba(11, 42, 107, 0.15), 0 0 0 1px rgba(11, 42, 107, 0.1) inset' 
-            : '0 10px 40px -12px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03) inset'
         }}
         transition={{ type: "spring", stiffness: 300, damping: 20 }}
-        className={`relative w-full rounded-3xl border-2 [transform-style:preserve-3d] transition-colors duration-300 ${className}`}
+        className={`clay-card relative w-full rounded-3xl border-2 [transform-style:preserve-3d] transition-colors duration-300 ${isHovered ? 'is-active' : ''} ${className}`}
         style={{
           rotateX,
           rotateY,
-          background: 'var(--surface)',
-          borderColor: 'var(--border)',
         }}
       >
         {/* Animated Border Draw (Two-Way) */}

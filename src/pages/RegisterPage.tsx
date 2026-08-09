@@ -68,7 +68,7 @@ export default function RegisterPage() {
       {!isMobile && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-accent/10 blur-3xl" />
-          <div className="absolute -right-16 top-40 h-80 w-80 rounded-full bg-indigo-400/10 blur-3xl" />
+          <div className="absolute -right-16 top-40 h-80 w-80 rounded-full bg-orange-400/15 blur-3xl" />
         </div>
       )}
 
@@ -153,13 +153,7 @@ export default function RegisterPage() {
               </ul>
             </div>
 
-            <div
-              className="w-full shrink-0 rounded-2xl border p-4 sm:p-5 lg:max-w-sm"
-              style={{
-                borderColor: 'var(--border)',
-                background: 'var(--bg-alt)',
-              }}
-            >
+            <div className="clay-card clay-card--blue w-full shrink-0 rounded-2xl p-4 sm:p-5 lg:max-w-sm">
               <h4 className="font-heading text-base font-semibold sm:text-lg">Before you continue</h4>
               <ul className="mt-4 space-y-2.5">
                 {active.checklist.map((item) => (

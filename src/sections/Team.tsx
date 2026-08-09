@@ -45,8 +45,7 @@ function PersonCard({
 
   return (
     <div
-      className="glass rounded-2xl p-8 border hover:border-[color:var(--border-strong)] transition-all duration-300 group flex flex-col items-center text-center relative overflow-hidden h-full"
-      style={{ borderColor: 'var(--border)' }}
+      className="clay-card group relative flex h-full flex-col items-center overflow-hidden rounded-2xl p-8 text-center transition-all duration-300"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -54,7 +53,10 @@ function PersonCard({
         <div
           className={`${avatar} rounded-full bg-gradient-to-tr from-primary to-accent p-1 group-hover:scale-105 transition-transform duration-500`}
         >
-          <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-white/80">
+          <div
+            className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full"
+            style={{ background: 'var(--bg-elevated)' }}
+          >
             {member.image ? (
               <img
                 src={member.image}
@@ -63,8 +65,8 @@ function PersonCard({
               />
             ) : (
               <span
-                className="text-3xl font-heading font-bold"
-                style={{ color: 'var(--text-muted)' }}
+                className="font-heading text-3xl font-bold"
+                style={{ color: 'var(--brand-orange)' }}
               >
                 {getInitials(member.name)}
               </span>
@@ -97,7 +99,7 @@ function PersonCard({
             href={member.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full glass border flex items-center justify-center hover:text-[var(--text-primary)] hover:border-[color:var(--border-strong)] transition-all"
+            className="clay-chip w-10 h-10 rounded-full border flex items-center justify-center hover:text-[var(--text-primary)] transition-all"
             style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
           >
             <FiLinkedin size={18} />
@@ -108,7 +110,7 @@ function PersonCard({
             href={member.social.twitter}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-10 h-10 rounded-full glass border flex items-center justify-center hover:text-[var(--text-primary)] hover:border-[color:var(--border-strong)] transition-all"
+            className="clay-chip w-10 h-10 rounded-full border flex items-center justify-center hover:text-[var(--text-primary)] transition-all"
             style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
           >
             <FiTwitter size={18} />

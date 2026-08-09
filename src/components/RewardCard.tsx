@@ -51,17 +51,13 @@ export default function RewardCard({ reward }: RewardCardProps) {
   return (
     <motion.div
       ref={cardRef}
-      className="relative h-full rounded-3xl overflow-hidden cursor-pointer flex flex-col"
+      className={`clay-card relative flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl ${isHovered ? 'is-active' : ''}`}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={handleMouseLeave}
       onMouseMove={handleMouseMove}
       animate={{
         y: isHovered ? -20 : 0,
         scale: isHovered ? 1.02 : 1,
-        boxShadow: isHovered
-          ? '0 30px 60px -12px rgba(255, 122, 0, 0.15), 0 0 0 1px rgba(255, 122, 0, 0.4) inset'
-          : '0 10px 40px -12px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.05) inset',
-        backgroundColor: isHovered ? 'rgba(255, 255, 255, 0.05)' : 'var(--surface)',
       }}
       transition={{ duration, ease: appleEase }}
     >
@@ -95,8 +91,7 @@ export default function RewardCard({ reward }: RewardCardProps) {
       <div className="relative z-20 p-8 text-center flex flex-col items-center h-full justify-center">
         {/* 8. Content layers move independently (Icon moves more) */}
         <motion.div
-          className="w-16 h-16 bg-gradient-to-br from-primary/10 to-accent/20 border rounded-2xl flex items-center justify-center mb-6 relative z-10"
-          style={{ borderColor: 'var(--border)' }}
+          className="clay-icon relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary/10 to-accent/20"
           animate={{ y: isHovered ? -12 : 0, scale: isHovered ? 1.1 : 1 }}
           transition={{ duration, ease: appleEase }}
         >

@@ -46,10 +46,10 @@ const MeshGradient: React.FC = () => {
           ease: 'easeInOut',
         }}
       />
-      {/* Ambient white-blue glow */}
+      {/* Ambient warm peach glow */}
       <motion.div
         className="absolute top-0 left-1/3 w-2/3 h-1/2 rounded-full blur-[150px]"
-        style={{ background: 'rgba(224, 236, 255, 0.5)' }}
+        style={{ background: 'rgba(255, 237, 213, 0.55)' }}
         animate={{
           opacity: [0.3, 0.6, 0.3],
         }}

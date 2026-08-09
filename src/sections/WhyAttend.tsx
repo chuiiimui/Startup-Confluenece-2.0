@@ -18,8 +18,13 @@ const containerVariants = {
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 }
+  hidden: { opacity: 0, y: 40, x: -24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    x: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
 };
 
 export default function WhyAttend() {
@@ -40,72 +45,31 @@ export default function WhyAttend() {
             return (
               <motion.div key={benefit.id} variants={itemVariants}>
               <TiltCard
-                className="group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] md:min-h-[380px]"
+                className="clay-card clay-card--media group relative flex min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] transition-all duration-500 hover:border-orange-300/45 md:min-h-[380px]"
                 intensity={11}
-                style={{
-                  boxShadow: '0 20px 60px rgba(79,70,229,0.12)',
-                }}
               >
-                {/* Background Image */}
                 {benefit.image && (
-                  <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[32px] z-0">
-                    <div 
+                  <div className="absolute inset-0 z-0 h-full w-full overflow-hidden rounded-[32px]">
+                    <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
-                      style={{ 
-                        backgroundImage: `url('${benefit.image}')`,
-                        filter: 'brightness(0.9) contrast(1.05)'
-                      }}
+                      style={{ backgroundImage: `url('${benefit.image}')` }}
                     />
                   </div>
                 )}
 
-                {/* Subtle Image Overlay for text readability */}
-                <div 
-                  className="absolute inset-0 z-10 transition-opacity duration-500"
-                  style={{
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 40%, rgba(10,46,109,0.35) 100%)'
-                  }}
-                />
-                
-                {/* Additional Hover Darkening */}
-                <div className="absolute inset-0 z-10 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                {/* Reflection Sweep */}
-                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[32px]">
-                  <div className="absolute -top-[100%] -bottom-[100%] left-[-100%] w-[30%] bg-gradient-to-r from-transparent via-white/40 to-transparent -rotate-45 group-hover:left-[200%] transition-all duration-[1.2s] ease-in-out opacity-0 group-hover:opacity-100" />
-                </div>
-
-                {/* Text Content */}
-                <div className="relative z-30 p-8 flex flex-col items-start transition-colors duration-500 mt-auto">
-                  {/* Glass Icon Badge */}
-                  <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm border border-white/40"
-                    style={{
-                      background: 'rgba(255,255,255,0.2)',
-                      backdropFilter: 'blur(12px)',
-                      WebkitBackdropFilter: 'blur(12px)',
-                    }}
-                  >
-                    <IconComponent className="w-6 h-6 md:w-7 md:h-7 text-[#FFFFFF]" />
+                <div className="media-card-copy relative z-30 m-4 mt-auto p-5 md:m-5 md:p-6">
+                  <div className="clay-icon mb-3 flex h-11 w-11 items-center justify-center rounded-full md:mb-4 md:h-12 md:w-12">
+                    <IconComponent
+                      className="h-5 w-5 md:h-6 md:w-6"
+                      style={{ color: 'var(--brand-orange)' }}
+                    />
                   </div>
 
-                  <h3 
-                    className="font-heading font-bold text-base md:text-2xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
-                    style={{ 
-                      color: '#FFFFFF',
-                      textShadow: '0 4px 20px rgba(0,0,0,0.35)'
-                    }}
-                  >
+                  <h3 className="media-card-title mb-2 font-heading text-base tracking-tight md:text-xl">
                     {benefit.title}
                   </h3>
-                  
-                  <p 
-                    className="font-body text-sm md:text-base leading-relaxed transition-opacity duration-500 opacity-90 group-hover:opacity-100" 
-                    style={{ 
-                      color: 'rgba(255,255,255,0.92)',
-                      textShadow: '0 2px 12px rgba(0,0,0,0.25)'
-                    }}
-                  >
+
+                  <p className="media-card-body font-body text-sm leading-relaxed md:text-[0.95rem]">
                     {benefit.description}
                   </p>
                 </div>

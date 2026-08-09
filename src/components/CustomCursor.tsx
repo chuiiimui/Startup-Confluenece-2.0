@@ -100,8 +100,8 @@ export default function CustomCursor() {
             mode === 'drag'
               ? 'rgba(255,122,0,0.55)'
               : mode === 'image'
-                ? 'rgba(147,197,253,0.55)'
-                : 'rgba(196,181,253,0.45)',
+                ? 'rgba(253,186,116,0.55)'
+                : 'rgba(255,122,0,0.40)',
           background:
             mode === 'default'
               ? 'rgba(255,255,255,0.06)'
@@ -110,7 +110,7 @@ export default function CustomCursor() {
           boxShadow:
             mode === 'drag'
               ? '0 0 28px rgba(255,122,0,0.28)'
-              : '0 0 24px rgba(139,92,246,0.22)',
+              : '0 0 24px rgba(255,122,0,0.22)',
           opacity: visible ? 1 : 0,
         }}
         animate={{ scale: ringScale }}
@@ -127,8 +127,8 @@ export default function CustomCursor() {
           background:
             mode === 'drag'
               ? 'rgb(255,122,0)'
-              : 'linear-gradient(135deg, #C4B5FD, #93C5FD)',
-          boxShadow: '0 0 12px rgba(167,139,250,0.55)',
+              : 'linear-gradient(135deg, #FF7A00, #FDBA74)',
+          boxShadow: '0 0 12px rgba(255,122,0,0.50)',
           opacity: visible ? 1 : 0,
         }}
         animate={{ scale: dotScale }}

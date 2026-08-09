@@ -2,12 +2,12 @@ import { motion } from 'framer-motion';
 import { Rocket, Sparkles, Zap, TrendingUp, Users, Lightbulb } from 'lucide-react';
 
 const icons = [
-  { Icon: Rocket, x: '8%', y: '22%', delay: 0, color: 'text-violet-500/40' },
-  { Icon: Sparkles, x: '88%', y: '18%', delay: 0.4, color: 'text-blue-500/40' },
-  { Icon: Zap, x: '12%', y: '72%', delay: 0.8, color: 'text-indigo-500/35' },
-  { Icon: TrendingUp, x: '85%', y: '68%', delay: 1.2, color: 'text-violet-400/40' },
-  { Icon: Users, x: '78%', y: '40%', delay: 0.6, color: 'text-sky-500/35' },
-  { Icon: Lightbulb, x: '18%', y: '45%', delay: 1, color: 'text-amber-500/35' },
+  { Icon: Rocket, x: '8%', y: '22%', delay: 0, color: 'text-orange-500/45' },
+  { Icon: Sparkles, x: '88%', y: '18%', delay: 0.4, color: 'text-blue-500/45' },
+  { Icon: Zap, x: '12%', y: '72%', delay: 0.8, color: 'text-sky-500/40' },
+  { Icon: TrendingUp, x: '85%', y: '68%', delay: 1.2, color: 'text-accent/45' },
+  { Icon: Users, x: '78%', y: '40%', delay: 0.6, color: 'text-secondary/40' },
+  { Icon: Lightbulb, x: '18%', y: '45%', delay: 1, color: 'text-amber-500/40' },
 ];
 
 /**
@@ -33,7 +33,7 @@ export default function FloatingIcons() {
             delay,
           }}
         >
-          <div className="rounded-2xl border border-white/40 bg-white/30 p-3 shadow-[0_8px_30px_rgba(79,70,229,0.12)] backdrop-blur-md">
+          <div className="clay-icon rounded-2xl p-3">
             <Icon className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.6} />
           </div>
         </motion.div>

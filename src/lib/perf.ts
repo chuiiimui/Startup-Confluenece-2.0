@@ -54,13 +54,14 @@ export function getPerfProfile(): PerfProfile {
     (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
   const saveData = readConnectionSaveData();
 
+  // Only treat clearly constrained devices as low-end. A typical 4-core
+  // desktop must stay on high so neon/parallax layers remain active.
   const isLowEnd =
-    reduceMotion ||
     saveData ||
-    memory <= 4 ||
-    cores <= 4 ||
+    memory <= 2 ||
+    cores <= 2 ||
     (isAndroid && isMobile) ||
-    (isMobile && (memory <= 6 || cores <= 6));
+    (isMobile && (memory <= 4 || cores <= 4));
 
   const mode: PerfMode = isLowEnd || isMobile ? 'low' : 'high';
 
@@ -69,7 +70,9 @@ export function getPerfProfile(): PerfProfile {
     isMobile,
     isAndroid,
     isLowEnd: mode === 'low',
-    reduceMotion: reduceMotion || mode === 'low',
+    // Respect OS preference only — do not fake reduce-motion on low mode
+    // or cursor/neon layers get silently disabled on normal desktops.
+    reduceMotion,
     enable3D: mode === 'high' && !reduceMotion,
     enableParallax: mode === 'high' && !reduceMotion,
     enableHeavyBlur: mode === 'high',

@@ -58,13 +58,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
     return (
       <div className={`mb-8 flex flex-col sm:mb-12 ${alignClasses}`}>
         {badge && (
-          <div
-            className="mb-4 inline-flex items-center rounded-full px-3 py-1"
-            style={{
-              background: 'var(--badge-bg)',
-              border: '1px solid var(--badge-border)',
-            }}
-          >
+          <div className="clay-pill clay-pill--blue mb-4 inline-flex items-center rounded-full px-3 py-1">
             <span
               className="text-xs font-semibold uppercase tracking-widest"
               style={{ color: 'var(--badge-text)' }}
@@ -99,13 +93,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       {badge && (
         <motion.div
           variants={itemVariants}
-          className={`mb-4 inline-flex items-center rounded-full px-3 py-1 ${
-            enableHeavyBlur ? 'backdrop-blur-md' : ''
-          }`}
-          style={{
-            background: 'var(--badge-bg)',
-            border: '1px solid var(--badge-border)',
-          }}
+          className="clay-pill clay-pill--blue mb-4 inline-flex items-center rounded-full px-3 py-1"
         >
           <span
             className="text-xs font-semibold uppercase tracking-widest"

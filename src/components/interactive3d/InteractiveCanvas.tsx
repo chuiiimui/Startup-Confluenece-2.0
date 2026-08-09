@@ -3,7 +3,6 @@ import { usePerfMode } from '../../hooks/usePerfMode';
 
 export type SceneId =
   | 'nodeConstellation'
-  | 'liquidMetalBlob'
   | 'pitchPodium'
   | 'profileCrystal'
   | 'timelineBeads'
@@ -12,7 +11,8 @@ export type SceneId =
   | 'orbitingCoins'
   | 'fundingOrb'
   | 'growthChart'
-  | 'pitchCardSwarm';
+  | 'pitchCardSwarm'
+  | 'softHalo';
 
 interface InteractiveCanvasProps {
   scene: SceneId;

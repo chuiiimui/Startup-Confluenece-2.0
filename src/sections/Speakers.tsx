@@ -54,33 +54,52 @@ export default function Speakers() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.6 }}
-            className="relative p-[1px] rounded-[2rem] bg-gradient-to-r from-accent/50 to-primary/50 overflow-hidden group shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
+            className="group relative overflow-hidden rounded-[2rem] p-[1px]"
+            style={{
+              background:
+                'linear-gradient(90deg, color-mix(in srgb, var(--brand-orange) 55%, transparent), var(--bg-elevated), color-mix(in srgb, var(--brand-sky) 55%, transparent))',
+            }}
           >
-            {/* Animated Border Glow */}
-            <div className="absolute inset-0 bg-gradient-to-r from-accent via-white to-primary opacity-30 group-hover:opacity-60 transition-opacity duration-700 rounded-[2rem]" style={{ filter: 'blur(15px)' }}></div>
+            <div
+              className="absolute inset-0 rounded-[2rem] opacity-30 transition-opacity duration-700 group-hover:opacity-60"
+              style={{
+                filter: 'blur(15px)',
+                background:
+                  'linear-gradient(90deg, var(--brand-orange), var(--bg-elevated), var(--brand-sky))',
+              }}
+            />
             
-            <div className="relative rounded-[2rem] p-8 md:p-12 lg:p-16 border z-10" style={{ background: 'var(--bg-alt)', borderColor: 'var(--border)' }}>
+            <div className="clay-card relative z-10 rounded-[2rem] p-8 md:p-12 lg:p-16">
               <div className="grid lg:grid-cols-2 gap-10 items-center">
                 
                 {/* Text Content */}
                 <div className="order-2 lg:order-1 flex flex-col items-center lg:items-start text-center lg:text-left">
-                  <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent font-bold text-sm tracking-widest uppercase mb-6 shadow-[0_0_15px_rgba(255,122,0,0.2)]">
+                  <span className="clay-pill mb-6 inline-block rounded-full px-4 py-1.5 text-sm font-bold uppercase tracking-widest text-accent">
                     Chief Guest
                   </span>
                   <h3 className="text-2xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-3 md:mb-4" style={{ color: 'var(--text-primary)' }}>
-                    To Be <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#FF9F43]">Revealed</span>
+                    To Be{' '}
+                    <span
+                      className="bg-clip-text text-transparent"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(90deg, var(--brand-sky), var(--brand-orange))',
+                      }}
+                    >
+                      Revealed
+                    </span>
                   </h3>
                   <p className="text-sm md:text-xl leading-relaxed mb-6 md:mb-8 max-w-xl" style={{ color: 'var(--text-secondary)' }}>
                     We're bringing in a visionary leader who has fundamentally reshaped the tech landscape. Stay tuned for an announcement that will elevate Startup Confluence 2.0 to new heights.
                   </p>
-                  <button className="px-8 py-3 rounded-full border transition-colors duration-300 font-semibold hover:bg-[color:var(--surface-hover)]" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
+                  <button className="clay-pill rounded-full px-8 py-3 font-semibold transition-colors duration-300" style={{ color: 'var(--text-primary)' }}>
                     Get Notified
                   </button>
                 </div>
 
                 {/* Mystery Silhouette Image */}
                 <div className="order-1 lg:order-2 flex justify-center">
-                  <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 rounded-full border flex items-center justify-center overflow-hidden" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                  <div className="clay-chip relative flex h-48 w-48 items-center justify-center overflow-hidden rounded-full md:h-64 md:w-64 lg:h-80 lg:w-80">
                     <div className="absolute inset-0 flex items-center justify-center text-8xl md:text-9xl font-heading font-bold opacity-10" style={{ color: 'var(--text-primary)' }}>
                       ?
                     </div>

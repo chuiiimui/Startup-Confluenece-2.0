@@ -3,15 +3,27 @@ import { NavItem } from '../types';
 export const EVENT_DATE = '2026-10-23T09:00:00+05:30';
 export const EVENT_NAME = 'Startup Confluence 2.0';
 
+/**
+ * Nav follows homepage scroll order first, then satellite pages.
+ * Hash hrefs scroll on `/`; path hrefs navigate.
+ */
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'Speakers', href: '#speakers' },
-  { label: 'Schedule', href: '#schedule' },
-  { label: 'Expo', href: '#expo' },
-  { label: 'Sponsors', href: '#sponsors' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Contact', href: '#contact' },
+  // Homepage flow
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/#about' },
+  { label: 'Highlights', href: '/#highlights' },
+  { label: 'Why Attend', href: '/#why-attend' },
+  { label: 'Team', href: '/#team' },
+  { label: 'Register', href: '/#register' },
+  { label: 'Contact', href: '/#contact' },
+  // More pages
+  { label: 'Speakers', href: '/speakers' },
+  { label: 'Experience', href: '/experience' },
+  { label: 'Schedule', href: '/schedule' },
+  { label: 'Expo', href: '/expo' },
+  { label: 'Gallery', href: '/gallery' },
+  { label: 'Sponsors', href: '/sponsors' },
+  { label: 'Venue', href: '/venue' },
 ];
 
 export const SOCIAL_LINKS = {

@@ -1,65 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import React, { useCallback, useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NAV_ITEMS } from '../constants';
-import { getLenisInstance, scrollToSection } from '../lib/utils';
+import {
+  getLenisInstance,
+  parseNavHref,
+  scrollToSection,
+  scrollToTop,
+} from '../lib/utils';
 import logo from '../assets/logo.png';
 import { usePerfMode } from '../hooks/usePerfMode';
+import ThemeToggle from './ThemeToggle';
+
+function navKey(href: string) {
+  const { path, hashId } = parseNavHref(href);
+  return hashId ? `${path}#${hashId}` : path;
+}
+
+/** Homepage sections → matching nav hash keys (Home uses `home`). */
+const HOME_SCROLL_SPY: { id: string; nav: string }[] = [
+  { id: 'home', nav: 'home' },
+  { id: 'about', nav: 'about' },
+  { id: 'highlights', nav: 'highlights' },
+  { id: 'why-attend', nav: 'why-attend' },
+  { id: 'team', nav: 'team' },
+  { id: 'register', nav: 'register' },
+  { id: 'contact', nav: 'contact' },
+];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { enableHeavyBlur } = usePerfMode();
-  const { scrollY } = useScroll();
-  const navScale = useTransform(scrollY, [0, 120], [1, 0.97]);
   const navigate = useNavigate();
   const location = useLocation();
   const isHome = location.pathname === '/';
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-    };
+  const syncHomeActive = useCallback(() => {
+    const y = window.scrollY;
+    setIsScrolled(y > 32);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
     if (!isHome) return;
 
-    const observers: IntersectionObserver[] = [];
+    // Marker just under the floating nav
+    const marker = y + Math.min(140, window.innerHeight * 0.22);
+    let next = 'home';
 
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
+    for (const section of HOME_SCROLL_SPY) {
+      const el = document.getElementById(section.id);
+      if (!el) continue;
+      const top = el.getBoundingClientRect().top + y;
+      if (top <= marker) next = section.nav;
+    }
+
+    setActiveSection((prev) => (prev === next ? prev : next));
+  }, [isHome]);
+
+  // Lenis scroll (desktop) + native scroll (mobile) — rAF throttled
+  useLenis(() => {
+    syncHomeActive();
+  });
+
+  useEffect(() => {
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        syncHomeActive();
       });
     };
 
-    const observerOptions = {
-      root: null,
-      rootMargin: '-50% 0px -50% 0px',
-      threshold: 0,
-    };
-
-    NAV_ITEMS.forEach((item) => {
-      const itemId = item.href.replace('#', '');
-      const element = document.getElementById(itemId);
-      if (element) {
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
-        observer.observe(element);
-        observers.push(observer);
-      }
-    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    syncHomeActive();
+    // Lazy sections mount after first paint — re-sync a few times
+    const retries = [120, 400, 900, 1600].map((ms) =>
+      window.setTimeout(syncHomeActive, ms)
+    );
 
     return () => {
-      observers.forEach((observer) => observer.disconnect());
+      window.removeEventListener('scroll', onScroll);
+      retries.forEach(clearTimeout);
     };
-  }, [isHome]);
+  }, [syncHomeActive]);
+
+  // Route pages: highlight from path; home hash from location
+  useEffect(() => {
+    if (isHome) {
+      const hashId = location.hash.replace('#', '');
+      if (hashId) setActiveSection(hashId);
+      return;
+    }
+    setActiveSection('');
+  }, [isHome, location.pathname, location.hash]);
+
+  // Scroll to top (or hash) when route changes
+  useEffect(() => {
+    const hashId = location.hash.replace('#', '');
+    if (hashId) {
+      window.setTimeout(() => scrollToSection(hashId), 160);
+      return;
+    }
+    scrollToTop();
+  }, [location.pathname, location.hash]);
 
   // Lock page scroll while mobile menu is open
   useEffect(() => {
@@ -77,17 +124,39 @@ export const Navbar = () => {
     };
   }, [isOpen]);
 
-  const handleNavClick = (id: string) => {
-    setActiveSection(id);
+  const handleNavHref = (href: string) => {
+    const { path, hashId } = parseNavHref(href);
     setIsOpen(false);
-    if (!isHome) {
-      navigate('/');
-      window.setTimeout(() => scrollToSection(id), 120);
+
+    if (path === '/' && hashId) {
+      setActiveSection(hashId);
+      if (!isHome) {
+        navigate(`/#${hashId}`);
+        return;
+      }
+      window.setTimeout(() => scrollToSection(hashId), 80);
       return;
     }
-    setTimeout(() => {
-      scrollToSection(id);
-    }, 280);
+
+    if (path === '/') {
+      setActiveSection('home');
+      if (!isHome) {
+        navigate('/');
+        return;
+      }
+      window.setTimeout(() => scrollToSection('home'), 80);
+      return;
+    }
+
+    navigate(path);
+  };
+
+  const isItemActive = (href: string) => {
+    const { path, hashId } = parseNavHref(href);
+    if (path !== '/' && location.pathname === path) return true;
+    if (path === '/' && isHome && hashId) return activeSection === hashId;
+    if (path === '/' && !hashId && isHome) return activeSection === 'home';
+    return false;
   };
 
   const goRegister = () => {
@@ -95,25 +164,27 @@ export const Navbar = () => {
     navigate('/register');
   };
 
+  const compact = isScrolled && !isOpen;
+
   return (
     <>
-      <div className="pointer-events-none fixed left-0 right-0 top-3 z-50 flex w-full justify-center px-3 sm:top-5 sm:px-4">
+      <div className="pointer-events-none fixed left-0 right-0 top-2.5 z-50 flex w-full justify-center px-3 sm:top-3.5 sm:px-4">
         <motion.nav
-          initial={{ y: -100, opacity: 0 }}
+          initial={{ y: -80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            scale: isOpen ? 1 : navScale,
-            background: isScrolled || isOpen ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
+            background:
+              isScrolled || isOpen ? 'var(--nav-bg-scrolled)' : 'var(--nav-bg)',
             backdropFilter: enableHeavyBlur
               ? isScrolled || isOpen
-                ? 'blur(48px) saturate(180%)'
-                : 'blur(28px) saturate(140%)'
+                ? 'blur(28px) saturate(160%)'
+                : 'blur(18px) saturate(140%)'
               : 'none',
             WebkitBackdropFilter: enableHeavyBlur
               ? isScrolled || isOpen
-                ? 'blur(48px) saturate(180%)'
-                : 'blur(28px) saturate(140%)'
+                ? 'blur(28px) saturate(160%)'
+                : 'blur(18px) saturate(140%)'
               : 'none',
             borderTop:
               isScrolled || isOpen
@@ -122,105 +193,120 @@ export const Navbar = () => {
             borderLeft: '1px solid var(--border)',
             borderRight: '1px solid var(--border)',
             borderBottom: '1px solid var(--border)',
-            boxShadow: isScrolled || isOpen ? 'var(--nav-shadow-scrolled)' : 'var(--nav-shadow)',
+            boxShadow:
+              isScrolled || isOpen
+                ? 'var(--nav-shadow-scrolled)'
+                : 'var(--nav-shadow)',
             color: 'var(--text-primary)',
           }}
-          className={`pointer-events-auto flex flex-col items-center transition-[width,border-radius] duration-300 ${
+          className={`pointer-events-auto flex flex-col items-center transition-[width,border-radius,padding] duration-300 ${
             isOpen
               ? 'max-h-[min(88dvh,calc(100dvh-1.5rem))] w-full max-w-md overflow-hidden rounded-[24px]'
-              : isScrolled
-                ? 'w-[min(100%,980px)] max-w-[980px] overflow-hidden rounded-full lg:w-fit'
-                : 'w-[min(100%,1100px)] max-w-[1100px] overflow-hidden rounded-full lg:w-fit'
+              : compact
+                ? 'w-[min(100%,920px)] max-w-[920px] overflow-hidden rounded-full lg:w-fit'
+                : 'w-[min(100%,1000px)] max-w-[1000px] overflow-hidden rounded-full lg:w-fit'
           }`}
-          layout
         >
-          <motion.div
-            className="flex w-full shrink-0 items-center justify-between"
-            animate={{
-              padding: isOpen
-                ? '14px 16px'
-                : isScrolled
-                  ? '8px 18px'
-                  : '14px 20px',
-            }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            layout
+          <div
+            className={`flex w-full shrink-0 items-center justify-between transition-[padding] duration-300 ${
+              isOpen
+                ? 'px-4 py-3'
+                : compact
+                  ? 'px-3.5 py-1.5 sm:px-4'
+                  : 'px-4 py-2 sm:px-5'
+            }`}
           >
             <div
               className="flex flex-shrink-0 cursor-pointer items-center"
-              onClick={() => {
-                if (isHome) handleNavClick('home');
-                else navigate('/');
-              }}
+              onClick={() => handleNavHref('/')}
               data-cursor="link"
             >
-              <motion.img
+              <img
                 src={logo}
                 alt="UIH Logo"
-                className="w-auto object-contain"
-                animate={{ height: isScrolled && !isOpen ? 26 : 30 }}
-                transition={{ duration: 0.3 }}
+                className={`brand-logo w-auto object-contain transition-[height] duration-300 ${
+                  compact ? 'h-[24px]' : 'h-[28px]'
+                }`}
               />
             </div>
 
-            <div className="mx-6 hidden items-center space-x-1 lg:flex">
+            <div className="mx-3 hidden max-w-[min(62vw,46rem)] items-center gap-0.5 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] lg:flex xl:mx-5 [&::-webkit-scrollbar]:hidden">
               {NAV_ITEMS.map((item) => {
-                const itemId = item.href.replace('#', '');
-                const isActive = isHome && activeSection === itemId;
+                const key = navKey(item.href);
+                const isActive = isItemActive(item.href);
                 return (
                   <button
-                    key={itemId}
-                    onClick={() => handleNavClick(itemId)}
+                    key={key}
+                    onClick={() => handleNavHref(item.href)}
                     data-cursor="link"
-                    className="relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-300"
+                    aria-current={isActive ? 'page' : undefined}
+                    className="relative shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 xl:px-3 xl:text-[13px]"
                     style={{
-                      color: isActive ? 'var(--text-primary)' : 'var(--text-muted)',
+                      color: isActive
+                        ? 'var(--text-primary)'
+                        : 'var(--text-muted)',
                     }}
                   >
                     {isActive && (
                       <motion.div
                         layoutId="activeNav"
                         className="absolute inset-0 rounded-full"
-                        style={{ background: 'var(--surface-hover)' }}
-                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                        transition={{
+                          type: 'spring',
+                          bounce: 0.18,
+                          duration: 0.45,
+                        }}
+                        style={{
+                          background:
+                            'linear-gradient(135deg, var(--nav-active-from) 0%, var(--nav-active-to) 100%)',
+                          boxShadow:
+                            '0 0 0 1px var(--nav-active-ring), 0 0 18px var(--nav-active-glow), inset 0 1px 0 rgba(255,255,255,0.12)',
+                        }}
                       />
                     )}
-                    <span className="relative z-10">{item.label}</span>
+                    <span
+                      className="relative z-10"
+                      style={
+                        isActive
+                          ? {
+                              textShadow: '0 0 18px var(--nav-active-glow)',
+                            }
+                          : undefined
+                      }
+                    >
+                      {item.label}
+                    </span>
                   </button>
                 );
               })}
             </div>
 
-            <div className="hidden items-center gap-2.5 lg:flex">
+            <div className="hidden items-center gap-2 lg:flex">
+              <ThemeToggle />
               <motion.button
                 onClick={goRegister}
                 data-cursor="link"
-                className="relative overflow-hidden rounded-full bg-accent text-sm font-semibold text-white"
-                animate={{
-                  paddingLeft: isScrolled ? 18 : 24,
-                  paddingRight: isScrolled ? 18 : 24,
-                  paddingTop: isScrolled ? 8 : 10,
-                  paddingBottom: isScrolled ? 8 : 10,
+                className={`relative overflow-hidden rounded-full text-sm font-semibold text-white transition-[padding] duration-300 ${
+                  compact ? 'px-4 py-2' : 'px-5 py-2.5'
+                }`}
+                style={{
+                  background:
+                    'linear-gradient(105deg, #7C3AED 0%, #DB2777 48%, #FF7A00 100%)',
                 }}
-                whileHover={{ scale: 1.05, y: -2, boxShadow: '0 10px 20px -5px rgba(255,122,0,0.5)' }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{
+                  scale: 1.04,
+                  y: -1,
+                  boxShadow: '0 12px 28px -5px rgba(168,85,247,0.55)',
+                }}
+                whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                <motion.div
-                  className="pointer-events-none absolute inset-0 z-0 mix-blend-overlay"
-                  initial={{ x: '-100%' }}
-                  whileHover={{ x: '100%' }}
-                  transition={{ duration: 0.6, ease: 'easeInOut' }}
-                  style={{
-                    background:
-                      'linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)',
-                  }}
-                />
                 <span className="relative z-10">Register Now</span>
               </motion.button>
             </div>
 
             <div className="flex items-center gap-1.5 lg:hidden">
+              <ThemeToggle />
               <button
                 className="min-h-11 min-w-11 -mr-1 rounded-full p-2 transition-colors"
                 style={{ color: 'var(--text-muted)' }}
@@ -232,7 +318,7 @@ export const Navbar = () => {
                 {isOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
-          </motion.div>
+          </div>
 
           <AnimatePresence>
             {isOpen && (
@@ -240,7 +326,7 @@ export const Navbar = () => {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="w-full min-h-0"
               >
                 <div
@@ -249,47 +335,62 @@ export const Navbar = () => {
                 >
                   <div className="mt-1 flex flex-col space-y-1">
                     {NAV_ITEMS.map((item, index) => {
-                      const itemId = item.href.replace('#', '');
+                      const key = navKey(item.href);
+                      const isActive = isItemActive(item.href);
                       return (
                         <motion.button
-                          key={itemId}
-                          initial={{ opacity: 0, x: -16 }}
+                          key={key}
+                          initial={{ opacity: 0, x: -12 }}
                           animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -16 }}
-                          transition={{ delay: index * 0.03, duration: 0.25 }}
+                          exit={{ opacity: 0, x: -12 }}
+                          transition={{ delay: index * 0.02, duration: 0.2 }}
                           onClick={(e) => {
                             e.preventDefault();
-                            handleNavClick(itemId);
+                            handleNavHref(item.href);
                           }}
                           data-cursor="link"
+                          aria-current={isActive ? 'page' : undefined}
                           className="flex min-h-11 w-full items-center justify-between rounded-2xl p-3 transition-all"
                           style={{
-                            background:
-                              isHome && activeSection === itemId
-                                ? 'var(--surface-hover)'
-                                : 'transparent',
-                            color:
-                              isHome && activeSection === itemId
-                                ? 'var(--text-primary)'
-                                : 'var(--text-muted)',
+                            background: isActive
+                              ? 'linear-gradient(135deg, var(--nav-active-from) 0%, var(--nav-active-to) 100%)'
+                              : 'transparent',
+                            boxShadow: isActive
+                              ? '0 0 0 1px var(--nav-active-ring), 0 0 16px var(--nav-active-glow)'
+                              : undefined,
+                            color: isActive
+                              ? 'var(--text-primary)'
+                              : 'var(--text-muted)',
                           }}
                         >
-                          <span className="text-base font-medium sm:text-lg">{item.label}</span>
-                          <ChevronRight size={18} style={{ opacity: 0.5 }} />
+                          <span className="text-base font-medium sm:text-lg">
+                            {item.label}
+                          </span>
+                          <ChevronRight
+                            size={18}
+                            style={{ opacity: isActive ? 0.85 : 0.45 }}
+                          />
                         </motion.button>
                       );
                     })}
                     <motion.button
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ delay: NAV_ITEMS.length * 0.03, duration: 0.25 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{
+                        delay: NAV_ITEMS.length * 0.02,
+                        duration: 0.2,
+                      }}
                       onClick={(e) => {
                         e.preventDefault();
                         goRegister();
                       }}
                       data-cursor="link"
-                      className="mt-3 flex min-h-12 w-full items-center justify-center space-x-2 rounded-2xl bg-accent py-3.5 text-base font-semibold text-white transition-colors hover:bg-[#E66E00] sm:text-lg"
+                      className="mt-3 flex min-h-12 w-full items-center justify-center rounded-2xl py-3.5 text-base font-semibold text-white sm:text-lg"
+                      style={{
+                        background:
+                          'linear-gradient(105deg, #7C3AED 0%, #DB2777 48%, #FF7A00 100%)',
+                      }}
                     >
                       <span>Register Now</span>
                     </motion.button>
@@ -307,7 +408,7 @@ export const Navbar = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-40 bg-black/35 backdrop-blur-sm lg:hidden"
             onClick={() => setIsOpen(false)}
           />
         )}

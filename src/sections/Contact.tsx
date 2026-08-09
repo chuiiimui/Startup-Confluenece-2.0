@@ -86,9 +86,9 @@ export const Contact: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: card.delay }}
-              className="clay-card group flex flex-col items-center rounded-[22px] p-5 text-center transition-transform duration-300 sm:rounded-[28px] sm:p-8 sm:hover:-translate-y-2"
+              className="clay-card clay-card--blue group flex flex-col items-center rounded-[22px] p-5 text-center transition-transform duration-300 sm:rounded-[28px] sm:p-8 sm:hover:-translate-y-2"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-300/25 bg-white/10 transition-colors group-hover:bg-accent/15 sm:mb-6 sm:h-16 sm:w-16">
+              <div className="clay-icon mb-4 flex h-12 w-12 items-center justify-center rounded-2xl transition-colors group-hover:border-[color:var(--clay-border-hover)] sm:mb-6 sm:h-16 sm:w-16">
                 {card.icon}
               </div>
               <h4

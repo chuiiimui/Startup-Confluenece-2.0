@@ -29,8 +29,7 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
 
   return (
     <motion.div
-      className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer shadow-xl border"
-      style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+      className="clay-card clay-card--blue relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-2xl"
       onHoverStart={() => !isMobile && setIsHovered(true)}
       onHoverEnd={() => !isMobile && setIsHovered(false)}
       onClick={() => !isMobile && setIsHovered(!isHovered)}
@@ -41,7 +40,11 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
         ==================================================
       */}
       <motion.div 
-        className="absolute inset-0 z-0 bg-gradient-to-br from-[#0B2A6B]/20 to-accent/10"
+        className="absolute inset-0 z-0"
+        style={{
+          background:
+            'linear-gradient(145deg, color-mix(in srgb, var(--brand-blue-deep) 18%, transparent), color-mix(in srgb, var(--brand-orange) 12%, transparent))',
+        }}
         initial={{ scale: 1 }}
         animate={{ scale: isRevealed ? 1.05 : 1 }}
         transition={{ duration: 10, ease: "linear" }}
@@ -98,13 +101,13 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
             animate={{ opacity: isRevealed ? 1 : 0, y: isRevealed ? 0 : 20 }}
             transition={{ duration: 0.5, delay: 0.5, type: "spring", stiffness: 200, damping: 20 }}
           >
-            <a href="#" onClick={e => e.preventDefault()} className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-colors duration-300" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
+            <a href="#" onClick={e => e.preventDefault()} className="clay-chip flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 hover:bg-accent hover:text-[color:var(--text-inverse)]" style={{ color: 'var(--brand-blue-deep)' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
             </a>
-            <a href="#" onClick={e => e.preventDefault()} className="w-10 h-10 rounded-full border flex items-center justify-center hover:bg-accent hover:border-accent hover:text-white transition-colors duration-300" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>
+            <a href="#" onClick={e => e.preventDefault()} className="clay-chip flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 hover:bg-accent hover:text-[color:var(--text-inverse)]" style={{ color: 'var(--brand-blue-deep)' }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
             </a>
-            <a href="#" onClick={e => e.preventDefault()} className="flex-1 h-10 rounded-full border flex items-center justify-center gap-2 hover:bg-accent hover:border-accent hover:text-white transition-all duration-300 group" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)', background: 'var(--surface-hover)' }}>
+            <a href="#" onClick={e => e.preventDefault()} className="clay-pill group flex h-10 flex-1 items-center justify-center gap-2 rounded-full transition-all duration-300 hover:bg-accent hover:text-[color:var(--text-inverse)]" style={{ color: 'var(--text-primary)' }}>
               <span className="text-xs font-semibold uppercase tracking-wider">Profile</span>
               <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </a>
@@ -121,26 +124,28 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
       {!isMobile && (
         <motion.div
           className="absolute top-0 left-0 w-1/2 h-full z-20 border-r"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
+          style={{
+            background: 'var(--speaker-panel-left)',
+            borderColor: 'var(--speaker-panel-border-l)',
+          }}
           initial={{ x: 0 }}
           animate={{ x: isRevealed ? '-100%' : 0 }}
           transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
-        >
-          <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
-        </motion.div>
+        />
       )}
 
       {/* Right Panel */}
       {!isMobile && (
         <motion.div
-          className="absolute top-0 right-0 w-1/2 h-full z-20 border-l"
-          style={{ backgroundColor: 'var(--surface)', borderColor: 'rgba(255,122,0,0.1)' }}
+          className="absolute top-0 right-0 z-20 h-full w-1/2 border-l"
+          style={{
+            background: 'var(--speaker-panel-right)',
+            borderColor: 'var(--speaker-panel-border-r)',
+          }}
           initial={{ x: 0 }}
           animate={{ x: isRevealed ? '100%' : 0 }}
           transition={{ duration: 0.8, ease: cinematicEase, delay: 0.1 }}
-        >
-          <div className="absolute inset-0 bg-white/40" style={{ backdropFilter: 'blur(20px)' }} />
-        </motion.div>
+        />
       )}
 
       {/* Center Seam Glow */}
@@ -160,7 +165,7 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
           animate={{ opacity: isRevealed ? 0 : 1, scale: isRevealed ? 1.1 : 1 }}
           transition={{ duration: 0.4, ease: "easeInOut" }}
         >
-          <div className="border border-accent/20 px-6 py-3 rounded-full mb-6 bg-accent/5 backdrop-blur-md">
+          <div className="clay-pill clay-pill--coral mb-6 rounded-full px-6 py-3">
             <span className="text-accent font-bold tracking-widest uppercase text-xs">Featured</span>
           </div>
           

@@ -1,84 +1,130 @@
-import { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { useTheme } from '../context/ThemeContext';
 
-type TrailDot = { id: number; x: number; y: number };
+type Point = { x: number; y: number; t: number };
 
-/**
- * Soft Apple-style cursor trail + glow ring.
- */
+const MAX_POINTS = 28;
+const FADE_MS = 280;
+
+/** Sharp single-stroke neon cursor trail — desktop only. */
 export default function CursorTrail() {
-  const [enabled, setEnabled] = useState(false);
-  const [dots, setDots] = useState<TrailDot[]>([]);
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
-  const sx = useSpring(x, { stiffness: 280, damping: 28, mass: 0.35 });
-  const sy = useSpring(y, { stiffness: 280, damping: 28, mass: 0.35 });
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pointsRef = useRef<Point[]>([]);
+  const rafRef = useRef(0);
+  const { isLight } = useTheme();
+  const strokeRef = useRef('#ff7a00');
+  const glowRef = useRef('rgba(255,122,0,0.9)');
+
+  useEffect(() => {
+    strokeRef.current = isLight ? '#E57734' : '#ff7a00';
+    glowRef.current = isLight ? 'rgba(229,119,52,0.85)' : 'rgba(255,122,0,0.9)';
+  }, [isLight]);
 
   useEffect(() => {
     if (window.matchMedia('(pointer: coarse)').matches) return;
-    setEnabled(true);
 
-    let id = 0;
-    let last = 0;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
+    canvas.classList.remove('hidden');
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    let lastSample = 0;
     const onMove = (e: MouseEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
       const now = performance.now();
-      if (now - last < 28) return;
-      last = now;
-      const next: TrailDot = { id: id++, x: e.clientX, y: e.clientY };
-      setDots((prev) => [...prev.slice(-10), next]);
+      if (now - lastSample < 8) return;
+      lastSample = now;
+      const pts = pointsRef.current;
+      const last = pts[pts.length - 1];
+      if (last && Math.hypot(e.clientX - last.x, e.clientY - last.y) < 2) return;
+      pts.push({ x: e.clientX, y: e.clientY, t: now });
+      if (pts.length > MAX_POINTS) pts.shift();
     };
 
     window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, [x, y]);
 
-  useEffect(() => {
-    if (!enabled) return;
-    const t = setInterval(() => {
-      setDots((prev) => prev.slice(1));
-    }, 60);
-    return () => clearInterval(t);
-  }, [enabled]);
+    const draw = () => {
+      const now = performance.now();
+      const pts = pointsRef.current.filter((p) => now - p.t < FADE_MS);
+      pointsRef.current = pts;
+      const stroke = strokeRef.current;
+      const glow = glowRef.current;
 
-  if (!enabled) return null;
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+      if (pts.length >= 2) {
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) {
+          const p = pts[i];
+          const prev = pts[i - 1];
+          ctx.quadraticCurveTo(
+            prev.x,
+            prev.y,
+            (prev.x + p.x) / 2,
+            (prev.y + p.y) / 2
+          );
+        }
+        const tip = pts[pts.length - 1];
+        ctx.lineTo(tip.x, tip.y);
+
+        ctx.strokeStyle = glow;
+        ctx.lineWidth = 5.5;
+        ctx.shadowColor = glow;
+        ctx.shadowBlur = 16;
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = 1.75;
+        ctx.shadowColor = stroke;
+        ctx.shadowBlur = 8;
+        ctx.globalAlpha = 1;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(tip.x, tip.y, 2, 0, Math.PI * 2);
+        ctx.fillStyle = isLight ? '#3E2922' : '#fff7ed';
+        ctx.shadowColor = stroke;
+        ctx.shadowBlur = 12;
+        ctx.fill();
+      }
+
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener('resize', resize);
+      window.removeEventListener('mousemove', onMove);
+    };
+  }, [isLight]);
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-[60]" aria-hidden>
-      <AnimatePresence>
-        {dots.map((d, i) => (
-          <motion.div
-            key={d.id}
-            className="absolute h-2.5 w-2.5 rounded-full"
-            style={{
-              left: d.x,
-              top: d.y,
-              background:
-                'radial-gradient(circle, rgba(139,92,246,0.55), rgba(59,130,246,0.15))',
-              boxShadow: '0 0 12px rgba(124,58,237,0.35)',
-            }}
-            initial={{ opacity: 0.7, scale: 1, x: -5, y: -5 }}
-            animate={{ opacity: 0.15 + i * 0.04, scale: 0.4 + i * 0.05 }}
-            exit={{ opacity: 0, scale: 0 }}
-            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          />
-        ))}
-      </AnimatePresence>
-
-      <motion.div
-        className="absolute h-8 w-8 rounded-full border border-violet-400/40"
-        style={{
-          x: sx,
-          y: sy,
-          translateX: '-50%',
-          translateY: '-50%',
-          boxShadow: '0 0 24px rgba(139,92,246,0.25)',
-          background: 'rgba(255,255,255,0.08)',
-          backdropFilter: 'blur(4px)',
-        }}
-      />
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="pointer-events-none fixed inset-0 z-[70] hidden"
+      aria-hidden
+    />
   );
 }

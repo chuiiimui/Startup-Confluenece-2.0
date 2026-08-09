@@ -514,11 +514,7 @@ function StartupForm({
 
       {accommodationRequired === 'Yes' && (
         <div
-          className="space-y-2.5 rounded-xl border p-3"
-          style={{
-            borderColor: 'var(--border-strong)',
-            background: 'var(--surface)',
-          }}
+          className="clay-card space-y-2.5 rounded-xl p-3"
         >
           <FieldWrapper>
             <label className={labelClass}>
@@ -544,12 +540,11 @@ function StartupForm({
 
       {/* Stall Booking — FCFS */}
       <div
-        className="space-y-3 rounded-xl border p-3 sm:p-4"
+        className="clay-card space-y-3 rounded-xl p-3 sm:p-4"
         style={{
           borderColor: errors.needStall
             ? 'rgba(248, 113, 113, 0.65)'
-            : 'var(--border-strong)',
-          background: 'var(--surface)',
+            : undefined,
         }}
       >
         <div>
@@ -641,11 +636,7 @@ function StartupForm({
 
       {wantPitch === 'Yes' && (
         <div
-          className="space-y-2.5 rounded-xl border p-3"
-          style={{
-            borderColor: 'var(--border-strong)',
-            background: 'var(--surface)',
-          }}
+          className="clay-card space-y-2.5 rounded-xl p-3"
         >
           <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
             Pitch deck <span className="text-red-400">*</span>
@@ -828,11 +819,7 @@ function DelegateForm({
       </FieldWrapper>
 
       <div
-        className="space-y-3 rounded-xl border p-3"
-        style={{
-          borderColor: 'var(--border-strong)',
-          background: 'var(--surface)',
-        }}
+        className="clay-card space-y-3 rounded-xl p-3"
       >
         <div>
           <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
@@ -928,11 +915,7 @@ function SpeakerForm({
   return (
     <form onSubmit={handleSubmit(submitSpeaker, scrollFormToFirstError)} className="space-y-2.5">
       <div
-        className="space-y-2.5 rounded-xl border p-3"
-        style={{
-          borderColor: 'var(--border-strong)',
-          background: 'var(--surface)',
-        }}
+        className="clay-card space-y-2.5 rounded-xl p-3"
       >
         <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
           Speaker
@@ -1367,7 +1350,7 @@ export const RegistrationModal: React.FC = () => {
 
           {/* Modal — full height on mobile, near-full on desktop */}
           <motion.div
-            className="form-glass-panel relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-3xl flex-col overflow-hidden rounded-none sm:h-[min(100dvh-2rem,920px)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-[32px]"
+            className="form-glass-panel clay-card relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-3xl flex-col overflow-hidden rounded-none sm:h-[min(100dvh-2rem,920px)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -1390,7 +1373,7 @@ export const RegistrationModal: React.FC = () => {
                 style={{ background: 'var(--surface)' }}
               >
                 <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-violet-400 to-accent"
+                  className="h-full rounded-full bg-gradient-to-r from-primary to-accent"
                   initial={{ width: '33%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -1604,7 +1587,7 @@ export const RegistrationModal: React.FC = () => {
             <AnimatePresence>
               {submitError && (
                 <motion.div
-                  className="pointer-events-none absolute bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#1E1B4B]/90 px-6 py-3 shadow-xl backdrop-blur-xl"
+                  className="pointer-events-none absolute bottom-6 left-1/2 z-[60] -translate-x-1/2 rounded-2xl border border-red-400/40 bg-[#7C2D12]/90 px-6 py-3 shadow-xl backdrop-blur-xl"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 30 }}

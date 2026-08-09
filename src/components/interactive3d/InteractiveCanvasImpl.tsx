@@ -7,12 +7,12 @@ import {
   GrowthChartScene,
   HoloTicketScene,
   HoloTickerRibbonScene,
-  LiquidMetalBlobScene,
   NodeConstellationScene,
   OrbitingCoinsScene,
   PitchCardSwarmScene,
   PitchPodiumScene,
   ProfileCrystalScene,
+  SoftHaloScene,
   TimelineBeadsScene,
 } from './scenes';
 
@@ -35,8 +35,6 @@ function SceneContent({
   switch (scene) {
     case 'nodeConstellation':
       return <NodeConstellationScene />;
-    case 'liquidMetalBlob':
-      return <LiquidMetalBlobScene />;
     case 'pitchPodium':
       return <PitchPodiumScene />;
     case 'profileCrystal':
@@ -55,6 +53,8 @@ function SceneContent({
       return <GrowthChartScene />;
     case 'pitchCardSwarm':
       return <PitchCardSwarmScene />;
+    case 'softHalo':
+      return <SoftHaloScene />;
     default:
       return null;
   }

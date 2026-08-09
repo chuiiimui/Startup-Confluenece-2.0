@@ -100,7 +100,7 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
       {visible && (
         <motion.div
           className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden"
-          style={{ backgroundColor: '#ffffff' }}
+          style={{ backgroundColor: 'var(--bg)' }}
           initial={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
           exit={{
@@ -119,7 +119,7 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
             transition={{ duration: 0.5 }}
             style={{
               background:
-                'radial-gradient(ellipse at center, rgba(255,122,0,0.22) 0%, rgba(99,102,241,0.12) 42%, transparent 70%)',
+                'radial-gradient(ellipse at center, rgba(255,122,0,0.24) 0%, rgba(255,179,102,0.14) 42%, transparent 70%)',
             }}
           />
           {!lite && (
@@ -172,11 +172,17 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
                   transition={{ duration: 1, ease }}
                   className="absolute"
                 >
-                  <div className="relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border border-primary/20 bg-white/80 shadow-2xl backdrop-blur-md md:h-32 md:w-32 md:rounded-3xl">
+                  <div
+                    className="relative z-10 flex h-[4.5rem] w-[4.5rem] items-center justify-center rounded-2xl border shadow-2xl backdrop-blur-md md:h-32 md:w-32 md:rounded-3xl"
+                    style={{
+                      background: 'color-mix(in srgb, var(--bg-elevated) 88%, transparent)',
+                      borderColor: 'color-mix(in srgb, var(--brand-orange) 25%, transparent)',
+                    }}
+                  >
                     <img
                       src={logo}
                       alt="UIH Logo"
-                      className="h-12 w-12 object-contain md:h-24 md:w-24"
+                      className="brand-logo h-12 w-12 object-contain md:h-24 md:w-24"
                     />
                   </div>
                   <div className="absolute inset-0 scale-150 rounded-full bg-primary/20 blur-xl" />
@@ -235,7 +241,7 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
                                 ease,
                                 delay: (wordIndex * 10 + charIndex) * 0.04,
                               }}
-                              className="inline-block text-primary"
+                              className="inline-block text-secondary"
                             >
                               {char}
                             </motion.span>

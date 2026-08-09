@@ -16,12 +16,12 @@ export const Venue: React.FC = () => {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <div className="backdrop-blur-xl border rounded-3xl p-8 md:p-10" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <div className="clay-card rounded-3xl p-8 md:p-10">
               <h3 className="text-xl sm:text-3xl font-space font-bold mb-4 sm:mb-6" style={{ color: 'var(--text-primary)' }}>United Incubation Hub</h3>
               
               <div className="space-y-6 mb-10">
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'var(--surface)' }}>
+                  <div className="clay-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl">
                     <MapPin className="w-6 h-6 text-accent" />
                   </div>
                   <div>
@@ -32,7 +32,7 @@ export const Venue: React.FC = () => {
                 </div>
                 
                 <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: 'var(--surface)' }}>
+                  <div className="clay-icon flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl">
                     <Building className="w-6 h-6 text-accent" />
                   </div>
                   <div>
@@ -46,8 +46,8 @@ export const Venue: React.FC = () => {
                 href="https://maps.google.com/?q=United+Institute+of+Technology,+Prayagraj" 
                 target="_blank" 
                 rel="noreferrer"
-                className="inline-flex items-center space-x-2 border px-6 py-3 rounded-xl font-medium transition-colors hover:bg-white/20"
-                style={{ background: 'var(--surface)', color: 'var(--text-primary)', borderColor: 'var(--border)' }}
+                className="clay-pill inline-flex items-center space-x-2 rounded-xl px-6 py-3 font-medium transition-colors"
+                style={{ color: 'var(--text-primary)' }}
               >
                 <span>Get Directions</span>
                 <ExternalLink className="w-4 h-4" />
@@ -59,8 +59,7 @@ export const Venue: React.FC = () => {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="hidden lg:block h-[500px] w-full rounded-3xl overflow-hidden border relative"
-            style={{ borderColor: 'var(--border)' }}
+            className="clay-card relative hidden h-[500px] w-full overflow-hidden rounded-3xl lg:block"
           >
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3603.123!2d81.8!3d25.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0:0x0!2zMjXCsDIxJzAwLjAiTiA4McKwNDgnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234" 

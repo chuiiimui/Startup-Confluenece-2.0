@@ -1,12 +1,13 @@
-import { useState, useEffect } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, MapPin, ArrowRight } from 'lucide-react';
-import GridPattern from '../components/GridPattern';
-import Button from '../components/Button';
-import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
+import { ArrowDown, ArrowRight, Calendar, MapPin } from 'lucide-react';
+import { FaLinkedin, FaInstagram, FaFacebook } from 'react-icons/fa';
+import PillCta from '../components/PillCta';
 import { useNavigate } from 'react-router-dom';
+import { scrollToSection } from '../lib/utils';
+import { SOCIAL_LINKS } from '../constants';
 
-const appleEase = [0.22, 1, 0.36, 1] as const;
+const ease = [0.22, 1, 0.36, 1] as const;
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -19,11 +20,8 @@ const Hero = () => {
 
   useEffect(() => {
     const targetDate = new Date('2026-10-23T09:00:00').getTime();
-
     const updateTimer = () => {
-      const now = new Date().getTime();
-      const difference = targetDate - now;
-
+      const difference = targetDate - Date.now();
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -33,232 +31,213 @@ const Hero = () => {
         });
       }
     };
-
     updateTimer();
     const timerId = setInterval(updateTimer, 1000);
     return () => clearInterval(timerId);
   }, []);
 
-  const wordVariants = {
-    hidden: { opacity: 0, y: 100, rotateX: -35 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotateX: 0,
-      transition: { duration: 0.95, ease: appleEase },
-    },
-  };
-
-  const scaleFadeVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { duration: 1, ease: appleEase },
-    },
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.15,
-      },
-    },
-  };
-
   return (
     <section
       id="home"
-      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-24 pt-24 sm:pb-8 lg:pt-28"
+      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-28 pt-28 lg:pb-20 lg:pt-32"
     >
-      <GridPattern parallax={true} />
-
-      {/* WebGL decor — gated by perf (skipped on mobile / Android / low-end) */}
-      <InteractiveCanvas
-        scene="nodeConstellation"
-        className="absolute inset-0 z-[1] hidden opacity-70 md:block"
-        interactive={false}
-        camera={{ position: [0, 0.35, 6.4], fov: 40 }}
-      />
-      <InteractiveCanvas
-        scene="liquidMetalBlob"
-        className="absolute left-[-4%] top-[22%] z-[5] hidden h-[260px] w-[260px] opacity-80 lg:block xl:left-[1%] xl:h-[300px] xl:w-[300px]"
-        camera={{ position: [0, 0, 4.2], fov: 40 }}
-      />
-
-      {/* Soft hero glass wash */}
+      {/* Soft center glow behind title */}
       <div
-        className="pointer-events-none absolute inset-0 z-[2]"
-        style={{
-          background:
-            'linear-gradient(to bottom, color-mix(in srgb, var(--surface) 55%, transparent), transparent)',
-        }}
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[55vmax] w-[55vmax] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-70"
+        style={{ background: 'var(--orb-1)' }}
       />
 
-      <div
-        className="pointer-events-none absolute bottom-0 left-0 z-10 h-32 w-full"
-        style={{
-          background: 'linear-gradient(to top, var(--page-fade), transparent)',
-        }}
-      />
-
-      <div className="container relative z-20 mx-auto flex h-full w-full max-w-full flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-12">
-        <motion.div
-          className="flex max-w-[1200px] flex-col items-center"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
+      <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-col items-center px-4 sm:px-8 lg:px-12">
+        <motion.p
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease }}
+          className="mb-4 text-[10px] font-bold uppercase tracking-[0.42em] sm:text-xs"
+          style={{ color: 'var(--brand-sky)' }}
         >
-          <div
-            className="hero-title-glow mt-4 flex flex-col items-center font-heading uppercase leading-[0.95] tracking-[-0.04em] lg:mt-0"
-            style={{ fontWeight: 900 }}
-          >
-            <div className="w-full overflow-hidden pb-1 md:pb-2">
-              <motion.div
-                variants={wordVariants}
-                className="hero-glow-startup"
-                style={{ fontSize: 'clamp(2.15rem, 11vw, 6.5rem)' }}
-              >
-                STARTUP
-              </motion.div>
-            </div>
-            <div className="flex w-full flex-col justify-center overflow-x-clip overflow-y-visible pb-2 md:flex-row md:items-baseline md:gap-x-6 md:pb-4">
-              <motion.div
-                variants={wordVariants}
-                className="hero-glow-confluence"
-                style={{ fontSize: 'clamp(2.45rem, 12.5vw, 8.5rem)' }}
-              >
-                CONFLUENCE
-              </motion.div>
-              <motion.div
-                variants={scaleFadeVariants}
-                className="hero-glow-version"
-                style={{ fontSize: 'clamp(1.9rem, 10vw, 6rem)' }}
-              >
-                2.0
-              </motion.div>
-            </div>
+          We Are
+        </motion.p>
+
+        {/* Single-line brand title — matches pin giant headline */}
+        <motion.h1
+          initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
+          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          transition={{ duration: 1, delay: 0.08, ease }}
+          className="w-full text-center font-heading font-black uppercase leading-none tracking-[-0.04em]"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          <span className="inline-block whitespace-nowrap text-[clamp(1.05rem,4.6vw,5.5rem)]">
+            Startup Confluence{' '}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  'linear-gradient(105deg, var(--hero-confluence-from) 0%, var(--hero-confluence-via) 45%, var(--hero-confluence-to) 100%)',
+              }}
+            >
+              2.0
+            </span>
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.2, ease }}
+          className="mx-auto mt-6 max-w-xl text-center text-xs font-medium uppercase leading-relaxed tracking-[0.08em] sm:mt-8 sm:text-sm"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          India&apos;s premier startup summit — crafting bold connections between founders,
+          investors &amp; innovators.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.24, ease }}
+          className="mt-5 flex flex-wrap items-center justify-center gap-2"
+        >
+          <span className="clay-pill inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider sm:text-xs">
+            <Calendar className="h-3.5 w-3.5" style={{ color: 'var(--brand-orange)' }} />
+            23–24 Oct 2026
+          </span>
+          <span className="clay-pill clay-pill--sky inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider sm:text-xs">
+            <MapPin className="h-3.5 w-3.5" style={{ color: 'var(--brand-sky)' }} />
+            UIH, Prayagraj
+          </span>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.75, delay: 0.3, ease }}
+          className="mt-8 flex flex-col items-center gap-6 sm:mt-10 sm:gap-7"
+        >
+          <div className="clay-card clay-card--blue inline-flex gap-3 rounded-[2rem] px-4 py-4 sm:gap-5 sm:rounded-[2.25rem] sm:px-8 sm:py-6">
+            {[
+              { label: 'Days', value: timeLeft.days },
+              { label: 'Hrs', value: timeLeft.hours },
+              { label: 'Min', value: timeLeft.minutes },
+              { label: 'Sec', value: timeLeft.seconds },
+            ].map((item, i) => (
+              <Fragment key={item.label}>
+                {i > 0 && (
+                  <span
+                    className="self-center font-heading text-2xl font-bold sm:text-4xl"
+                    style={{ color: 'var(--text-muted)', opacity: 0.45 }}
+                  >
+                    :
+                  </span>
+                )}
+                <div className="flex min-w-[3.75rem] flex-col items-center sm:min-w-[5.25rem]">
+                  <span
+                    className="font-heading text-4xl font-extrabold tabular-nums leading-none sm:text-6xl md:text-7xl"
+                    style={{ color: 'var(--timer-value)' }}
+                  >
+                    {String(item.value).padStart(2, '0')}
+                  </span>
+                  <span
+                    className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] sm:text-xs"
+                    style={{ color: 'var(--timer-label)' }}
+                  >
+                    {item.label}
+                  </span>
+                </div>
+              </Fragment>
+            ))}
           </div>
 
-          <motion.div
-            variants={wordVariants}
-            className="mt-2 flex flex-col flex-wrap items-center justify-center gap-1.5 md:mt-4 md:flex-row md:gap-4"
+          <PillCta
+            tone="gradient"
+            size="lg"
+            onClick={() => navigate('/register')}
+            icon={<ArrowRight className="h-6 w-6" />}
           >
-            <p
-              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Fostering Collaboration.
-            </p>
-            <p
-              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
-              style={{ color: 'var(--text-secondary)' }}
-            >
-              Driving Innovation.
-            </p>
-            <p
-              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
-              style={{ color: 'var(--accent-link)' }}
-            >
-              Fueling Growth.
-            </p>
-          </motion.div>
+            Register
+          </PillCta>
+        </motion.div>
 
+        {/* Sliding marquee strip */}
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease }}
+          className="relative mt-14 w-full overflow-hidden py-3"
+          style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
+        >
           <motion.div
-            className="mt-4 flex w-full flex-wrap justify-center gap-2 md:mt-6 md:gap-4"
-            variants={wordVariants}
+            className="flex w-max gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.28em] sm:text-sm"
+            style={{ color: 'var(--text-muted)' }}
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
           >
-            <div
-              className="flex items-center gap-2 rounded-full border bg-white/10 px-3 py-1.5 backdrop-blur-md md:gap-2.5 md:px-5 md:py-2.5"
-              style={{ borderColor: 'var(--border)' }}
-            >
-              <Calendar className="h-4 w-4 shrink-0 text-accent" />
-              <span
-                className="text-xs font-semibold md:text-sm"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                23–24 October 2026
-              </span>
-            </div>
-            <div
-              className="flex items-center gap-2 rounded-full border bg-white/10 px-3 py-1.5 backdrop-blur-md md:gap-2.5 md:px-5 md:py-2.5"
-              style={{ borderColor: 'var(--border)' }}
-            >
-              <MapPin className="h-4 w-4 shrink-0" style={{ color: 'var(--accent-link)' }} />
-              <span
-                className="text-left text-xs font-semibold leading-tight md:text-sm md:leading-normal"
-                style={{ color: 'var(--text-primary)' }}
-              >
-                United Incubation Hub, Prayagraj
-              </span>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="clay-timer-shell mx-auto mt-5 w-full max-w-lg rounded-[28px] px-3 py-3 md:mt-7 md:rounded-[32px] md:px-5 md:py-4"
-            variants={wordVariants}
-          >
-            <div className="flex items-center justify-center gap-2 md:gap-3">
-              {[
-                { label: 'Days', value: timeLeft.days },
-                { label: 'Hours', value: timeLeft.hours },
-                { label: 'Minutes', value: timeLeft.minutes },
-                { label: 'Seconds', value: timeLeft.seconds },
-              ].map((item, index) => (
-                <div key={item.label} className="flex items-center gap-2 md:gap-3">
-                  <motion.div
-                    className="flex flex-col items-center"
-                    whileHover={{ y: -3, scale: 1.03 }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 18 }}
-                  >
-                    <div className="clay-timer-cell relative flex h-16 w-16 items-center justify-center rounded-[22px] md:h-[5.25rem] md:w-[5.25rem] md:rounded-[26px]">
-                      <div
-                        className="pointer-events-none absolute inset-x-2 top-1 h-1/3 rounded-full opacity-70"
-                        style={{
-                          background:
-                            'linear-gradient(180deg, rgba(255,255,255,0.28), transparent)',
-                        }}
-                      />
-                      <span className="clay-timer-value relative z-10 font-heading text-xl font-extrabold tabular-nums tracking-tight sm:text-2xl md:text-4xl">
-                        {String(item.value).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <span className="clay-timer-label mt-1.5 text-[9px] font-bold uppercase tracking-[0.14em] md:mt-2 md:text-xs">
-                      {item.label}
-                    </span>
-                  </motion.div>
-                  {index < 3 && (
-                    <span
-                      className="mb-6 select-none font-heading text-lg font-bold md:mb-7 md:text-3xl"
-                      style={{ color: 'var(--badge-text)' }}
-                      aria-hidden
-                    >
-                      :
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="mt-4 flex w-full flex-col items-center gap-3 px-4 sm:w-auto sm:flex-row sm:px-0 md:mt-6 md:gap-4"
-            variants={wordVariants}
-          >
-            <Button
-              size="lg"
-              onClick={() => navigate('/register')}
-              icon={<ArrowRight className="h-5 w-5" />}
-              className="w-full sm:w-auto"
-            >
-              Register Now
-            </Button>
+            {[0, 1].map((copy) => (
+              <div key={copy} className="flex gap-10">
+                {[
+                  'Pitch Arena',
+                  'Startup Expo',
+                  'Investor Lounge',
+                  'Mentorship',
+                  'Networking',
+                  'Keynotes',
+                  'UIH Prayagraj',
+                ].map((item) => (
+                  <span key={`${copy}-${item}`} className="flex items-center gap-10">
+                    {item}
+                    <span style={{ color: 'var(--brand-orange)', opacity: 0.75 }}>✦</span>
+                  </span>
+                ))}
+              </div>
+            ))}
           </motion.div>
         </motion.div>
       </div>
+
+      <div className="absolute bottom-8 right-5 z-30 flex gap-3 sm:right-8 lg:bottom-10 lg:right-12">
+        {[
+          { icon: <FaLinkedin className="h-4 w-4" />, href: SOCIAL_LINKS.linkedin },
+          { icon: <FaInstagram className="h-4 w-4" />, href: SOCIAL_LINKS.instagram },
+          {
+            icon: <FaFacebook className="h-4 w-4" />,
+            href: 'https://www.facebook.com/share/1B7u65PANq/',
+          },
+        ].map((s) => (
+          <a
+            key={s.href}
+            href={s.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="clay-chip flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1"
+            style={{ color: 'var(--text-secondary)' }}
+            data-cursor="link"
+          >
+            {s.icon}
+          </a>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => scrollToSection('about')}
+        className="clay-chip absolute bottom-6 left-1/2 z-30 hidden h-[5.5rem] w-[5.5rem] -translate-x-1/2 items-center justify-center rounded-full md:flex"
+        aria-label="Scroll to explore"
+        data-cursor="link"
+      >
+        <span
+          className="absolute inset-2 animate-[spin_12s_linear_infinite] rounded-full border border-dashed"
+          style={{ borderColor: 'color-mix(in srgb, var(--brand-orange) 45%, transparent)' }}
+        />
+        <span
+          className="absolute text-[8px] font-bold uppercase tracking-[0.18em]"
+          style={{ color: 'var(--text-muted)' }}
+        >
+          Scroll
+        </span>
+        <ArrowDown
+          className="relative z-10 mt-5 h-4 w-4"
+          style={{ color: 'var(--brand-orange)' }}
+        />
+      </button>
     </section>
   );
 };

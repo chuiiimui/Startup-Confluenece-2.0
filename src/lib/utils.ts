@@ -52,6 +52,26 @@ export function scrollToSection(id: string): void {
   });
 }
 
+export function scrollToTop(): void {
+  if (lenisInstance) {
+    lenisInstance.scrollTo(0, { duration: 0.9 });
+    return;
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/** Parse nav href into path + optional hash id. */
+export function parseNavHref(href: string): { path: string; hashId: string | null } {
+  if (href.startsWith('#')) {
+    return { path: '/', hashId: href.slice(1) || null };
+  }
+  const [pathPart, hashPart] = href.split('#');
+  return {
+    path: pathPart || '/',
+    hashId: hashPart || null,
+  };
+}
+
 export function getInitials(name: string): string {
   if (!name) return '';
   const parts = name.split(' ');

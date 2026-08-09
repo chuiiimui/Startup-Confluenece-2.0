@@ -75,10 +75,7 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
     const variantStyles: Record<string, React.CSSProperties> = {
       primary: {},
       secondary: {
-        background: 'var(--surface)',
         color: 'var(--text-primary)',
-        border: '1px solid var(--border)',
-        backdropFilter: 'blur(24px)',
       },
       ghost: {
         background: 'transparent',
@@ -88,8 +85,8 @@ const Button = React.forwardRef<HTMLButtonElement | HTMLAnchorElement, ButtonPro
 
     const variantClasses = {
       primary:
-        'bg-indigo-600 text-white shadow-[0_0_28px_rgba(79,70,229,0.45)] hover:bg-indigo-500 hover:shadow-[0_0_40px_rgba(124,58,237,0.55)] border border-white/10',
-      secondary: 'hover:border-[color:var(--border-strong)]',
+        'bg-accent text-white shadow-[0_0_28px_rgba(229,119,52,0.40)] hover:bg-primary hover:shadow-[0_0_40px_rgba(196,90,26,0.50)] border border-[color-mix(in_srgb,var(--brand-orange)_35%,white)]',
+      secondary: 'clay-pill border',
       ghost: 'hover:bg-[color:var(--surface-hover)]',
     };
 

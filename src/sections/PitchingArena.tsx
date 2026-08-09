@@ -97,8 +97,8 @@ export default function PitchingArena() {
                         <div className={`flex items-center gap-4 mb-4 ${isEven ? 'md:flex-row-reverse' : ''}`}>
                           {/* Inner Icon Box (Layer Z = 50px for pop) */}
                           <div 
-                            className="p-3 rounded-xl border group-hover:border-accent/30 group-hover:bg-accent/10 transition-all duration-300 shadow-sm" 
-                            style={{ background: 'var(--bg-alt)', borderColor: 'var(--border)', transform: 'translateZ(50px)' }}
+                            className="clay-icon rounded-xl p-3 transition-all duration-300 group-hover:border-[color:var(--clay-border-hover)]"
+                            style={{ transform: 'translateZ(50px)' }}
                           >
                             <StepIcon className="w-6 h-6 text-accent" />
                           </div>
@@ -119,10 +119,10 @@ export default function PitchingArena() {
                     whileInView={{ scale: 1, rotate: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, type: "spring", bounce: 0.4 }}
-                    className="absolute left-3 md:left-1/2 z-20 mt-6 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-accent bg-slate-900/90 shadow-[0_0_20px_rgba(255,122,0,0.4)] backdrop-blur-md md:mt-0" 
+                    className="clay-chip clay-chip--coral absolute left-3 z-20 mt-6 flex h-12 w-12 -translate-x-1/2 items-center justify-center rounded-full border-2 border-accent md:left-1/2 md:mt-0" 
                   >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/25">
-                      <span className="font-heading text-lg font-bold text-white">{index + 1}</span>
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-white">
+                      <span className="font-heading text-lg font-bold">{index + 1}</span>
                     </div>
                   </motion.div>
                 </div>

@@ -198,13 +198,7 @@ function PartnerApplicationForm({
         />
       </div>
 
-      <div
-        className="space-y-3 rounded-xl border p-3"
-        style={{
-          borderColor: 'var(--border-strong)',
-          background: 'var(--surface)',
-        }}
-      >
+      <div className="clay-card space-y-3 rounded-xl p-3">
         <div>
           <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
             Partner Category <span className="text-red-400">*</span>
@@ -431,13 +425,7 @@ function SponsorApplicationForm({
         />
       </div>
 
-      <div
-        className="space-y-3 rounded-xl border p-3"
-        style={{
-          borderColor: 'var(--border-strong)',
-          background: 'var(--surface)',
-        }}
-      >
+      <div className="clay-card space-y-3 rounded-xl p-3">
         <div>
           <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
             Sponsorship Category <span className="text-red-400">*</span>
@@ -754,7 +742,7 @@ export default function PartnerModal() {
           />
 
           <motion.div
-            className="form-glass-panel relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-2xl flex-col overflow-hidden rounded-none sm:h-[min(100dvh-2rem,920px)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-[32px]"
+            className="form-glass-panel clay-card relative z-10 flex h-[100dvh] max-h-[100dvh] w-full max-w-2xl flex-col overflow-hidden rounded-none sm:h-[min(100dvh-2rem,920px)] sm:max-h-[calc(100dvh-2rem)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}

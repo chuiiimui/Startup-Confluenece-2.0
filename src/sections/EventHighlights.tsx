@@ -14,9 +14,10 @@ export default function EventHighlights() {
   };
 
   const cardVariants = {
-    hidden: { opacity: 0, y: 72, filter: 'blur(10px)', scale: 0.96 },
+    hidden: { opacity: 0, x: 80, y: 24, filter: 'blur(10px)', scale: 0.96 },
     visible: {
       opacity: 1,
+      x: 0,
       y: 0,
       filter: 'blur(0px)',
       scale: 1,
@@ -30,9 +31,18 @@ export default function EventHighlights() {
     <section className="py-24 relative overflow-hidden" id="highlights" >
       {/* Mesh Gradient Background Effect */}
       <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-[#0A2E6D]/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-[#FF7A1A]/10 blur-[120px]" />
-        <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-[#16B8CC]/10 blur-[120px]" />
+        <div
+          className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
+          style={{ background: 'color-mix(in srgb, var(--brand-blue-deep) 18%, transparent)' }}
+        />
+        <div
+          className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
+          style={{ background: 'color-mix(in srgb, var(--brand-orange) 16%, transparent)' }}
+        />
+        <div
+          className="absolute left-[60%] top-[40%] h-[30%] w-[30%] rounded-full blur-[120px]"
+          style={{ background: 'color-mix(in srgb, var(--brand-sky) 18%, transparent)' }}
+        />
       </div>
 
       <div className="container mx-auto px-6 relative z-10 max-w-7xl">
@@ -68,72 +78,31 @@ export default function EventHighlights() {
                 className={isLargeCard ? 'lg:col-span-2' : 'lg:col-span-1'}
               >
               <TiltCard
-                className="group relative flex h-full min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] bg-slate-900/40 md:min-h-[420px] lg:min-h-[480px]"
+                className="clay-card clay-card--media group relative flex h-full min-h-[280px] flex-col justify-end overflow-hidden rounded-[32px] transition-all duration-500 md:min-h-[420px] lg:min-h-[480px]"
                 intensity={10}
-                style={{
-                  boxShadow: '0 20px 60px rgba(79,70,229,0.12)',
-                }}
               >
-                {/* Background Image */}
                 {highlight.image && (
-                  <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[32px] z-0">
-                    <div 
+                  <div className="absolute inset-0 z-0 h-full w-full overflow-hidden rounded-[32px]">
+                    <div
                       className="absolute inset-0 bg-cover bg-center transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
-                      style={{ 
-                        backgroundImage: `url('${highlight.image}')`,
-                        filter: 'brightness(0.9) contrast(1.05)'
-                      }}
+                      style={{ backgroundImage: `url('${highlight.image}')` }}
                     />
                   </div>
                 )}
 
-                {/* Subtle Image Overlay for text readability */}
-                <div 
-                  className="absolute inset-0 z-10 transition-opacity duration-500"
-                  style={{
-                    background: 'linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 40%, rgba(10,46,109,0.35) 100%)'
-                  }}
-                />
-                
-                {/* Additional Hover Darkening */}
-                <div className="absolute inset-0 z-10 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-                {/* Reflection Sweep */}
-                <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden rounded-[32px]">
-                  <div className="absolute -top-[100%] -bottom-[100%] left-[-100%] w-[30%] bg-gradient-to-r from-transparent via-white/40 to-transparent -rotate-45 group-hover:left-[200%] transition-all duration-[1.2s] ease-in-out opacity-0 group-hover:opacity-100" />
-                </div>
-
-                {/* Text Content */}
-                <div className="relative z-30 p-8 md:p-10 flex flex-col items-start transition-colors duration-500 mt-auto">
-                  {/* Glass Icon Badge */}
-                  <div 
-                    className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center mb-4 md:mb-6 shadow-sm border border-white/40"
-                    style={{
-                      background: 'rgba(255,255,255,0.2)',
-                      backdropFilter: 'blur(12px)',
-                      WebkitBackdropFilter: 'blur(12px)',
-                    }}
-                  >
-                    <Icon className="w-6 h-6 md:w-7 md:h-7 text-[#FFFFFF]" />
+                <div className="media-card-copy relative z-30 m-5 mt-auto p-6 md:m-7 md:p-8">
+                  <div className="clay-icon mb-3 flex h-12 w-12 items-center justify-center rounded-full md:mb-4 md:h-14 md:w-14">
+                    <Icon
+                      className="h-6 w-6 md:h-7 md:w-7"
+                      style={{ color: 'var(--brand-orange)' }}
+                    />
                   </div>
 
-                  <h3 
-                    className="font-heading font-bold text-lg md:text-3xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
-                    style={{ 
-                      color: '#FFFFFF',
-                      textShadow: '0 4px 20px rgba(0,0,0,0.35)'
-                    }}
-                  >
+                  <h3 className="media-card-title mb-2 font-heading text-lg tracking-tight md:text-3xl">
                     {highlight.title}
                   </h3>
-                  
-                  <p 
-                    className="font-body text-base md:text-lg leading-relaxed transition-opacity duration-500 opacity-90 group-hover:opacity-100" 
-                    style={{ 
-                      color: 'rgba(255,255,255,0.92)',
-                      textShadow: '0 2px 12px rgba(0,0,0,0.25)'
-                    }}
-                  >
+
+                  <p className="media-card-body font-body text-base leading-relaxed md:text-lg">
                     {highlight.description}
                   </p>
                 </div>

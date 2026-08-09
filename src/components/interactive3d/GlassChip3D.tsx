@@ -8,7 +8,7 @@ interface GlassChip3DProps {
   className?: string;
 }
 
-/** FAQ glass chip — lift, glow, ripple click */
+/** FAQ clay chip — lift, glow, ripple click */
 export default function GlassChip3D({
   children,
   active,
@@ -17,13 +17,7 @@ export default function GlassChip3D({
 }: GlassChip3DProps) {
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-2xl border ${className}`}
-      style={{
-        background: active
-          ? 'linear-gradient(145deg, rgba(255,122,0,0.16), rgba(255,255,255,0.06))'
-          : 'var(--surface)',
-        borderColor: active ? 'rgba(255,122,0,0.5)' : 'var(--border)',
-      }}
+      className={`clay-chip relative overflow-hidden rounded-2xl ${active ? 'is-active' : ''} ${className}`}
       whileHover={{ y: -4, scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
       onClick={onClick}
@@ -34,7 +28,7 @@ export default function GlassChip3D({
         whileHover={{ opacity: 1 }}
         style={{
           background:
-            'radial-gradient(circle at 30% 20%, rgba(167,139,250,0.2), transparent 55%)',
+            'radial-gradient(circle at 30% 20%, rgba(255,122,0,0.18), transparent 55%)',
         }}
       />
       {children}

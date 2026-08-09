@@ -6,28 +6,34 @@ import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 export const Footer: React.FC = () => {
   const navigate = useNavigate();
 
-  const handleScroll = (id: string) => {
-    if (id === 'register') {
-      navigate('/register');
+  const quickLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'About', href: '/#about' },
+    { name: 'Highlights', href: '/#highlights' },
+    { name: 'Why Attend', href: '/#why-attend' },
+    { name: 'Team', href: '/#team' },
+    { name: 'Register', href: '/#register' },
+    { name: 'Contact', href: '/#contact' },
+  ];
+
+  const handleLink = (href: string) => {
+    if (href.startsWith('/#') || href === '/') {
+      navigate(href === '/' ? '/' : href);
+      if (href.startsWith('/#')) {
+        const id = href.split('#')[1];
+        window.setTimeout(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }, 160);
+      }
       return;
     }
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    navigate(href);
   };
-
-  const quickLinks = [
-    { name: 'Home', id: 'hero' },
-    { name: 'About', id: 'about' },
-    { name: 'Events', id: 'highlights' },
-    { name: 'Speakers', id: 'speakers' },
-    { name: 'Register', id: 'register' }
-  ];
 
   return (
     <footer
       id="footer"
-      className="relative overflow-hidden pt-8 pb-0 mt-12"
-      style={{ background: 'var(--surface)' }}
+      className="clay-surface relative mt-12 overflow-hidden pb-0 pt-8"
     >
       {/* Top glowing separator */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-30"></div>
@@ -48,11 +54,21 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-6 space-y-8">
             <div>
               <h2 className="text-3xl font-heading font-extrabold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                Startup <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#FF9F43]">Confluence</span> 2.0
+                Startup{' '}
+                <span
+                  className="bg-clip-text text-transparent"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(90deg, var(--brand-sky), var(--brand-orange))',
+                  }}
+                >
+                  Confluence
+                </span>{' '}
+                2.0
               </h2>
             </div>
             
-            <div className="p-6 rounded-[1.5rem] border backdrop-blur-xl shadow-2xl relative overflow-hidden group" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+            <div className="clay-card clay-card--blue group relative overflow-hidden rounded-[1.5rem] p-6">
               <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               <h3 className="text-lg font-bold text-accent flex items-center gap-2 mb-3">
                 <span className="text-2xl">✨🚀</span> UIH – Nurturing Innovators
@@ -67,10 +83,10 @@ export const Footer: React.FC = () => {
           <div className="lg:col-span-3 lg:pl-10">
             <h3 className="text-lg font-heading font-bold mb-8 uppercase tracking-widest" style={{ color: 'var(--text-primary)' }}>Explore</h3>
             <ul className="space-y-4">
-              {quickLinks.map((link, idx) => (
-                <li key={link.id}>
+              {quickLinks.map((link) => (
+                <li key={link.href}>
                   <button 
-                    onClick={() => handleScroll(link.id)}
+                    onClick={() => handleLink(link.href)}
                     className="group flex items-center text-sm font-medium transition-colors"
                     style={{ color: 'var(--text-secondary)' }}
                   >
@@ -93,14 +109,14 @@ export const Footer: React.FC = () => {
                 { icon: <FaInstagram className="w-5 h-5" />, href: "https://www.instagram.com/united_incubationhub?igsh=dGNxdTl6amwxbWJy", color: "#E1306C" },
                 { icon: <FaFacebook className="w-5 h-5" />, href: "https://www.facebook.com/share/1B7u65PANq/", color: "#1877F2" },
                 { icon: <FaYoutube className="w-5 h-5" />, href: "https://youtube.com/@unitedincubationhub?si=phJkowpp_LhV8pGu", color: "#FF0000" },
-              ].map((social, i) => (
+              ].map((social) => (
                 <a 
-                  key={i}
+                  key={social.href}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 border hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(255,122,0,0.2)] hover:border-accent hover:bg-accent hover:text-white"
-                  style={{ background: 'var(--surface)', color: social.color, borderColor: 'var(--border)' }}
+                  className="clay-chip flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1 hover:bg-accent hover:text-[color:var(--text-inverse)]"
+                  style={{ color: social.color }}
                 >
                   {social.icon}
                 </a>
@@ -156,19 +172,14 @@ export const Footer: React.FC = () => {
                 { icon: <FaInstagram className="w-6 h-6" />, href: "https://www.instagram.com/united_incubationhub?igsh=dGNxdTl6amwxbWJy", color: "#E1306C" },
                 { icon: <FaFacebook className="w-6 h-6" />, href: "https://www.facebook.com/share/1B7u65PANq/", color: "#1877F2" },
                 { icon: <FaYoutube className="w-6 h-6" />, href: "https://youtube.com/@unitedincubationhub?si=phJkowpp_LhV8pGu", color: "#FF0000" },
-              ].map((social, i) => (
+              ].map((social) => (
                 <a 
-                  key={i}
+                  key={social.href}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-14 h-14 rounded-[18px] flex items-center justify-center transition-all duration-300 border border-white/5 active:scale-95 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(255,122,0,0.3)] hover:border-accent/30"
-                  style={{ 
-                    background: 'rgba(255,255,255,0.03)', 
-                    backdropFilter: 'blur(20px)',
-                    WebkitBackdropFilter: 'blur(20px)',
-                    color: social.color
-                  }}
+                  className="clay-chip flex h-14 w-14 items-center justify-center rounded-[18px] transition-all duration-300 active:scale-95 hover:-translate-y-1"
+                  style={{ color: social.color }}
                 >
                   {social.icon}
                 </a>

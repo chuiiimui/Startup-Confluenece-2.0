@@ -35,7 +35,7 @@ const Schedule = () => {
         </div>
 
         {/* Day Tabs */}
-        <div className="flex flex-nowrap justify-center items-center gap-2 mb-12 max-w-fit mx-auto p-1.5 rounded-full border bg-surface/30 backdrop-blur-sm" style={{ borderColor: 'var(--border)' }}>
+        <div className="clay-pill mb-12 mx-auto flex max-w-fit flex-nowrap items-center justify-center gap-2 rounded-full p-1.5">
           {schedule.map((day) => (
             <button
               key={day.id}

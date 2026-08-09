@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sparkles } from '@react-three/drei';
+import { Float, Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
-const BLUE = '#93C5FD';
-const VIOLET = '#A78BFA';
+const PEACH = '#FDBA74';
+const AMBER = '#F59E0B';
 const ORANGE = '#FF7A00';
 const GOLD = '#E8B84A';
-const GLASS = '#BFDBFE';
+const GLASS = '#FFE8D1';
 
 /* ─── Shared lights ─── */
 export function SceneLights() {
@@ -15,8 +15,8 @@ export function SceneLights() {
     <>
       <ambientLight intensity={0.45} />
       <directionalLight position={[4, 6, 3]} intensity={1.2} />
-      <pointLight position={[-3, 2, -2]} intensity={0.7} color={VIOLET} />
-      <pointLight position={[3, 1, 2]} intensity={0.65} color={BLUE} />
+      <pointLight position={[-3, 2, -2]} intensity={0.7} color={AMBER} />
+      <pointLight position={[3, 1, 2]} intensity={0.65} color={PEACH} />
     </>
   );
 }
@@ -73,8 +73,8 @@ export function FundingOrbScene() {
         <mesh key={r} rotation={[Math.PI / 2.4 + i * 0.3, i * 0.5, 0]}>
           <torusGeometry args={[r, 0.018, 8, 32]} />
           <meshStandardMaterial
-            color={i === 2 ? ORANGE : i === 1 ? BLUE : VIOLET}
-            emissive={i === 2 ? ORANGE : BLUE}
+            color={i === 2 ? ORANGE : i === 1 ? PEACH : AMBER}
+            emissive={i === 2 ? ORANGE : PEACH}
             emissiveIntensity={hover || active ? 0.8 : 0.35}
             metalness={0.9}
             roughness={0.2}
@@ -86,15 +86,15 @@ export function FundingOrbScene() {
         <mesh key={i} position={[-0.4 + i * 0.2, -0.35 + h / 2, 0]}>
           <boxGeometry args={[0.12, h, 0.12]} />
           <meshStandardMaterial
-            color={i === 4 ? ORANGE : BLUE}
-            emissive={i === 4 ? ORANGE : BLUE}
+            color={i === 4 ? ORANGE : PEACH}
+            emissive={i === 4 ? ORANGE : PEACH}
             emissiveIntensity={active ? 0.7 : 0.25}
             metalness={0.7}
             roughness={0.25}
           />
         </mesh>
       ))}
-      <Sparkles count={8} scale={3} size={2} speed={0.35} opacity={0.4} color={BLUE} />
+      <Sparkles count={8} scale={3} size={2} speed={0.35} opacity={0.4} color={PEACH} />
     </group>
   );
 }
@@ -239,7 +239,7 @@ export function OrbitingCoinsScene() {
       </group>
       <mesh>
         <torusGeometry args={[1.35, 0.01, 8, 64]} />
-        <meshBasicMaterial color={VIOLET} transparent opacity={0.25} />
+        <meshBasicMaterial color={AMBER} transparent opacity={0.25} />
       </mesh>
     </group>
   );
@@ -287,10 +287,10 @@ export function GrowthChartScene() {
           >
             <boxGeometry args={[0.28, height, 0.28]} />
             <meshStandardMaterial
-              color={i === bars.length - 1 || hoverIdx === i ? ORANGE : BLUE}
+              color={i === bars.length - 1 || hoverIdx === i ? ORANGE : PEACH}
               metalness={0.75}
               roughness={0.22}
-              emissive={i === bars.length - 1 || hoverIdx === i ? ORANGE : BLUE}
+              emissive={i === bars.length - 1 || hoverIdx === i ? ORANGE : PEACH}
               emissiveIntensity={hoverIdx === i ? 0.55 : 0.15}
             />
           </mesh>
@@ -344,7 +344,7 @@ export function HoloTicketScene() {
       </mesh>
       <mesh position={[0, 0, 0.05]}>
         <planeGeometry args={[1.9, 0.95]} />
-        <meshBasicMaterial color={VIOLET} transparent opacity={0.15 + stamp * 0.35} />
+        <meshBasicMaterial color={AMBER} transparent opacity={0.15 + stamp * 0.35} />
       </mesh>
       {/* Accent stripe */}
       <mesh position={[-0.85, 0, 0.05]}>
@@ -421,12 +421,12 @@ export function NodeConstellationScene() {
   return (
     <group ref={group}>
       <ambientLight intensity={0.5} />
-      <pointLight position={[0, 0, 3]} intensity={0.65} color={BLUE} />
+      <pointLight position={[0, 0, 3]} intensity={0.65} color={PEACH} />
       {nodes.map((n, i) => (
         <mesh key={i} position={[n.x, n.y, n.z]}>
           <sphereGeometry args={[n.s, 6, 6]} />
           <meshBasicMaterial
-            color={i % 3 === 0 ? ORANGE : i % 3 === 1 ? BLUE : VIOLET}
+            color={i % 3 === 0 ? ORANGE : i % 3 === 1 ? PEACH : AMBER}
             transparent
             opacity={0.85}
           />
@@ -448,7 +448,7 @@ export function NodeConstellationScene() {
             )}
           >
             <cylinderGeometry args={[0.003, 0.003, dist, 3]} />
-            <meshBasicMaterial color={VIOLET} transparent opacity={0.22} />
+            <meshBasicMaterial color={AMBER} transparent opacity={0.22} />
           </mesh>
         );
       })}
@@ -485,17 +485,17 @@ export function ProfileCrystalScene() {
       <mesh ref={ref}>
         <octahedronGeometry args={[1, 0]} />
         <meshPhysicalMaterial
-          color="#C4B5FD"
+          color="#FDBA74"
           metalness={0.15}
           roughness={0.05}
           transmission={0.7}
           thickness={0.5}
           clearcoat={1}
-          emissive={VIOLET}
+          emissive={AMBER}
           emissiveIntensity={hot ? 0.45 : 0.12}
         />
       </mesh>
-      <Sparkles count={6} scale={2.5} size={2} speed={0.4} opacity={0.35} color={VIOLET} />
+      <Sparkles count={6} scale={2.5} size={2} speed={0.4} opacity={0.35} color={AMBER} />
     </group>
   );
 }
@@ -532,8 +532,8 @@ export function TimelineBeadsScene({ onSelect }: { onSelect?: (i: number) => voi
         >
           <sphereGeometry args={[active === i ? 0.22 : 0.16, 12, 12]} />
           <meshStandardMaterial
-            color={active === i ? ORANGE : BLUE}
-            emissive={active === i ? ORANGE : BLUE}
+            color={active === i ? ORANGE : PEACH}
+            emissive={active === i ? ORANGE : PEACH}
             emissiveIntensity={active === i ? 0.7 : 0.25}
             metalness={0.8}
             roughness={0.2}
@@ -544,94 +544,7 @@ export function TimelineBeadsScene({ onSelect }: { onSelect?: (i: number) => voi
   );
 }
 
-/* ─── 9. Liquid Metal Funding Blob (low-poly, desktop accent) ─── */
-export function LiquidMetalBlobScene() {
-  const group = useRef<THREE.Group>(null);
-  const mouse = useRef({ x: 0, y: 0 });
-  const [hot, setHot] = useState(false);
-  const tmp = useMemo(() => new THREE.Vector3(), []);
-
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-      mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
-  useFrame((state) => {
-    if (!group.current) return;
-    const t = state.clock.elapsedTime;
-    const pull = hot ? 0.55 : 0.32;
-    group.current.rotation.y = t * 0.28 + mouse.current.x * 0.45;
-    group.current.rotation.x = Math.sin(t * 0.55) * 0.18 + mouse.current.y * 0.3;
-    group.current.position.x = THREE.MathUtils.lerp(
-      group.current.position.x,
-      mouse.current.x * pull,
-      0.045
-    );
-    group.current.position.y = THREE.MathUtils.lerp(
-      group.current.position.y,
-      mouse.current.y * pull * 0.7,
-      0.045
-    );
-    const s = hot ? 1.08 : 1;
-    group.current.scale.lerp(tmp.set(s, s, s), 0.08);
-  });
-
-  return (
-    <group
-      ref={group}
-      onPointerOver={(e) => {
-        e.stopPropagation();
-        setHot(true);
-        document.body.style.cursor = 'pointer';
-      }}
-      onPointerOut={() => {
-        setHot(false);
-        document.body.style.cursor = 'auto';
-      }}
-    >
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[4, 6, 3]} intensity={1} />
-      <pointLight position={[-2, 2, -1]} intensity={0.45} color={VIOLET} />
-      <mesh>
-        {/* detail 2 ≈ ~80 tris vs detail 24 (thousands) — big win on GPU */}
-        <icosahedronGeometry args={[1.12, 2]} />
-        <MeshDistortMaterial
-          color="#D4D4F7"
-          emissive={hot ? ORANGE : '#6366F1'}
-          emissiveIntensity={hot ? 0.55 : 0.28}
-          metalness={0.98}
-          roughness={0.08}
-          distort={hot ? 0.4 : 0.28}
-          speed={hot ? 2.2 : 1.4}
-        />
-      </mesh>
-      <mesh scale={0.42}>
-        <sphereGeometry args={[1, 12, 12]} />
-        <meshStandardMaterial
-          color={ORANGE}
-          emissive={ORANGE}
-          emissiveIntensity={hot ? 1.1 : 0.55}
-          metalness={1}
-          roughness={0.15}
-        />
-      </mesh>
-      <Sparkles
-        count={10}
-        scale={3}
-        size={2}
-        speed={0.4}
-        opacity={0.4}
-        color={hot ? ORANGE : BLUE}
-      />
-    </group>
-  );
-}
-
-/* ─── 10. Holographic Stock Ticker Ribbon ─── */
+/* ─── 9. Holographic Stock Ticker Ribbon ─── */
 function useTickerTexture() {
   return useMemo(() => {
     const canvas = document.createElement('canvas');
@@ -639,26 +552,26 @@ function useTickerTexture() {
     canvas.height = 128;
     const ctx = canvas.getContext('2d')!;
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-    gradient.addColorStop(0, '#0B1229');
-    gradient.addColorStop(0.5, '#1E1B4B');
-    gradient.addColorStop(1, '#0B1229');
+    gradient.addColorStop(0, '#1C1917');
+    gradient.addColorStop(0.5, '#7C2D12');
+    gradient.addColorStop(1, '#1C1917');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.strokeStyle = 'rgba(147,197,253,0.35)';
+    ctx.strokeStyle = 'rgba(255,179,102,0.40)';
     ctx.lineWidth = 2;
     ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
 
     const text =
       '  SEED ▲ 12%   SERIES A ▲ 28%   SERIES B ▲ 41%   IPO ● LIVE   DEAL FLOW ▲   RAISE $2.4M   ANGEL ROUND   UNICORN WATCH   CONFLUENCE 2.0   EXIT ▲   ';
-    ctx.font = 'bold 36px Space Grotesk, Inter, sans-serif';
-    ctx.fillStyle = '#E0E7FF';
+    ctx.font = 'bold 36px Space Grotesk, Outfit, sans-serif';
+    ctx.fillStyle = '#FFF7ED';
     ctx.textBaseline = 'middle';
     ctx.fillText(text, 20, 52);
     ctx.fillStyle = '#FF7A00';
     ctx.fillText('  ● LIVE MARKETS  ', 20, 95);
-    ctx.fillStyle = 'rgba(167,139,250,0.85)';
-    ctx.font = '600 24px Space Grotesk, Inter, sans-serif';
+    ctx.fillStyle = 'rgba(253,186,116,0.9)';
+    ctx.font = '600 24px Space Grotesk, Outfit, sans-serif';
     ctx.fillText(text, 20, 100);
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -702,11 +615,11 @@ export function HoloTickerRibbonScene() {
         <torusGeometry args={[1.55, 0.11, 20, 120, Math.PI * 1.65]} />
         <meshPhysicalMaterial
           map={texture}
-          color="#BFDBFE"
+          color="#FFE8D1"
           metalness={0.7}
           roughness={0.18}
           clearcoat={1}
-          emissive={hot ? ORANGE : VIOLET}
+          emissive={hot ? ORANGE : AMBER}
           emissiveIntensity={hot ? 0.35 : 0.15}
           transparent
           opacity={0.95}
@@ -714,7 +627,7 @@ export function HoloTickerRibbonScene() {
       </mesh>
       <mesh rotation={[0.55, 0.15, -0.25]} scale={1.04}>
         <torusGeometry args={[1.55, 0.02, 8, 100, Math.PI * 1.65]} />
-        <meshBasicMaterial color={BLUE} transparent opacity={0.55} />
+        <meshBasicMaterial color={PEACH} transparent opacity={0.55} />
       </mesh>
       <mesh rotation={[-0.4, 0.6, 0.2]} position={[0, -0.15, 0]}>
         <torusGeometry args={[1.1, 0.045, 12, 80, Math.PI * 1.2]} />
@@ -722,13 +635,13 @@ export function HoloTickerRibbonScene() {
           map={texture}
           metalness={0.85}
           roughness={0.2}
-          emissive={BLUE}
+          emissive={PEACH}
           emissiveIntensity={0.2}
           transparent
           opacity={0.75}
         />
       </mesh>
-      <Sparkles count={8} scale={4} size={1.8} speed={0.3} opacity={0.35} color={BLUE} />
+      <Sparkles count={8} scale={4} size={1.8} speed={0.3} opacity={0.35} color={PEACH} />
     </group>
   );
 }
@@ -758,7 +671,7 @@ export function PitchCardSwarmScene() {
             a + 0.4,
             (i % 2) * 0.2 - 0.1,
           ] as [number, number, number],
-          color: i % 3 === 0 ? ORANGE : i % 3 === 1 ? BLUE : VIOLET,
+          color: i % 3 === 0 ? ORANGE : i % 3 === 1 ? PEACH : AMBER,
           speed: 0.6 + (i % 4) * 0.15,
         };
       }),
@@ -853,7 +766,76 @@ export function PitchCardSwarmScene() {
           </group>
         </Float>
       ))}
-      <Sparkles count={8} scale={4.5} size={1.6} speed={0.3} opacity={0.3} color={VIOLET} />
+      <Sparkles count={8} scale={4.5} size={1.6} speed={0.3} opacity={0.3} color={AMBER} />
+    </group>
+  );
+}
+
+/* ─── Soft Halo — professional ambient background accent ─── */
+export function SoftHaloScene() {
+  const group = useRef<THREE.Group>(null);
+  const BLUE = '#2563EB';
+  const SKY = '#38BDF8';
+
+  useFrame((state) => {
+    if (!group.current) return;
+    const t = state.clock.elapsedTime;
+    group.current.rotation.y = t * 0.08;
+    group.current.rotation.x = Math.sin(t * 0.15) * 0.08;
+    group.current.position.y = Math.sin(t * 0.35) * 0.12;
+  });
+
+  return (
+    <group ref={group}>
+      <ambientLight intensity={0.65} />
+      <directionalLight position={[4, 5, 3]} intensity={0.9} color="#F8FAFC" />
+      <pointLight position={[-2, 1, 2]} intensity={0.55} color={ORANGE} />
+      <pointLight position={[3, -1, -1]} intensity={0.45} color={BLUE} />
+
+      <Float speed={0.8} rotationIntensity={0.2} floatIntensity={0.35}>
+        <mesh>
+          <torusGeometry args={[1.55, 0.055, 24, 96]} />
+          <meshPhysicalMaterial
+            color={ORANGE}
+            roughness={0.28}
+            metalness={0.45}
+            clearcoat={0.8}
+            transparent
+            opacity={0.55}
+            emissive={ORANGE}
+            emissiveIntensity={0.18}
+          />
+        </mesh>
+      </Float>
+
+      <Float speed={1.1} rotationIntensity={0.15} floatIntensity={0.25}>
+        <mesh rotation={[Math.PI / 2.6, 0.3, 0]} scale={0.92}>
+          <torusGeometry args={[1.15, 0.035, 20, 80]} />
+          <meshPhysicalMaterial
+            color={SKY}
+            roughness={0.35}
+            metalness={0.35}
+            transparent
+            opacity={0.45}
+            emissive={BLUE}
+            emissiveIntensity={0.14}
+          />
+        </mesh>
+      </Float>
+
+      <mesh>
+        <sphereGeometry args={[0.42, 32, 32]} />
+        <meshPhysicalMaterial
+          color="#EFF6FF"
+          roughness={0.2}
+          metalness={0.15}
+          clearcoat={1}
+          transparent
+          opacity={0.78}
+          emissive={BLUE}
+          emissiveIntensity={0.1}
+        />
+      </mesh>
     </group>
   );
 }
