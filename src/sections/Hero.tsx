@@ -120,7 +120,7 @@ const Hero = () => {
               <motion.div
                 variants={wordVariants}
                 className="hero-glow-startup"
-                style={{ fontSize: 'clamp(1.55rem, 7.2vw, 6.5rem)' }}
+                style={{ fontSize: 'clamp(2.15rem, 11vw, 6.5rem)' }}
               >
                 STARTUP
               </motion.div>
@@ -129,14 +129,14 @@ const Hero = () => {
               <motion.div
                 variants={wordVariants}
                 className="hero-glow-confluence"
-                style={{ fontSize: 'clamp(1.85rem, 8.5vw, 8.5rem)' }}
+                style={{ fontSize: 'clamp(2.45rem, 12.5vw, 8.5rem)' }}
               >
                 CONFLUENCE
               </motion.div>
               <motion.div
                 variants={scaleFadeVariants}
                 className="hero-glow-version"
-                style={{ fontSize: 'clamp(1.35rem, 6.5vw, 6rem)' }}
+                style={{ fontSize: 'clamp(1.9rem, 10vw, 6rem)' }}
               >
                 2.0
               </motion.div>

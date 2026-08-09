@@ -8,15 +8,19 @@ import { useRegistration } from '../context/RegistrationContext';
  * Fixed Partner / Sponsor CTA.
  * Sits at the bottom when the mobile register dock is hidden;
  * lifts above the dock when that CTA is visible.
+ * Hidden on register/partner pages and when the footer is in view.
  */
 export default function BecomePartnerButton() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen, isPartnerOpen, mobileDockVisible } = useRegistration();
   const [isDesktop, setIsDesktop] = useState(false);
+  const [overFooter, setOverFooter] = useState(false);
   const onPartnerPage = location.pathname.startsWith('/partner');
   const onRegisterPage = location.pathname.startsWith('/register');
-  const visible = !isOpen && !isPartnerOpen && !onPartnerPage && !onRegisterPage;
+  const isHome = location.pathname === '/';
+  const visible =
+    !isOpen && !isPartnerOpen && !onPartnerPage && !onRegisterPage && !overFooter;
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
@@ -25,6 +29,38 @@ export default function BecomePartnerButton() {
     mq.addEventListener('change', sync);
     return () => mq.removeEventListener('change', sync);
   }, []);
+
+  useEffect(() => {
+    if (!isHome) {
+      setOverFooter(false);
+      return;
+    }
+
+    let observer: IntersectionObserver | null = null;
+    let intervalId = 0;
+
+    const attach = () => {
+      const footer = document.getElementById('footer');
+      if (!footer) return false;
+      observer = new IntersectionObserver(
+        ([entry]) => setOverFooter(entry.isIntersecting),
+        { threshold: 0.12, rootMargin: '0px' }
+      );
+      observer.observe(footer);
+      return true;
+    };
+
+    if (!attach()) {
+      intervalId = window.setInterval(() => {
+        if (attach()) window.clearInterval(intervalId);
+      }, 400);
+    }
+
+    return () => {
+      if (intervalId) window.clearInterval(intervalId);
+      observer?.disconnect();
+    };
+  }, [isHome]);
 
   const bottom = isDesktop
     ? 32
@@ -49,10 +85,7 @@ export default function BecomePartnerButton() {
           aria-label="Become a partner or sponsor"
         >
           <Handshake className="h-4 w-4 shrink-0" strokeWidth={2.2} />
-          <span className="truncate">
-            <span className="sm:hidden">Partner</span>
-            <span className="hidden sm:inline">Partner / Sponsor</span>
-          </span>
+          <span className="truncate">Partner / Sponsor</span>
         </motion.button>
       )}
     </AnimatePresence>

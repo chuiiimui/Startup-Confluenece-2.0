@@ -5,13 +5,14 @@ import { useRegistration } from '../context/RegistrationContext';
 
 /**
  * Sticky mobile Register CTA — home page only.
+ * Hidden when the footer is in view (not mid-page over #register).
  */
 export default function MobileRegisterDock() {
   const navigate = useNavigate();
   const location = useLocation();
   const { isOpen, isPartnerOpen, setMobileDockVisible } = useRegistration();
   const [show, setShow] = useState(false);
-  const [overRegister, setOverRegister] = useState(false);
+  const [overFooter, setOverFooter] = useState(false);
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -23,20 +24,38 @@ export default function MobileRegisterDock() {
   }, [isHome]);
 
   useEffect(() => {
-    if (!isHome) return;
-    const section = document.getElementById('register');
-    if (!section) return;
+    if (!isHome) {
+      setOverFooter(false);
+      return;
+    }
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setOverRegister(entry.isIntersecting),
-      { threshold: 0.3 }
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
+    let observer: IntersectionObserver | null = null;
+    let intervalId = 0;
+
+    const attach = () => {
+      const footer = document.getElementById('footer');
+      if (!footer) return false;
+      observer = new IntersectionObserver(
+        ([entry]) => setOverFooter(entry.isIntersecting),
+        { threshold: 0.12, rootMargin: '0px' }
+      );
+      observer.observe(footer);
+      return true;
+    };
+
+    if (!attach()) {
+      intervalId = window.setInterval(() => {
+        if (attach()) window.clearInterval(intervalId);
+      }, 400);
+    }
+
+    return () => {
+      if (intervalId) window.clearInterval(intervalId);
+      observer?.disconnect();
+    };
   }, [isHome]);
 
-  const visible =
-    isHome && show && !isOpen && !isPartnerOpen && !overRegister;
+  const visible = isHome && show && !isOpen && !isPartnerOpen && !overFooter;
 
   useEffect(() => {
     setMobileDockVisible(visible);

@@ -24,7 +24,11 @@ export const Footer: React.FC = () => {
   ];
 
   return (
-    <footer className="relative overflow-hidden pt-8 pb-0 mt-12" style={{ background: 'var(--surface)' }}>
+    <footer
+      id="footer"
+      className="relative overflow-hidden pt-8 pb-0 mt-12"
+      style={{ background: 'var(--surface)' }}
+    >
       {/* Top glowing separator */}
       <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent opacity-30"></div>
       
