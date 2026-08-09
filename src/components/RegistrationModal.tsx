@@ -1285,12 +1285,17 @@ export const RegistrationModal: React.FC = () => {
           areaOfExpertise: (data as SpeakerFormData).expertise,
           previousSpeakingExperience: (data as SpeakerFormData).previousExperience,
           speakerName: (data as SpeakerFormData).fullName,
-          speakerTopic:
-            (data as SpeakerFormData).speakerTopic ||
-            (data as SpeakerFormData).topicProposal,
-          topicProposal:
-            (data as SpeakerFormData).speakerTopic ||
-            (data as SpeakerFormData).topicProposal,
+          speakerTopic: (() => {
+            const s = data as SpeakerFormData;
+            if (s.speakerTopic === 'Other') return (s.customTopic || '').trim();
+            return (s.speakerTopic || s.topicProposal || '').trim();
+          })(),
+          topicProposal: (() => {
+            const s = data as SpeakerFormData;
+            if (s.speakerTopic === 'Other') return (s.customTopic || '').trim();
+            return (s.speakerTopic || s.topicProposal || '').trim();
+          })(),
+          customTopic: (data as SpeakerFormData).customTopic || '',
         }),
         timestamp: new Date().toISOString(),
       };
@@ -1362,7 +1367,7 @@ export const RegistrationModal: React.FC = () => {
 
           {/* Modal — shorter so header/X clear the floating nav */}
           <motion.div
-            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-7.5rem),680px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[28px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
+            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-6.5rem),720px)] w-full max-w-3xl flex-col overflow-hidden rounded-t-[24px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -1409,7 +1414,7 @@ export const RegistrationModal: React.FC = () => {
             <div
               ref={scrollRef}
               data-lenis-prevent
-              className="registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4 md:px-10 md:py-6"
+              className="registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 md:px-10 md:py-6"
             >
               <AnimatePresence mode="wait">
                 {isSuccess ? (
@@ -1444,7 +1449,11 @@ export const RegistrationModal: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.3 }}
                     >
-                      Registration Successful!
+                      {selectedType === 'startup'
+                        ? 'Startup Registration Received!'
+                        : selectedType === 'speaker'
+                          ? 'Speaker Application Received!'
+                          : 'Delegate Registration Received!'}
                     </motion.h2>
 
                     <motion.p
@@ -1454,9 +1463,11 @@ export const RegistrationModal: React.FC = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.45 }}
                     >
-                      We&apos;ve received your application. A confirmation email
-                      has been sent to the address you provided — please check
-                      Inbox and Spam. We&apos;ll be in touch soon.
+                      {selectedType === 'startup'
+                        ? 'Thanks for registering your startup. A confirmation email with your startup details, stall/pitch summary, and next steps has been sent — check Inbox and Spam.'
+                        : selectedType === 'speaker'
+                          ? 'Thanks for applying to speak. A confirmation email with your topic and next curation steps has been sent — check Inbox and Spam.'
+                          : 'Thanks for registering as a Delegate / Visitor. A confirmation email with your selected events and check-in steps has been sent — check Inbox and Spam.'}
                     </motion.p>
 
                     <motion.button

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRegistration } from '../context/RegistrationContext';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Cpu, HeartPulse, Leaf, ShoppingCart, Zap, Globe, Coins, Layers, HardHat, BookOpen,
@@ -26,10 +26,10 @@ const journeySteps = [
 ];
 
 export default function StartupExpo() {
+  const navigate = useNavigate();
   const [activeCategoryId, setActiveCategoryId] = useState(expoCategories[0]?.id || 'cat-1');
   const [activeStepId, setActiveStepId] = useState(1);
   const activeStep = journeySteps.find(s => s.id === activeStepId) || journeySteps[0];
-  const { openModal } = useRegistration();
 
   // Auto-advance the Exhibitor Journey step every 4 seconds
   useEffect(() => {
@@ -105,7 +105,7 @@ export default function StartupExpo() {
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent" />
                   
                   <div className="absolute -right-20 -top-20 opacity-10 pointer-events-none">
-                    <ActiveIcon className="w-[400px] h-[400px] text-white" />
+                    <ActiveIcon className="w-[220px] h-[220px] sm:w-[300px] sm:h-[300px] md:w-[400px] md:h-[400px] text-white" />
                   </div>
                   
                   <div className="relative z-10 flex flex-col md:flex-row items-center md:items-end gap-8 mt-auto">
@@ -113,8 +113,8 @@ export default function StartupExpo() {
                       <ActiveIcon className="w-10 h-10 text-white" />
                     </div>
                     <div>
-                      <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">{activeCategory.name}</h3>
-                      <p className="text-xl text-gray-200 leading-relaxed drop-shadow-sm max-w-2xl">
+                      <h3 className="text-xl md:text-5xl font-bold text-white mb-3 md:mb-4 drop-shadow-md">{activeCategory.name}</h3>
+                      <p className="text-sm md:text-xl text-gray-200 leading-relaxed drop-shadow-sm max-w-2xl">
                         {activeCategory.description}
                       </p>
                     </div>
@@ -211,7 +211,7 @@ export default function StartupExpo() {
                   </div>
                   
                   <div className="flex-1 relative z-10">
-                    <h3 className="text-2xl md:text-3xl font-heading font-bold mb-3 text-white drop-shadow-md">
+                    <h3 className="text-lg md:text-3xl font-heading font-bold mb-2 text-white drop-shadow-md sm:mb-3">
                       {activeStep.title}
                     </h3>
                     <p className="text-lg text-gray-200 drop-shadow-sm font-medium">
@@ -262,7 +262,7 @@ export default function StartupExpo() {
                   <div className="absolute top-6 right-6 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors duration-500 text-white shadow-sm z-10">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <h4 className="text-2xl font-bold text-white mb-3 relative z-10 drop-shadow-md">{benefit.title}</h4>
+                  <h4 className="text-lg font-bold text-white mb-2 relative z-10 drop-shadow-md sm:text-2xl sm:mb-3">{benefit.title}</h4>
                   <p className="text-gray-200 relative z-10 line-clamp-3 drop-shadow-sm font-medium">{benefit.description}</p>
                 </motion.div>
               );
@@ -271,17 +271,17 @@ export default function StartupExpo() {
         </div>
 
         {/* Final Premium CTA */}
-        <div className="relative rounded-[3rem] overflow-hidden max-w-5xl mx-auto shadow-[0_20px_50px_rgba(255,122,0,0.2)]">
+        <div className="relative rounded-[1.75rem] sm:rounded-[3rem] overflow-hidden max-w-5xl mx-auto shadow-[0_20px_50px_rgba(255,122,0,0.2)]">
           <div className="absolute inset-0 bg-gradient-to-r from-accent to-orange-500" />
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=2000')] bg-cover bg-center mix-blend-overlay opacity-20" />
           
-          <div className="relative z-10 p-12 md:p-20 text-center">
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 drop-shadow-md">Ready to Showcase Your Startup?</h2>
-            <p className="text-xl text-white/95 max-w-2xl mx-auto mb-12 drop-shadow-sm font-medium">
+          <div className="relative z-10 p-8 sm:p-12 md:p-20 text-center">
+            <h2 className="text-2xl font-bold text-white mb-4 drop-shadow-md sm:text-4xl md:text-6xl md:mb-6 leading-tight">Ready to Showcase Your Startup?</h2>
+            <p className="text-sm text-white/95 max-w-2xl mx-auto mb-6 drop-shadow-sm font-medium sm:text-lg md:text-xl md:mb-12 px-1">
               Join 50+ innovative startups and connect with investors, mentors, and ecosystem leaders.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button onClick={() => openModal('startup')} className="w-full sm:w-auto px-10 py-4 rounded-full bg-white text-accent font-bold text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
+              <button onClick={() => navigate('/register?type=startup')} className="w-full sm:w-auto min-h-12 px-8 py-3.5 rounded-full bg-white text-accent font-bold text-base md:text-lg hover:scale-105 transition-transform duration-300 shadow-xl">
                 Register
               </button>
             </div>

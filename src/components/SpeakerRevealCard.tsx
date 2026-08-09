@@ -73,7 +73,7 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
             animate={{ opacity: isRevealed ? 1 : 0, y: isRevealed ? 0 : 30 }}
             transition={{ duration: 0.7, delay: 0.3, ease: cinematicEase }}
           >
-            <h3 className="text-2xl md:text-3xl font-heading font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="text-xl md:text-3xl font-heading font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
               {speaker.name}
             </h3>
           </motion.div>
@@ -164,7 +164,7 @@ export default function SpeakerRevealCard({ speaker, isMobile = false }: Speaker
             <span className="text-accent font-bold tracking-widest uppercase text-xs">Featured</span>
           </div>
           
-          <h3 className="text-3xl md:text-4xl font-heading font-bold text-center tracking-tight leading-tight mb-8" style={{ color: 'var(--text-primary)' }}>
+          <h3 className="text-2xl md:text-4xl font-heading font-bold text-center tracking-tight leading-tight mb-6 md:mb-8" style={{ color: 'var(--text-primary)' }}>
             KEYNOTE<br />SPEAKER
           </h3>
 

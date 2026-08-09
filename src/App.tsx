@@ -1,4 +1,5 @@
 import React, { Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -44,6 +45,8 @@ const Footer = lazy(() =>
 );
 const RegistrationModal = lazy(() => import('./components/RegistrationModal'));
 const PartnerModal = lazy(() => import('./components/PartnerModal'));
+const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const PartnerPage = lazy(() => import('./pages/PartnerPage'));
 
 function Section({ children }: { children: React.ReactNode }) {
   return (
@@ -53,109 +56,141 @@ function Section({ children }: { children: React.ReactNode }) {
   );
 }
 
+function HomePage({ revealed }: { revealed: boolean }) {
+  const { isMobile, reduceMotion } = usePerfMode();
+
+  return (
+    <>
+      <SEO />
+      {/* Avoid transform on <main> — it breaks sticky horizontal scroll */}
+      <main
+        className={`relative z-10 pb-[4.5rem] transition-opacity duration-500 md:pb-0 ${
+          revealed || reduceMotion || isMobile ? 'opacity-100' : 'opacity-90'
+        }`}
+      >
+        <Hero />
+        <Section>
+          <About />
+        </Section>
+        <Section>
+          <EventHighlights />
+        </Section>
+        <Section>
+          <WhyAttend />
+        </Section>
+        <Section>
+          <Speakers />
+        </Section>
+        {/* No SectionReveal wrapper — sticky pin needs a transform-free ancestor */}
+        <Suspense fallback={null}>
+          <ExperienceStrip />
+        </Suspense>
+        <Section>
+          <PitchingArena />
+        </Section>
+        <Section>
+          <StartupExpo />
+        </Section>
+        <Section>
+          <Schedule />
+        </Section>
+        <Section>
+          <Gallery />
+        </Section>
+        <Section>
+          <Sponsors />
+        </Section>
+        <Section>
+          <Team />
+        </Section>
+        <Section>
+          <Registration />
+        </Section>
+        <Section>
+          <Venue />
+        </Section>
+        <Section>
+          <FAQ />
+        </Section>
+        <Section>
+          <Contact />
+        </Section>
+      </main>
+
+      <Suspense fallback={null}>
+        <Footer />
+      </Suspense>
+
+      {!isMobile && <ScrollProgress />}
+    </>
+  );
+}
+
 function AppShell() {
   const [isLoading, setIsLoading] = React.useState(true);
+  const [showLoader, setShowLoader] = React.useState(true);
+  const [revealed, setRevealed] = React.useState(false);
   const { reduceMotion, isMobile } = usePerfMode();
+  const lightEffects = !reduceMotion && !isMobile;
+
+  const finishLoading = React.useCallback(() => {
+    setIsLoading(false);
+    requestAnimationFrame(() => setRevealed(true));
+    window.setTimeout(() => setShowLoader(false), isMobile ? 400 : 700);
+  }, [isMobile]);
 
   return (
     <SmoothScroll>
-      <SEO />
-      {isLoading && (
-        <PremiumLoader onComplete={() => setIsLoading(false)} />
-      )}
+      {showLoader && <PremiumLoader onComplete={finishLoading} />}
+
       <div
-        className={`relative min-h-screen font-inter ${
-          isLoading ? 'h-screen overflow-hidden' : 'overflow-clip'
+        className={`relative min-h-[100dvh] font-inter ${
+          isLoading ? 'h-[100dvh] overflow-hidden' : ''
         }`}
         style={{ color: 'var(--text-primary)', backgroundColor: 'var(--bg)' }}
       >
         <PremiumBackground />
-        {!isMobile && <ScrollProgress />}
-        <Navbar />
 
-        <AnimatePresence mode="wait">
-          {!isLoading && (
-            <motion.main
-              key="page"
-              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: reduceMotion ? 0.2 : 0.9,
-                ease: [0.22, 1, 0.36, 1],
+        <AnimatePresence>
+          {revealed && lightEffects && (
+            <motion.div
+              key="reveal-sweep"
+              className="pointer-events-none fixed inset-0 z-[180]"
+              initial={{ opacity: 0.55, x: '-30%' }}
+              animate={{ opacity: 0, x: '40%' }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+              style={{
+                background:
+                  'linear-gradient(105deg, transparent 30%, rgba(255,255,255,0.55) 48%, rgba(255,122,0,0.12) 52%, transparent 70%)',
               }}
-              className="relative z-10"
-            >
-              <Hero />
-              <Section>
-                <About />
-              </Section>
-              <Section>
-                <EventHighlights />
-              </Section>
-              <Section>
-                <WhyAttend />
-              </Section>
-              <Section>
-                <Speakers />
-              </Section>
-              <Section>
-                <ExperienceStrip />
-              </Section>
-              <Section>
-                <PitchingArena />
-              </Section>
-              <Section>
-                <StartupExpo />
-              </Section>
-              <Section>
-                <Schedule />
-              </Section>
-              <Section>
-                <Gallery />
-              </Section>
-              <Section>
-                <Sponsors />
-              </Section>
-              <Section>
-                <Team />
-              </Section>
-              <Section>
-                <Registration />
-              </Section>
-              <Section>
-                <Venue />
-              </Section>
-              <Section>
-                <FAQ />
-              </Section>
-              <Section>
-                <Contact />
-              </Section>
-            </motion.main>
+            />
           )}
         </AnimatePresence>
 
-        <div className="relative z-10">
-          {!isLoading && (
-            <Suspense fallback={null}>
-              <RegistrationModal />
-            </Suspense>
-          )}
-          {!isLoading && (
-            <Suspense fallback={null}>
-              <PartnerModal />
-            </Suspense>
-          )}
-          {!isLoading && (
-            <Suspense fallback={null}>
-              <Footer />
-            </Suspense>
-          )}
+        <Navbar />
+
+        <div className="relative z-10 min-w-0">
+          <Suspense fallback={null}>
+            <Routes>
+              <Route path="/" element={<HomePage revealed={revealed} />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/partner" element={<PartnerPage />} />
+            </Routes>
+          </Suspense>
         </div>
 
-        {!isLoading && <MobileRegisterDock />}
-        {!isLoading && <BecomePartnerButton />}
+        <Suspense fallback={null}>
+          <RegistrationModal />
+        </Suspense>
+        <Suspense fallback={null}>
+          <PartnerModal />
+        </Suspense>
       </div>
+
+      {/* Fixed UI outside transformed shell */}
+      {!isLoading && <BecomePartnerButton />}
+      {!isLoading && <MobileRegisterDock />}
     </SmoothScroll>
   );
 }
@@ -163,9 +198,11 @@ function AppShell() {
 function App() {
   return (
     <HelmetProvider>
-      <RegistrationProvider>
-        <AppShell />
-      </RegistrationProvider>
+      <BrowserRouter>
+        <RegistrationProvider>
+          <AppShell />
+        </RegistrationProvider>
+      </BrowserRouter>
     </HelmetProvider>
   );
 }

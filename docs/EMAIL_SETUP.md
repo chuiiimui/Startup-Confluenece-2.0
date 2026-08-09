@@ -34,10 +34,12 @@ Do **not** try to redeploy the old script that lives on someone else’s Sheet.
 ## 1. Prepare the Sheet
 
 1. Use a spreadsheet **owned by your Google account**.
-2. Make sure you have **exactly these 3 tab names** (case-sensitive):
+2. Make sure you have **exactly these 5 tab names** (case-sensitive):
    - `Startup`
    - `Sponsor`
+   - `Partner`
    - `Speaker`
+   - `Delegate`
 3. Headers are created automatically on first submit (or you can leave the first row empty).
 
 If your tabs use different names, edit `SHEET_NAMES` at the top of [`google-apps-script/Code.gs`](../google-apps-script/Code.gs).

@@ -2,15 +2,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import SectionHeading from '../components/SectionHeading';
 import { Phone, Mail, MapPin } from 'lucide-react';
-import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 
 export const Contact: React.FC = () => {
   const cards = [
     {
-      icon: <Phone className="w-8 h-8 text-accent" />,
+      icon: <Phone className="h-6 w-6 text-accent sm:h-8 sm:w-8" />,
       title: 'Phone',
       value: (
-        <div className="flex flex-col gap-2 text-sm mt-1">
+        <div className="mt-1 flex flex-col gap-1.5 text-xs sm:gap-2 sm:text-sm">
           <a href="tel:+916390903018" className="transition-colors hover:text-accent">
             +91-6390903018
           </a>
@@ -19,52 +18,92 @@ export const Contact: React.FC = () => {
           </a>
         </div>
       ),
-      delay: 0.1
+      delay: 0.1,
     },
     {
-      icon: <Mail className="w-8 h-8 text-accent" />,
+      icon: <Mail className="h-6 w-6 text-accent sm:h-8 sm:w-8" />,
       title: 'Email Us',
       value: (
-        <div className="flex flex-col gap-2 text-sm mt-1">
-          <div><span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Participants Queries:</span><br/>startupconfluence@ugi.edu.in</div>
-          <div><span className="font-semibold" style={{ color: 'var(--text-primary)' }}>Administration:</span><br/>incubation@united.edu.in</div>
+        <div className="mt-1 flex flex-col gap-2 text-xs sm:text-sm">
+          <div>
+            <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+              Participants Queries:
+            </span>
+            <br />
+            <a
+              href="mailto:startupconfluence@ugi.edu.in"
+              className="break-all transition-colors hover:text-accent"
+            >
+              startupconfluence@ugi.edu.in
+            </a>
+          </div>
+          <div>
+            <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+              Administration:
+            </span>
+            <br />
+            <a
+              href="mailto:incubation@united.edu.in"
+              className="break-all transition-colors hover:text-accent"
+            >
+              incubation@united.edu.in
+            </a>
+          </div>
         </div>
       ),
-      delay: 0.2
+      delay: 0.2,
     },
     {
-      icon: <MapPin className="w-8 h-8 text-accent" />,
+      icon: <MapPin className="h-6 w-6 text-accent sm:h-8 sm:w-8" />,
       title: 'Location',
-      value: 'United Institute of Technology, Prayagraj',
-      delay: 0.3
-    }
+      value: (
+        <a
+          href="https://maps.google.com/?q=United+Institute+of+Technology,+Prayagraj"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1 block text-xs leading-relaxed transition-colors hover:text-accent sm:text-sm"
+        >
+          United Institute of Technology, Prayagraj
+        </a>
+      ),
+      delay: 0.3,
+    },
   ];
 
   return (
-    <section id="contact" className="hidden md:block pt-24 pb-12 md:pb-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section
+      id="contact"
+      className="relative overflow-hidden pb-16 pt-16 sm:pb-12 sm:pt-20 md:pb-24 md:pt-24"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionHeading badge="Contact" title="Get In Touch" />
-        
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:mt-12 sm:gap-6 md:mt-16 md:grid-cols-3">
           {cards.map((card, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: card.delay }}
-              className="clay-card group flex flex-col items-center rounded-[28px] p-8 text-center transition-transform duration-300 hover:-translate-y-2"
+              className="clay-card group flex flex-col items-center rounded-[22px] p-5 text-center transition-transform duration-300 sm:rounded-[28px] sm:p-8 sm:hover:-translate-y-2"
             >
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-violet-300/25 bg-white/10 transition-colors group-hover:bg-accent/15">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border border-violet-300/25 bg-white/10 transition-colors group-hover:bg-accent/15 sm:mb-6 sm:h-16 sm:w-16">
                 {card.icon}
               </div>
-              <h4 className="mb-2 text-xl font-semibold" style={{ color: 'var(--text-primary)' }}>{card.title}</h4>
+              <h4
+                className="mb-1.5 text-base font-semibold sm:mb-2 sm:text-xl"
+                style={{ color: 'var(--text-primary)' }}
+              >
+                {card.title}
+              </h4>
               <div style={{ color: 'var(--text-secondary)' }}>{card.value}</div>
             </motion.div>
           ))}
         </div>
-
       </div>
     </section>
   );
 };
+
+export default Contact;

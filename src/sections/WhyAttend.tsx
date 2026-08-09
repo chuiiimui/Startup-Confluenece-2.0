@@ -90,7 +90,7 @@ export default function WhyAttend() {
                   </div>
 
                   <h3 
-                    className="font-heading font-bold text-xl md:text-2xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
+                    className="font-heading font-bold text-base md:text-2xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
                     style={{ 
                       color: '#FFFFFF',
                       textShadow: '0 4px 20px rgba(0,0,0,0.35)'

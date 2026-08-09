@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, CheckCircle2, Handshake, Banknote } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { useRegistration } from '../context/RegistrationContext';
+import { useRegistration, type PartnerMode } from '../context/RegistrationContext';
 import { getLenisInstance } from '../lib/utils';
 
 const GOOGLE_SCRIPT_URL =
@@ -21,8 +21,6 @@ const SPONSORSHIP_TIERS = [
   { type: 'Brand Sponsor', suggested: 100000 },
   { type: 'Event Sponsor', suggested: 50000 },
 ] as const;
-
-type PartnerMode = 'partner' | 'sponsor';
 
 interface PartnerFormData {
   orgName: string;
@@ -608,8 +606,9 @@ function SponsorApplicationForm({
  * Dedicated partner / sponsor application modal — separate from event registration.
  */
 export default function PartnerModal() {
-  const { isPartnerOpen, closePartnerModal } = useRegistration();
+  const { isPartnerOpen, partnerMode, closePartnerModal } = useRegistration();
   const [mode, setMode] = useState<PartnerMode>('partner');
+  const [submittedMode, setSubmittedMode] = useState<PartnerMode>('partner');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -620,10 +619,11 @@ export default function PartnerModal() {
       setIsSuccess(false);
       setSubmitError(null);
       setIsSubmitting(false);
-      setMode('partner');
+      setMode(partnerMode);
+      setSubmittedMode(partnerMode);
       requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
     }
-  }, [isPartnerOpen]);
+  }, [isPartnerOpen, partnerMode]);
 
   useEffect(() => {
     if (!isPartnerOpen) return;
@@ -704,6 +704,7 @@ export default function PartnerModal() {
 
   const onPartnerSubmit = useCallback(
     async (data: PartnerFormData) => {
+      setSubmittedMode('partner');
       await submitPayload({
         registrationType: 'partner',
         ...data,
@@ -717,6 +718,7 @@ export default function PartnerModal() {
 
   const onSponsorSubmit = useCallback(
     async (data: SponsorFormData) => {
+      setSubmittedMode('sponsor');
       await submitPayload({
         registrationType: 'sponsor',
         ...data,
@@ -752,7 +754,7 @@ export default function PartnerModal() {
           />
 
           <motion.div
-            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-7.5rem),680px)] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
+            className="form-glass-panel relative z-10 flex max-h-[min(calc(100dvh-6.5rem),720px)] w-full max-w-2xl flex-col overflow-hidden rounded-t-[24px] sm:max-h-[min(calc(100dvh-8rem),700px)] sm:rounded-[32px]"
             initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -797,7 +799,7 @@ export default function PartnerModal() {
             <div
               ref={scrollRef}
               data-lenis-prevent
-              className="partner-form-scroll registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-4 md:px-8 md:py-6"
+              className="partner-form-scroll registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 md:px-8 md:py-6"
             >
               <AnimatePresence mode="wait">
                 {isSuccess ? (
@@ -813,11 +815,14 @@ export default function PartnerModal() {
                       className="font-heading text-2xl font-bold"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      Application received
+                      {submittedMode === 'sponsor'
+                        ? 'Sponsorship Enquiry Received'
+                        : 'Partner Application Received'}
                     </h3>
                     <p className="mt-2 max-w-sm text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      Thanks for supporting Startup Confluence 2.0. Our team will review your
-                      application shortly.
+                      {submittedMode === 'sponsor'
+                        ? 'Thanks for your sponsorship interest. A confirmation email with your sponsorship type, amount, and next steps has been sent — check Inbox and Spam.'
+                        : 'Thanks for applying as a partner. A confirmation email with your partner category and next steps has been sent — check Inbox and Spam.'}
                     </p>
                     <button
                       type="button"

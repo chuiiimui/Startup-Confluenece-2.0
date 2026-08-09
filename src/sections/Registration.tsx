@@ -4,10 +4,10 @@ import SectionHeading from '../components/SectionHeading';
 import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
 import { ArrowRight } from 'lucide-react';
-import { useRegistration } from '../context/RegistrationContext';
+import { useNavigate } from 'react-router-dom';
 
 export const Registration: React.FC = () => {
-  const { openModal } = useRegistration();
+  const navigate = useNavigate();
 
   return (
     <section id="register" className="py-24 relative overflow-hidden">
@@ -37,7 +37,7 @@ export const Registration: React.FC = () => {
             viewport={{ once: true }}
             className="clay-card inline-block w-full max-w-xl rounded-[28px] p-8 md:p-12"
           >
-            <h3 className="mb-4 font-heading text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="mb-3 font-heading text-lg font-bold sm:mb-4 sm:text-2xl" style={{ color: 'var(--text-primary)' }}>
               Ready to accelerate your startup journey?
             </h3>
             <p className="mb-8" style={{ color: 'var(--text-secondary)' }}>
@@ -46,7 +46,7 @@ export const Registration: React.FC = () => {
             
             <Button
               size="lg"
-              onClick={() => openModal()}
+              onClick={() => navigate('/register')}
               icon={<ArrowRight className="w-5 h-5" />}
               className="w-full sm:w-auto"
             >

@@ -44,27 +44,30 @@ const cards = [
 
 export default function ExperienceStrip() {
   return (
-    <div className="relative">
-      <div className="pointer-events-none absolute left-0 right-0 top-16 z-20 px-6 md:px-12">
+    <div id="experience" className="relative">
+      <div className="pointer-events-none absolute left-0 right-0 top-16 z-20 px-4 sm:px-6 md:px-12">
         <RevealText
           text="The Confluence Experience"
-          className="font-heading text-3xl font-bold md:text-5xl"
+          className="font-heading text-2xl font-bold md:text-5xl"
           style={{ color: 'var(--text-primary)' }}
         />
-        <p className="mt-3 max-w-xl text-base md:text-lg" style={{ color: 'var(--text-secondary)' }}>
+        <p
+          className="mt-2 max-w-xl text-sm md:mt-3 md:text-lg"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           Scroll to move horizontally through the moments that define Startup Confluence 2.0.
         </p>
       </div>
 
-      <HorizontalScroll height="260vh" className="pt-8">
+      <HorizontalScroll height="320vh" className="pt-8">
         {cards.map(({ title, copy, icon: Icon, tint }) => (
           <TiltCard
             key={title}
-            className="h-[360px] w-[280px] shrink-0 rounded-[32px] md:h-[420px] md:w-[340px]"
+            className="h-[300px] w-[240px] shrink-0 rounded-[28px] sm:h-[360px] sm:w-[280px] sm:rounded-[32px] md:h-[420px] md:w-[340px]"
             intensity={14}
           >
             <div
-              className={`flex h-full flex-col justify-between overflow-hidden rounded-[32px] border bg-gradient-to-br ${tint} p-8 backdrop-blur-xl`}
+              className={`flex h-full flex-col justify-between overflow-hidden rounded-[28px] border bg-gradient-to-br ${tint} p-6 backdrop-blur-xl sm:rounded-[32px] sm:p-8`}
               style={{
                 borderColor: 'var(--border)',
                 backgroundColor: 'var(--bg-alt)',
@@ -73,23 +76,23 @@ export default function ExperienceStrip() {
               }}
             >
               <div
-                className="flex h-14 w-14 items-center justify-center rounded-2xl border text-sky-700 shadow-sm"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl border text-sky-700 shadow-sm sm:h-14 sm:w-14"
                 style={{
                   borderColor: 'var(--border)',
                   background: 'var(--surface)',
                 }}
               >
-                <Icon className="h-7 w-7" strokeWidth={1.6} />
+                <Icon className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.6} />
               </div>
               <div>
                 <h3
-                  className="font-heading text-2xl font-bold md:text-3xl"
+                  className="font-heading text-lg font-bold sm:text-xl md:text-3xl"
                   style={{ color: 'var(--text-primary)' }}
                 >
                   {title}
                 </h3>
                 <p
-                  className="mt-3 text-sm leading-relaxed md:text-base"
+                  className="mt-2 text-xs leading-relaxed sm:mt-3 sm:text-sm md:text-base"
                   style={{ color: 'var(--text-secondary)' }}
                 >
                   {copy}

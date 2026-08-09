@@ -1,9 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 
 export const Footer: React.FC = () => {
+  const navigate = useNavigate();
+
   const handleScroll = (id: string) => {
+    if (id === 'register') {
+      navigate('/register');
+      return;
+    }
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };

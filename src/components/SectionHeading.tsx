@@ -56,7 +56,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
 
   if (reduceMotion) {
     return (
-      <div className={`mb-12 flex flex-col ${alignClasses}`}>
+      <div className={`mb-8 flex flex-col sm:mb-12 ${alignClasses}`}>
         {badge && (
           <div
             className="mb-4 inline-flex items-center rounded-full px-3 py-1"
@@ -74,13 +74,13 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
           </div>
         )}
         <h2
-          className="mb-6 font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+          className="mb-3 font-heading text-[1.45rem] font-bold leading-snug sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl"
           style={{ color: 'var(--text-primary)' }}
         >
           {title}
         </h2>
         {subtitle && (
-          <p className="max-w-2xl text-lg" style={{ color: 'var(--text-muted)' }}>
+          <p className="max-w-2xl text-sm sm:text-lg" style={{ color: 'var(--text-muted)' }}>
             {subtitle}
           </p>
         )}
@@ -90,7 +90,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
 
   return (
     <motion.div
-      className={`mb-12 flex flex-col ${alignClasses}`}
+      className={`mb-8 flex flex-col sm:mb-12 ${alignClasses}`}
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
@@ -119,7 +119,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       <RevealText
         text={title}
         as="h2"
-        className="mb-6 font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl"
+        className="mb-3 font-heading text-[1.45rem] font-bold leading-snug sm:mb-6 sm:text-4xl md:text-5xl lg:text-6xl"
         style={{ color: 'var(--text-primary)' }}
         delay={0.05}
       />
@@ -127,7 +127,7 @@ const SectionHeading: React.FC<SectionHeadingProps> = ({
       {subtitle && (
         <motion.p
           variants={itemVariants}
-          className="max-w-2xl text-lg"
+          className="max-w-2xl text-sm sm:text-lg"
           style={{ color: 'var(--text-muted)' }}
         >
           {subtitle}

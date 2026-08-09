@@ -17,7 +17,7 @@ export const Venue: React.FC = () => {
             className="space-y-8"
           >
             <div className="backdrop-blur-xl border rounded-3xl p-8 md:p-10" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-              <h3 className="text-3xl font-space font-bold mb-6" style={{ color: 'var(--text-primary)' }}>United Incubation Hub</h3>
+              <h3 className="text-xl sm:text-3xl font-space font-bold mb-4 sm:mb-6" style={{ color: 'var(--text-primary)' }}>United Incubation Hub</h3>
               
               <div className="space-y-6 mb-10">
                 <div className="flex items-start space-x-4">

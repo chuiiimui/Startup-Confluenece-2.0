@@ -123,7 +123,7 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
               </motion.div>
             </div>
             <h3
-              className="text-xl font-heading font-semibold mb-3 leading-tight"
+              className="text-base font-heading font-semibold mb-2 leading-tight sm:text-xl sm:mb-3"
               style={{ color: 'var(--text-primary)' }}
             >
               {event.title}
@@ -204,7 +204,7 @@ export default function ScheduleEventCard({ event, index, isLast }: ScheduleEven
           <div className="relative z-10">
             <div className="flex justify-between items-start mb-2 gap-4">
               <motion.h3
-                className="text-xl font-heading font-semibold"
+                className="text-base font-heading font-semibold sm:text-xl"
                 style={{ color: 'var(--text-primary)' }}
                 animate={{ scale: isHovered ? 1.02 : 1, originX: 0 }}
                 transition={{ duration: 0.4 }}

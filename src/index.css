@@ -537,18 +537,70 @@ html,
 body {
   overscroll-behavior-y: none;
   -webkit-overflow-scrolling: touch;
+  /* Do NOT set overflow-x on html/body — it breaks position:sticky */
+  max-width: 100%;
+}
+
+#root {
+  max-width: 100%;
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+  height: auto;
 }
 
 @media (pointer: coarse), (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
   html,
   body {
-    touch-action: pan-y;
+    /* Allow nested horizontal scrollers to receive pan-x */
+    touch-action: manipulation;
   }
 
   /* Cheaper glass on mobile — heavy blur kills scroll FPS */
   :root {
     --glass-blur: 0px;
   }
+
+  /* Comfortable tap targets */
+  button,
+  a,
+  [role='button'] {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Avoid iOS input zoom jump on forms (keep 16px) */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  section {
+    overflow-x: clip;
+  }
+
+  #experience,
+  #experience section {
+    overflow: visible !important;
+  }
+}
+
+.experience-hscroll {
+  touch-action: pan-x !important;
+  scrollbar-width: none;
+}
+
+.experience-hscroll::-webkit-scrollbar {
+  display: none;
 }
 
 /* Low-end / Android / mobile: strip compositor-expensive effects */
@@ -591,8 +643,11 @@ html[data-mobile='true'] main > section {
 }
 
 html[data-perf='low'] main > section:first-of-type,
-html[data-mobile='true'] main > section:first-of-type {
-  content-visibility: visible;
+html[data-mobile='true'] main > section:first-of-type,
+#experience,
+#experience section {
+  content-visibility: visible !important;
+  contain: none !important;
 }
 
 @media (pointer: coarse), (max-width: 768px) {

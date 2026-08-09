@@ -4,12 +4,12 @@ import { Calendar, MapPin, ArrowRight } from 'lucide-react';
 import GridPattern from '../components/GridPattern';
 import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
-import { useRegistration } from '../context/RegistrationContext';
+import { useNavigate } from 'react-router-dom';
 
 const appleEase = [0.22, 1, 0.36, 1] as const;
 
 const Hero = () => {
-  const { openModal } = useRegistration();
+  const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -72,7 +72,7 @@ const Hero = () => {
   return (
     <section
       id="home"
-      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-8 pt-24 lg:pt-28"
+      className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-24 pt-24 sm:pb-8 lg:pt-28"
     >
       <GridPattern parallax={true} />
 
@@ -105,7 +105,7 @@ const Hero = () => {
         }}
       />
 
-      <div className="container relative z-20 mx-auto flex h-full flex-col items-center justify-center px-6 text-center lg:px-12">
+      <div className="container relative z-20 mx-auto flex h-full w-full max-w-full flex-col items-center justify-center px-4 text-center sm:px-6 lg:px-12">
         <motion.div
           className="flex max-w-[1200px] flex-col items-center"
           variants={containerVariants}
@@ -120,7 +120,7 @@ const Hero = () => {
               <motion.div
                 variants={wordVariants}
                 className="hero-glow-startup"
-                style={{ fontSize: 'clamp(2rem, 6.5vw, 6.5rem)' }}
+                style={{ fontSize: 'clamp(1.55rem, 7.2vw, 6.5rem)' }}
               >
                 STARTUP
               </motion.div>
@@ -129,14 +129,14 @@ const Hero = () => {
               <motion.div
                 variants={wordVariants}
                 className="hero-glow-confluence"
-                style={{ fontSize: 'clamp(2.5rem, 8vw, 8.5rem)' }}
+                style={{ fontSize: 'clamp(1.85rem, 8.5vw, 8.5rem)' }}
               >
                 CONFLUENCE
               </motion.div>
               <motion.div
                 variants={scaleFadeVariants}
                 className="hero-glow-version"
-                style={{ fontSize: 'clamp(1.8rem, 6vw, 6rem)' }}
+                style={{ fontSize: 'clamp(1.35rem, 6.5vw, 6rem)' }}
               >
                 2.0
               </motion.div>
@@ -145,22 +145,22 @@ const Hero = () => {
 
           <motion.div
             variants={wordVariants}
-            className="mt-2 flex flex-col flex-wrap items-center justify-center gap-2 md:mt-4 md:flex-row md:gap-4"
+            className="mt-2 flex flex-col flex-wrap items-center justify-center gap-1.5 md:mt-4 md:flex-row md:gap-4"
           >
             <p
-              className="text-sm font-medium tracking-tight md:text-2xl"
+              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
               style={{ color: 'var(--text-secondary)' }}
             >
               Fostering Collaboration.
             </p>
             <p
-              className="text-sm font-medium tracking-tight md:text-2xl"
+              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
               style={{ color: 'var(--text-secondary)' }}
             >
               Driving Innovation.
             </p>
             <p
-              className="text-sm font-medium tracking-tight md:text-2xl"
+              className="text-xs font-medium tracking-tight sm:text-sm md:text-2xl"
               style={{ color: 'var(--accent-link)' }}
             >
               Fueling Growth.
@@ -222,17 +222,17 @@ const Hero = () => {
                             'linear-gradient(180deg, rgba(255,255,255,0.28), transparent)',
                         }}
                       />
-                      <span className="clay-timer-value relative z-10 font-heading text-2xl font-extrabold tabular-nums tracking-tight md:text-4xl">
+                      <span className="clay-timer-value relative z-10 font-heading text-xl font-extrabold tabular-nums tracking-tight sm:text-2xl md:text-4xl">
                         {String(item.value).padStart(2, '0')}
                       </span>
                     </div>
-                    <span className="clay-timer-label mt-2 text-[10px] font-bold uppercase tracking-[0.18em] md:text-xs">
+                    <span className="clay-timer-label mt-1.5 text-[9px] font-bold uppercase tracking-[0.14em] md:mt-2 md:text-xs">
                       {item.label}
                     </span>
                   </motion.div>
                   {index < 3 && (
                     <span
-                      className="mb-6 select-none font-heading text-xl font-bold md:mb-7 md:text-3xl"
+                      className="mb-6 select-none font-heading text-lg font-bold md:mb-7 md:text-3xl"
                       style={{ color: 'var(--badge-text)' }}
                       aria-hidden
                     >
@@ -250,7 +250,7 @@ const Hero = () => {
           >
             <Button
               size="lg"
-              onClick={() => openModal()}
+              onClick={() => navigate('/register')}
               icon={<ArrowRight className="h-5 w-5" />}
               className="w-full sm:w-auto"
             >

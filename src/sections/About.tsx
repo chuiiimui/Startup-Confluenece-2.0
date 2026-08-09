@@ -128,7 +128,7 @@ export default function About() {
                     <AnimatedCounter 
                       value={stat.value} 
                       prefix={stat.prefix}
-                      className="font-heading text-4xl font-extrabold"
+                      className="font-heading text-2xl font-extrabold sm:text-4xl"
                       style={{ color: 'var(--text-primary)' }}
                     />
                     <span className="font-heading font-extrabold text-2xl text-[#FF7A00]">{stat.suffix}</span>

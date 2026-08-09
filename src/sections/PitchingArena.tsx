@@ -102,7 +102,7 @@ export default function PitchingArena() {
                           >
                             <StepIcon className="w-6 h-6 text-accent" />
                           </div>
-                          <h4 className="text-2xl font-heading font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
+                          <h4 className="text-lg md:text-2xl font-heading font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
                             {step.title}
                           </h4>
                         </div>
@@ -135,7 +135,7 @@ export default function PitchingArena() {
         <div className="mt-40 max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-accent text-sm font-bold tracking-wider uppercase mb-2 block">Rewards</span>
-            <h3 className="text-3xl md:text-4xl font-heading font-bold" style={{ color: 'var(--text-primary)' }}>Prizes & Support</h3>
+            <h3 className="text-xl md:text-4xl font-heading font-bold" style={{ color: 'var(--text-primary)' }}>Prizes & Support</h3>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -118,7 +118,7 @@ export default function EventHighlights() {
                   </div>
 
                   <h3 
-                    className="font-heading font-bold text-2xl md:text-3xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
+                    className="font-heading font-bold text-lg md:text-3xl mb-2 tracking-tight transition-transform duration-500 group-hover:-translate-y-1" 
                     style={{ 
                       color: '#FFFFFF',
                       textShadow: '0 4px 20px rgba(0,0,0,0.35)'

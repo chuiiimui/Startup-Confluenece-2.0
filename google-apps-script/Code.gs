@@ -1,27 +1,29 @@
 /**
  * Startup Confluence 2.0 — Registration Web App
  *
- * RECOMMENDED SETUP (avoids permission errors):
+ * Accepts POST JSON (Content-Type: text/plain is OK) with:
+ *   registrationType: "startup" | "sponsor" | "partner" | "speaker" | "delegate"
+ *
+ * Frontend sources:
+ *   - RegistrationModal.tsx  → startup, speaker, delegate
+ *   - PartnerModal.tsx       → partner, sponsor
+ *
+ * RECOMMENDED SETUP:
  * 1. Create a NEW Google Sheet under YOUR Google account
- * 2. Rename tabs to: Startup, Sponsor, Partner, Speaker, Delegate
- * 3. Copy the Sheet ID from the URL:
- *    https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit
+ * 2. Create tabs named exactly: Startup, Sponsor, Partner, Speaker, Delegate
+ * 3. Copy the Sheet ID from the URL (ID only, not full URL)
  * 4. Paste that ID into SPREADSHEET_ID below
- * 5. Go to https://script.google.com → New project (under YOUR account)
- * 6. Paste this file into Code.gs → Save
- * 7. Run doGet once → Allow permissions
- * 8. Deploy → New deployment → Web app
+ * 5. script.google.com → New project → paste this file → Save
+ * 6. Run doGet once → Allow permissions (Sheets, Gmail, Drive)
+ * 7. Deploy → New deployment → Web app
  *    - Execute as: Me
  *    - Who has access: Anyone
- * 9. Put the /exec URL into VITE_GOOGLE_SCRIPT_URL
+ * 8. Put the /exec URL into VITE_GOOGLE_SCRIPT_URL (or the frontend fallback)
  *
- * If SPREADSHEET_ID is empty, the script uses the Sheet it is bound to
- * (Extensions → Apps Script from inside that Sheet).
+ * If SPREADSHEET_ID is empty, the script uses the Sheet it is bound to.
  */
 
-// Paste ONLY the Sheet ID (not the full URL), e.g.:
-// 11mb5ve-0zL5jlt4KhEjHgnNdlH9tlfULf7u7Z1o8Qmw
-// If you paste a full docs.google.com URL, it will be extracted automatically.
+// Paste ONLY the Sheet ID (not the full URL).
 var SPREADSHEET_ID = '11mb5ve-0zL5jlt4KhEjHgnNdlH9tlfULf7u7Z1o8Qmw';
 
 var SHEET_NAMES = {
@@ -35,13 +37,35 @@ var SHEET_NAMES = {
 var CONTACT_EMAIL = 'startupconfluence@ugi.edu.in';
 
 function doGet() {
-  return ContentService.createTextOutput(
-    JSON.stringify({
-      ok: true,
-      service: 'Startup Confluence 2.0 Registration',
-      message: 'Web app is live. Use POST to submit forms.',
-    })
-  ).setMimeType(ContentService.MimeType.JSON);
+  var payload = {
+    ok: true,
+    service: 'Startup Confluence 2.0 Registration',
+    message: 'Web app is live. Use POST to submit forms.',
+    expectedTabs: ['Startup', 'Sponsor', 'Partner', 'Speaker', 'Delegate'],
+  };
+
+  try {
+    var ss = getSpreadsheet_();
+    payload.spreadsheetId = ss.getId();
+    payload.tabs = ss.getSheets().map(function (sheet) {
+      return sheet.getName();
+    });
+    payload.missingTabs = payload.expectedTabs.filter(function (name) {
+      return payload.tabs.indexOf(name) === -1;
+    });
+    if (payload.missingTabs.length) {
+      payload.ok = false;
+      payload.error =
+        'Missing sheet tab(s): ' +
+        payload.missingTabs.join(', ') +
+        '. Create tabs named Startup, Sponsor, Partner, Speaker, and Delegate.';
+    }
+  } catch (err) {
+    payload.ok = false;
+    payload.error = String(err);
+  }
+
+  return json_(payload);
 }
 
 function doPost(e) {
@@ -51,7 +75,9 @@ function doPost(e) {
     }
 
     var data = JSON.parse(e.postData.contents);
-    var type = String(data.registrationType || '').toLowerCase().trim();
+    var type = String(data.registrationType || '')
+      .toLowerCase()
+      .trim();
 
     if (!SHEET_NAMES[type]) {
       return json_({
@@ -101,10 +127,8 @@ function json_(obj) {
 function normalizeSpreadsheetId_(raw) {
   var value = String(raw || '').trim();
   if (!value) return '';
-  // Allow pasting a full Sheets URL by mistake
   var match = value.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
   if (match && match[1]) return match[1];
-  // Strip query/hash if somehow appended
   return value.split('?')[0].split('#')[0];
 }
 
@@ -144,7 +168,6 @@ function ensureHeaders_(sheet, headers) {
     return;
   }
 
-  // Upgrade existing header row if new columns were added
   var lastCol = Math.max(sheet.getLastColumn(), 1);
   var existing = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
   while (existing.length && existing[existing.length - 1] === '') {
@@ -155,6 +178,22 @@ function ensureHeaders_(sheet, headers) {
       sheet.getRange(1, i + 1).setValue(headers[i]).setFontWeight('bold');
     }
   }
+}
+
+function resolveSpeakerTopic_(data) {
+  var topic = String(data.speakerTopic || '').trim();
+  if (topic && topic.toLowerCase() !== 'other') return topic;
+  var custom = String(data.customTopic || '').trim();
+  if (custom) return custom;
+  return String(data.topicProposal || '').trim();
+}
+
+function formatSponsorAmount_(data) {
+  if (data.expectedContribution) return String(data.expectedContribution);
+  if (data.sponsorshipAmount === 0 || data.sponsorshipAmount) {
+    return String(data.sponsorshipAmount);
+  }
+  return '';
 }
 
 function appendToSheet_(type, data, emailMeta) {
@@ -243,7 +282,7 @@ function appendToSheet_(type, data, emailMeta) {
       data.website || '',
       data.sponsorshipCategory || data.sponsorshipType || '',
       data.companyDescription || '',
-      data.expectedContribution || '',
+      formatSponsorAmount_(data),
       data.additionalNotes || '',
       emailSent,
       emailQuotaLeft,
@@ -288,7 +327,9 @@ function appendToSheet_(type, data, emailMeta) {
     var eventsValue = data.events || '';
     if (Object.prototype.toString.call(data.eventsList) === '[object Array]') {
       eventsValue = data.eventsList.join(', ');
-    } else if (Object.prototype.toString.call(data.events) === '[object Array]') {
+    } else if (
+      Object.prototype.toString.call(data.events) === '[object Array]'
+    ) {
       eventsValue = data.events.join(', ');
     }
 
@@ -317,6 +358,7 @@ function appendToSheet_(type, data, emailMeta) {
   }
 
   // speaker
+  var speakerTopic = resolveSpeakerTopic_(data);
   var speakerHeaders = [
     'Timestamp',
     'Full Name',
@@ -346,13 +388,13 @@ function appendToSheet_(type, data, emailMeta) {
     data.linkedIn || data.linkedin || '',
     data.speakerBio || '',
     data.areaOfExpertise || data.expertise || '',
-    data.topicProposal || data.speakerTopic || '',
+    speakerTopic || data.topicProposal || '',
     data.previousSpeakingExperience || data.previousExperience || '',
     data.personalWebsite || '',
     emailSent,
     emailQuotaLeft,
     data.speakerName || data.fullName || '',
-    data.speakerTopic || data.topicProposal || '',
+    speakerTopic,
   ]);
 }
 
@@ -464,7 +506,9 @@ function buildFormEmailContent_(type, data) {
         'Stage: ' + (data.startupStage || '—'),
         'Industry: ' + (data.industry || '—'),
         'Team size: ' + (data.teamSize || '—'),
-        'Stall booking: ' + (data.stallRequired || data.needStall || '—') + ' (FCFS)',
+        'Stall booking: ' +
+          (data.stallRequired || data.needStall || '—') +
+          ' (FCFS)',
         'Accommodation: ' + (data.accommodationRequired || '—'),
         data.accommodationRequired === 'Yes'
           ? 'Accommodation details: ' + (data.accommodationDetails || '—')
@@ -499,9 +543,9 @@ function buildFormEmailContent_(type, data) {
         'Contact person: ' + (data.contactPerson || '—'),
         'Email: ' + (data.email || '—'),
         'Phone: ' + (data.phone || '—'),
-        'Sponsorship type: ' + (data.sponsorshipType || data.sponsorshipCategory || '—'),
-        'Proposed amount: ' +
-          (data.expectedContribution || data.sponsorshipAmount || '—'),
+        'Sponsorship type: ' +
+          (data.sponsorshipType || data.sponsorshipCategory || '—'),
+        'Proposed amount: ' + (formatSponsorAmount_(data) || '—'),
         data.companyDescription
           ? 'About organization: ' + data.companyDescription
           : '',
@@ -549,12 +593,15 @@ function buildFormEmailContent_(type, data) {
     var eventsText = data.events || '—';
     if (Object.prototype.toString.call(data.eventsList) === '[object Array]') {
       eventsText = data.eventsList.join(', ');
-    } else if (Object.prototype.toString.call(data.events) === '[object Array]') {
+    } else if (
+      Object.prototype.toString.call(data.events) === '[object Array]'
+    ) {
       eventsText = data.events.join(', ');
     }
 
     return {
-      subject: 'Delegate / Visitor registration received — Startup Confluence 2.0',
+      subject:
+        'Delegate / Visitor registration received — Startup Confluence 2.0',
       greetingName: data.fullName || 'Guest',
       intro:
         'Thank you for registering as a Delegate / Visitor for Startup Confluence 2.0. We have received your attendance registration with the details below.',
@@ -577,6 +624,7 @@ function buildFormEmailContent_(type, data) {
   }
 
   // speaker
+  var speakerTopic = resolveSpeakerTopic_(data);
   return {
     subject: 'Speaker application received — Startup Confluence 2.0',
     greetingName: data.speakerName || data.fullName || 'Speaker',
@@ -589,7 +637,7 @@ function buildFormEmailContent_(type, data) {
       'Designation: ' + (data.designation || '—'),
       'Email: ' + (data.email || '—'),
       'Phone: ' + (data.phone || '—'),
-      'Proposed topic: ' + (data.speakerTopic || data.topicProposal || '—'),
+      'Proposed topic: ' + (speakerTopic || '—'),
       data.expertise || data.areaOfExpertise
         ? 'Expertise: ' + (data.expertise || data.areaOfExpertise)
         : '',
@@ -644,7 +692,6 @@ function savePitchDeck_(data) {
     }
     return file.getUrl();
   } catch (err) {
-    // If Drive upload fails, keep any provided URL so the row is still useful
     return existingUrl || 'Upload failed: ' + String(err);
   }
 }

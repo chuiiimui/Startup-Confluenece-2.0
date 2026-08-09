@@ -67,10 +67,10 @@ export default function Speakers() {
                   <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent font-bold text-sm tracking-widest uppercase mb-6 shadow-[0_0_15px_rgba(255,122,0,0.2)]">
                     Chief Guest
                   </span>
-                  <h3 className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-4" style={{ color: 'var(--text-primary)' }}>
+                  <h3 className="text-2xl md:text-5xl lg:text-6xl font-heading font-extrabold mb-3 md:mb-4" style={{ color: 'var(--text-primary)' }}>
                     To Be <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-[#FF9F43]">Revealed</span>
                   </h3>
-                  <p className="text-lg md:text-xl leading-relaxed mb-8 max-w-xl" style={{ color: 'var(--text-secondary)' }}>
+                  <p className="text-sm md:text-xl leading-relaxed mb-6 md:mb-8 max-w-xl" style={{ color: 'var(--text-secondary)' }}>
                     We're bringing in a visionary leader who has fundamentally reshaped the tech landscape. Stay tuned for an announcement that will elevate Startup Confluence 2.0 to new heights.
                   </p>
                   <button className="px-8 py-3 rounded-full border transition-colors duration-300 font-semibold hover:bg-[color:var(--surface-hover)]" style={{ borderColor: 'var(--border)', color: 'var(--text-primary)' }}>

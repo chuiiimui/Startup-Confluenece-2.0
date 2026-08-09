@@ -1,14 +1,18 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type RegistrationType = 'startup' | 'speaker' | 'delegate' | null;
+export type PartnerMode = 'partner' | 'sponsor';
 
 interface RegistrationContextValue {
   isOpen: boolean;
   isPartnerOpen: boolean;
   registrationType: RegistrationType;
+  partnerMode: PartnerMode;
+  mobileDockVisible: boolean;
+  setMobileDockVisible: (visible: boolean) => void;
   openModal: (type?: RegistrationType) => void;
   closeModal: () => void;
-  openPartnerModal: () => void;
+  openPartnerModal: (mode?: PartnerMode) => void;
   closePartnerModal: () => void;
 }
 
@@ -18,6 +22,8 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const [isOpen, setIsOpen] = useState(false);
   const [isPartnerOpen, setIsPartnerOpen] = useState(false);
   const [registrationType, setRegistrationType] = useState<RegistrationType>(null);
+  const [partnerMode, setPartnerMode] = useState<PartnerMode>('partner');
+  const [mobileDockVisible, setMobileDockVisible] = useState(false);
 
   const openModal = useCallback((type?: RegistrationType) => {
     setIsPartnerOpen(false);
@@ -29,8 +35,9 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsOpen(false);
   }, []);
 
-  const openPartnerModal = useCallback(() => {
+  const openPartnerModal = useCallback((mode: PartnerMode = 'partner') => {
     setIsOpen(false);
+    setPartnerMode(mode);
     setIsPartnerOpen(true);
   }, []);
 
@@ -44,6 +51,9 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
         isOpen,
         isPartnerOpen,
         registrationType,
+        partnerMode,
+        mobileDockVisible,
+        setMobileDockVisible,
         openModal,
         closeModal,
         openPartnerModal,
