@@ -12,12 +12,12 @@ export default function CursorTrail() {
   const pointsRef = useRef<Point[]>([]);
   const rafRef = useRef(0);
   const { isLight } = useTheme();
-  const strokeRef = useRef('#ff7a00');
-  const glowRef = useRef('rgba(255,122,0,0.9)');
+  const strokeRef = useRef('#BF00FF');
+  const glowRef = useRef('rgba(191,0,255,0.95)');
 
   useEffect(() => {
-    strokeRef.current = isLight ? '#E57734' : '#ff7a00';
-    glowRef.current = isLight ? 'rgba(229,119,52,0.85)' : 'rgba(255,122,0,0.9)';
+    strokeRef.current = isLight ? '#A020F0' : '#BF00FF';
+    glowRef.current = isLight ? 'rgba(160,32,240,0.9)' : 'rgba(191,0,255,0.95)';
   }, [isLight]);
 
   useEffect(() => {

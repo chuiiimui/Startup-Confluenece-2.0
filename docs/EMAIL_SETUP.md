@@ -76,7 +76,7 @@ Option A — env file (recommended):
 1. Create `.env` in the project root:
 
 ```env
-VITE_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+NEXT_PUBLIC_GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 ```
 
 2. Restart `npm run dev`

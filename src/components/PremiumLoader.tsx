@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import logo from '../assets/logo.png';
+import { assetSrc } from '../lib/utils';
 
 type PremiumLoaderProps = {
   /** Fires when the intro sequence ends — page should already be underneath */
@@ -180,7 +181,7 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
                     }}
                   >
                     <img
-                      src={logo}
+                      src={assetSrc(logo)}
                       alt="UIH Logo"
                       className="brand-logo h-12 w-12 object-contain md:h-24 md:w-24"
                     />

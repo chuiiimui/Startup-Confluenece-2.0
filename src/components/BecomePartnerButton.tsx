@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Handshake } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { useRegistration } from '../context/RegistrationContext';
 
 /**
@@ -11,14 +11,14 @@ import { useRegistration } from '../context/RegistrationContext';
  * Hidden on register/partner pages and when the footer is in view.
  */
 export default function BecomePartnerButton() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   const { isOpen, isPartnerOpen, mobileDockVisible } = useRegistration();
   const [isDesktop, setIsDesktop] = useState(false);
   const [overFooter, setOverFooter] = useState(false);
-  const onPartnerPage = location.pathname.startsWith('/partner');
-  const onRegisterPage = location.pathname.startsWith('/register');
-  const isHome = location.pathname === '/';
+  const onPartnerPage = pathname.startsWith('/partner');
+  const onRegisterPage = pathname.startsWith('/register');
+  const isHome = pathname === '/';
   const visible =
     !isOpen && !isPartnerOpen && !onPartnerPage && !onRegisterPage && !overFooter;
 
@@ -73,7 +73,7 @@ export default function BecomePartnerButton() {
       {visible && (
         <motion.button
           type="button"
-          onClick={() => navigate('/partner')}
+          onClick={() => router.push('/partner')}
           className="fixed left-3 z-[65] flex max-w-[calc(100vw-1.5rem)] items-center gap-2 rounded-full bg-accent px-3.5 py-3 text-sm font-semibold text-white shadow-lg shadow-[0_12px_28px_rgba(255,122,0,0.35)] transition-[bottom] duration-300 ease-out md:left-6 md:px-5 md:py-3.5"
           style={{ bottom }}
           initial={{ opacity: 0, y: 24 }}

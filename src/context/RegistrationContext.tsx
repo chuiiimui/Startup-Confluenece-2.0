@@ -1,3 +1,5 @@
+'use client';
+
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type RegistrationType = 'startup' | 'speaker' | 'delegate' | null;

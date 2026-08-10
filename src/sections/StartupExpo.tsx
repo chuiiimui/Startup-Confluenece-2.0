@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Cpu, HeartPulse, Leaf, ShoppingCart, Zap, Globe, Coins, Layers, HardHat, BookOpen,
@@ -26,7 +26,7 @@ const journeySteps = [
 ];
 
 export default function StartupExpo() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [activeCategoryId, setActiveCategoryId] = useState(expoCategories[0]?.id || 'cat-1');
   const [activeStepId, setActiveStepId] = useState(1);
   const activeStep = journeySteps.find(s => s.id === activeStepId) || journeySteps[0];
@@ -134,7 +134,7 @@ export default function StartupExpo() {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
               />
               
-              {journeySteps.map((step, idx) => {
+              {journeySteps.map((step) => {
                 const isActive = step.id === activeStepId;
                 const isPast = step.id < activeStepId;
                 
@@ -238,7 +238,7 @@ export default function StartupExpo() {
         <div className="mb-32">
           <SectionHeading badge="Benefits" title="Why Exhibit?" />
           <div className="grid grid-cols-1 md:grid-cols-3 auto-rows-[180px] gap-4 md:gap-6 mt-16 max-w-6xl mx-auto">
-            {expoBenefits.map((benefit, idx) => {
+            {expoBenefits.map((benefit) => {
               const Icon = iconMap[benefit.icon] || CheckCircle2;
               return (
                 <motion.div
@@ -293,7 +293,7 @@ export default function StartupExpo() {
             </p>
             <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
               <button
-                onClick={() => navigate('/register?type=startup')}
+                onClick={() => router.push('/register?type=startup')}
                 className="min-h-12 w-full rounded-full bg-white px-8 py-3.5 text-base font-bold shadow-xl transition-transform duration-300 hover:scale-105 sm:w-auto md:text-lg"
                 style={{ color: 'var(--brand-orange)' }}
               >

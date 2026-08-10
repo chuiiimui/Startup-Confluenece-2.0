@@ -44,9 +44,9 @@ function readFileAsBase64(file: File): Promise<string> {
   });
 }
 
-// Prefer VITE_GOOGLE_SCRIPT_URL from .env — see docs/EMAIL_SETUP.md
+// Prefer NEXT_PUBLIC_GOOGLE_SCRIPT_URL from .env — see docs/EMAIL_SETUP.md
 const GOOGLE_SCRIPT_URL =
-  (import.meta.env.VITE_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
+  (process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
   'https://script.google.com/macros/s/AKfycbx3KEix1mtaKzco5pj-8ut-VjChYhanuxUt_JPxHPbHPq0d6VZBT5PvhVm7o6qjrqAZ2g/exec';
 
 type RegistrationType = 'startup' | 'speaker' | 'delegate';
@@ -151,7 +151,7 @@ const categories: {
 const inputClass = 'form-glass-input font-body';
 const inputErrorClass = 'form-glass-input form-glass-input-error font-body';
 const labelClass = 'form-glass-label font-body';
-const errorTextClass = 'text-xs text-red-300 mt-1 font-body';
+const errorTextClass = 'text-xs mt-1 font-body text-[color:var(--badge-text)]';
 
 function scrollFormToFirstError() {
   requestAnimationFrame(() => {
@@ -1231,7 +1231,7 @@ export const RegistrationModal: React.FC = () => {
 
       if (!GOOGLE_SCRIPT_URL) {
         setSubmitError(
-          'Registration endpoint is not configured. Set VITE_GOOGLE_SCRIPT_URL.'
+          'Registration endpoint is not configured. Set NEXT_PUBLIC_GOOGLE_SCRIPT_URL.'
         );
         setIsSubmitting(false);
         return;

@@ -1,10 +1,8 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 
-export const Footer: React.FC = () => {
-  const navigate = useNavigate();
+export const Footer = () => {
+  const router = useRouter();
 
   const quickLinks = [
     { name: 'Home', href: '/' },
@@ -18,7 +16,7 @@ export const Footer: React.FC = () => {
 
   const handleLink = (href: string) => {
     if (href.startsWith('/#') || href === '/') {
-      navigate(href === '/' ? '/' : href);
+      router.push(href === '/' ? '/' : href);
       if (href.startsWith('/#')) {
         const id = href.split('#')[1];
         window.setTimeout(() => {
@@ -27,7 +25,7 @@ export const Footer: React.FC = () => {
       }
       return;
     }
-    navigate(href);
+    router.push(href);
   };
 
   return (
@@ -206,9 +204,14 @@ export const Footer: React.FC = () => {
                 Ayush Yadav
               </a>
               {' '}&{' '}
-              <span className="hover:text-accent font-medium transition-colors">
+              <a
+                href="https://www.instagram.com/harsh_srivastava_1010/?hl=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-accent font-medium transition-colors"
+              >
                 Harsh Srivastava
-              </span>
+              </a>
             </p>
           </div>
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Loader2, CheckCircle2, Handshake, Banknote } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -6,7 +6,7 @@ import { useRegistration, type PartnerMode } from '../context/RegistrationContex
 import { getLenisInstance } from '../lib/utils';
 
 const GOOGLE_SCRIPT_URL =
-  (import.meta.env.VITE_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
+  (process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
   'https://script.google.com/macros/s/AKfycbx3KEix1mtaKzco5pj-8ut-VjChYhanuxUt_JPxHPbHPq0d6VZBT5PvhVm7o6qjrqAZ2g/exec';
 
 const PARTNER_CATEGORIES = [
@@ -50,7 +50,7 @@ interface SponsorFormData {
 const inputClass = 'form-glass-input font-body';
 const inputErrorClass = 'form-glass-input form-glass-input-error font-body';
 const labelClass = 'form-glass-label font-body';
-const errorTextClass = 'text-xs text-red-300 mt-1 font-body';
+const errorTextClass = 'text-xs mt-1 font-body text-[color:var(--badge-text)]';
 
 function formatINR(amount: number): string {
   return new Intl.NumberFormat('en-IN', {
@@ -652,7 +652,7 @@ export default function PartnerModal() {
     setSubmitError(null);
 
     if (!GOOGLE_SCRIPT_URL) {
-      setSubmitError('Partner endpoint is not configured. Set VITE_GOOGLE_SCRIPT_URL.');
+      setSubmitError('Partner endpoint is not configured. Set NEXT_PUBLIC_GOOGLE_SCRIPT_URL.');
       setIsSubmitting(false);
       return;
     }

@@ -26,3 +26,8 @@ src/AppScript/
 *.njsproj
 *.sln
 *.sw?
+
+# Next.js
+.next/
+out/
+

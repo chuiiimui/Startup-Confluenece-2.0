@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { FaLinkedin, FaInstagram, FaFacebook } from 'react-icons/fa';
 import PillCta from '../components/PillCta';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { scrollToSection } from '../lib/utils';
 import { SOCIAL_LINKS } from '../constants';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 const Hero = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -150,7 +150,7 @@ const Hero = () => {
           <PillCta
             tone="gradient"
             size="lg"
-            onClick={() => navigate('/register')}
+            onClick={() => router.push('/register')}
             icon={<ArrowRight className="h-6 w-6" />}
           >
             Register

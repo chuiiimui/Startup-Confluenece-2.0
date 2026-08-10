@@ -7,7 +7,6 @@ import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
 
 const Schedule = () => {
   const [activeDay, setActiveDay] = useState(schedule[0]?.id || 1);
-  const [expandedItem, setExpandedItem] = useState<string | null>(null);
 
   const currentDayData = schedule.find((day) => day.id === activeDay);
 

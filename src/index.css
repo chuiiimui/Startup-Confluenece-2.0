@@ -162,8 +162,8 @@
   --bg-stripe-wash: repeating-linear-gradient(-28deg, rgba(255,122,0,0.55) 0 1px, transparent 1px 28px), repeating-linear-gradient(28deg, rgba(168,85,247,0.45) 0 1px, transparent 1px 36px);
   --bg-veil: radial-gradient(ellipse at center, transparent 48%, rgba(5,5,8,0.55) 100%);
   --bg-hex-stroke: %23A855F7;
-  --cursor-trail: #ff7a00;
-  --cursor-trail-glow: rgba(255,122,0,0.9);
+  --cursor-trail: #BF00FF;
+  --cursor-trail-glow: rgba(191,0,255,0.95);
   --bg-curve-1: rgba(168, 85, 247, 0.45);
   --bg-curve-2: rgba(255, 122, 0, 0.42);
   --bg-curve-3: rgba(34, 211, 238, 0.4);
@@ -234,7 +234,7 @@
   --scrollbar-track: #F0E2C4;
   --scrollbar-thumb: rgba(229, 119, 52, 0.45);
   --scrollbar-thumb-hover: rgba(1, 117, 122, 0.55);
-  --overlay-bg: rgba(248, 235, 207, 0.9);
+  --overlay-bg: rgba(42, 26, 21, 0.42);
   --heading-gradient-from: #3E2922;
   --heading-gradient-via: #E57734;
   --heading-gradient-to: #01757A;
@@ -290,17 +290,17 @@
   --timer-cell-hover-to: rgba(1, 117, 122, 0.12);
   --timer-value: #3E2922;
   --timer-label: #E57734;
-  --form-panel-from: rgba(255, 252, 244, 0.95);
-  --form-panel-mid: rgba(246, 192, 166, 0.4);
-  --form-panel-to: rgba(229, 119, 52, 0.1);
-  --form-input-bg: #FFFCF4;
+  --form-panel-from: #FFFCF6;
+  --form-panel-mid: #F8E8D2;
+  --form-panel-to: #F3D7B8;
+  --form-input-bg: #FFFFFF;
   --form-input-bg-focus: #FFFFFF;
-  --form-input-text: #2A1A15;
-  --form-input-placeholder: rgba(62, 41, 34, 0.55);
-  --form-label: #2A1A15;
-  --form-option-bg: rgba(246, 192, 166, 0.35);
-  --form-option-hover: rgba(229, 119, 52, 0.16);
-  --form-option-selected: rgba(1, 117, 122, 0.16);
+  --form-input-text: #1F1410;
+  --form-input-placeholder: rgba(42, 26, 21, 0.72);
+  --form-label: #1F1410;
+  --form-option-bg: rgba(255, 255, 255, 0.72);
+  --form-option-hover: rgba(229, 119, 52, 0.14);
+  --form-option-selected: rgba(1, 117, 122, 0.18);
   --nav-bg: linear-gradient(135deg, rgba(255,252,244,0.72) 0%, rgba(232,244,242,0.55) 100%);
   --nav-bg-scrolled: linear-gradient(135deg, rgba(255,252,244,0.96) 0%, rgba(248,235,207,0.94) 55%, rgba(214,236,236,0.92) 100%);
   --nav-border-top: rgba(6, 182, 212, 0.18);
@@ -348,8 +348,8 @@
   --bg-stripe-wash: repeating-linear-gradient(-28deg, rgba(6,182,212,0.5) 0 1px, transparent 1px 28px), repeating-linear-gradient(28deg, rgba(6,60,72,0.4) 0 1px, transparent 1px 36px);
   --bg-veil: radial-gradient(ellipse at center, transparent 48%, rgba(232,242,240,0.55) 78%, rgba(248,235,207,0.78) 100%);
   --bg-hex-stroke: %2306B6D4;
-  --cursor-trail: #E57734;
-  --cursor-trail-glow: rgba(229,119,52,0.85);
+  --cursor-trail: #A020F0;
+  --cursor-trail-glow: rgba(160,32,240,0.9);
   --bg-curve-1: rgba(6, 182, 212, 0.62);
   --bg-curve-2: rgba(6, 60, 72, 0.55);
   --bg-curve-3: rgba(8, 145, 178, 0.5);
@@ -584,6 +584,31 @@
     z-index: 1;
   }
 
+  /* Keep card content above the sheen overlays */
+  .clay-card > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Light mode: softer sheen so text stays readable on cream panels */
+  [data-theme='light'] .clay-card::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      rgba(255, 255, 255, 0.08) 24%,
+      transparent 48%
+    );
+    opacity: 0.7;
+  }
+
+  [data-theme='light'] .clay-card::after {
+    background: linear-gradient(
+      180deg,
+      transparent 58%,
+      rgba(62, 41, 34, 0.05) 100%
+    );
+  }
+
   .clay-card:hover,
   .clay-card.is-active {
     background: linear-gradient(
@@ -771,8 +796,12 @@
     color: var(--text-primary);
   }
 
-  .form-glass-panel.clay-card::before {
-    opacity: 0.55;
+  /* Forms: no sheen wash — labels/inputs must stay fully opaque */
+  .form-glass-panel.clay-card::before,
+  .form-glass-panel.clay-card::after,
+  .form-glass-panel .clay-card::before,
+  .form-glass-panel .clay-card::after {
+    display: none;
   }
 
   .form-glass-input {
@@ -790,9 +819,25 @@
     color-scheme: var(--color-scheme);
   }
 
+  [data-theme='light'] .form-glass-input {
+    border-width: 1.5px;
+    border-color: rgba(62, 41, 34, 0.38);
+    font-weight: 600;
+  }
+
+  [data-theme='light'] .form-glass-label {
+    font-weight: 700;
+    color: var(--form-label);
+  }
+
   .form-glass-input option {
     background: #12121A;
     color: #F8FAFC;
+  }
+
+  [data-theme='light'] .form-glass-input option {
+    background: #FFFCF6;
+    color: #1F1410;
   }
 
   .form-glass-input::placeholder {
@@ -841,7 +886,10 @@
   }
 
   /* Registration modal — crisp native scroll inside the form sheet */
-  .registration-form-scroll {
+  .registration-form-scroll,
+  .partner-form-scroll {
+    position: relative;
+    z-index: 2;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     touch-action: pan-y;

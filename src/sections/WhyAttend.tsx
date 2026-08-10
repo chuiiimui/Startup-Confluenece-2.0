@@ -1,12 +1,30 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, Banknote, Network, Briefcase, Lightbulb, Rocket, Target, Zap, Globe, Shield, Star, Award, BookOpen, Coffee, Cpu, Activity } from 'lucide-react';
+import {
+  Users,
+  Banknote,
+  Network,
+  Briefcase,
+  Rocket,
+  Globe,
+  Shield,
+  Star,
+  BookOpen,
+} from 'lucide-react';
 import { benefits } from '../data/benefits';
 import SectionHeading from '../components/SectionHeading';
 import TiltCard from '../components/TiltCard';
 
 const iconMap: Record<string, React.ElementType> = {
-  Users, Banknote, Network, Briefcase, Lightbulb, Rocket, Target, Zap, Globe, Shield, Star, Award, BookOpen, Coffee, Cpu, Activity
+  Users,
+  Banknote,
+  Network,
+  Briefcase,
+  Rocket,
+  Globe,
+  Shield,
+  Star,
+  BookOpen,
 };
 
 const containerVariants = {
@@ -40,7 +58,7 @@ export default function WhyAttend() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
         >
-          {benefits.map((benefit: any) => {
+          {benefits.map((benefit) => {
             const IconComponent = iconMap[benefit.icon] || Star;
             return (
               <motion.div key={benefit.id} variants={itemVariants}>

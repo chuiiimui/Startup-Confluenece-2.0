@@ -1,8 +1,5 @@
 import { NavItem } from '../types';
 
-export const EVENT_DATE = '2026-10-23T09:00:00+05:30';
-export const EVENT_NAME = 'Startup Confluence 2.0';
-
 /**
  * Nav follows homepage scroll order first, then satellite pages.
  * Hash hrefs scroll on `/`; path hrefs navigate.
@@ -27,27 +24,6 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS = {
-  twitter: 'https://twitter.com/startupconfluence',
   linkedin: 'https://linkedin.com/company/startupconfluence',
   instagram: 'https://instagram.com/startupconfluence',
 };
-
-export const CONTACT_INFO = {
-  email: 'hello@startupconfluence.in',
-  phone: '+91-6390903018',
-  phones: ['+91-6390903018', '+91-89536 15232'],
-  address: 'Convention Centre, Tech Park, Bangalore',
-};
-
-export const ORGANIZERS = [
-  {
-    name: 'E-Cell',
-    role: 'Primary Organizer',
-    website: 'https://ecell.example.com',
-  },
-  {
-    name: 'Incubation Center',
-    role: 'Co-Organizer',
-    website: 'https://incubation.example.com',
-  }
-];

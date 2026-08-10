@@ -1,4 +1,6 @@
-import { lazy, Suspense } from 'react';
+'use client';
+
+import dynamic from 'next/dynamic';
 import { usePerfMode } from '../../hooks/usePerfMode';
 
 export type SceneId =
@@ -22,7 +24,10 @@ interface InteractiveCanvasProps {
   onSelect?: (index: number) => void;
 }
 
-const InteractiveCanvasImpl = lazy(() => import('./InteractiveCanvasImpl'));
+const InteractiveCanvasImpl = dynamic(() => import('./InteractiveCanvasImpl'), {
+  ssr: false,
+  loading: () => null,
+});
 
 /**
  * Gate for WebGL. Returns null on low-end / Android / mobile
@@ -40,15 +45,13 @@ export default function InteractiveCanvas({
   if (!perf.enable3D) return null;
 
   return (
-    <Suspense fallback={null}>
-      <InteractiveCanvasImpl
-        scene={scene}
-        className={className}
-        camera={camera}
-        interactive={interactive}
-        perf={perf}
-        onSelect={onSelect}
-      />
-    </Suspense>
+    <InteractiveCanvasImpl
+      scene={scene}
+      className={className}
+      camera={camera}
+      interactive={interactive}
+      perf={perf}
+      onSelect={onSelect}
+    />
   );
 }

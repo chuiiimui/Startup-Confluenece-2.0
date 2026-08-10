@@ -1,6 +1,12 @@
 import type Lenis from 'lenis';
 
-type ClassValue = string | number | boolean | undefined | null | ClassValue[];
+/** Normalize Vite string URLs and Next.js StaticImageData imports. */
+export type AssetSrc = string | { src: string };
+
+export function assetSrc(image: AssetSrc | null | undefined): string {
+  if (!image) return '';
+  return typeof image === 'string' ? image : image.src;
+}
 
 let lenisInstance: Lenis | null = null;
 
@@ -10,28 +16,6 @@ export function setLenisInstance(instance: Lenis | null): void {
 
 export function getLenisInstance(): Lenis | null {
   return lenisInstance;
-}
-
-export function cn(...inputs: ClassValue[]): string {
-  const flatten = (arr: ClassValue[]): string[] => {
-    return arr.reduce((acc: string[], val) => {
-      if (Array.isArray(val)) {
-        acc.push(...flatten(val));
-      } else if (typeof val === 'string' || typeof val === 'number') {
-        acc.push(String(val));
-      }
-      return acc;
-    }, []);
-  };
-  return flatten(inputs).filter(Boolean).join(' ');
-}
-
-export function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  });
 }
 
 export function scrollToSection(id: string): void {
@@ -70,16 +54,4 @@ export function parseNavHref(href: string): { path: string; hashId: string | nul
     path: pathPart || '/',
     hashId: hashPart || null,
   };
-}
-
-export function getInitials(name: string): string {
-  if (!name) return '';
-  const parts = name.split(' ');
-  let initials = '';
-  for (let i = 0; i < Math.min(2, parts.length); i++) {
-    if (parts[i].length > 0) {
-      initials += parts[i][0];
-    }
-  }
-  return initials.toUpperCase();
 }

@@ -1,13 +1,12 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 import SectionHeading from '../components/SectionHeading';
 import Button from '../components/Button';
 import InteractiveCanvas from '../components/interactive3d/InteractiveCanvas';
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
-export const Registration: React.FC = () => {
-  const navigate = useNavigate();
+export const Registration = () => {
+  const router = useRouter();
 
   return (
     <section id="register" className="py-24 relative overflow-hidden">
@@ -46,7 +45,7 @@ export const Registration: React.FC = () => {
             
             <Button
               size="lg"
-              onClick={() => navigate('/register')}
+              onClick={() => router.push('/register')}
               icon={<ArrowRight className="w-5 h-5" />}
               className="w-full sm:w-auto"
             >

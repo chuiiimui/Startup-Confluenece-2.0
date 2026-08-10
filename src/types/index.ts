@@ -12,13 +12,14 @@ export interface Event {
   time: string;
   title: string;
   description: string;
-  speaker?: Speaker;
-  type: 'keynote' | 'panel' | 'pitch' | 'networking' | 'workshop';
+  speaker?: string;
+  type: 'keynote' | 'panel' | 'pitch' | 'networking' | 'workshop' | 'other';
 }
 
 export interface ScheduleDay {
-  day: number;
+  id: string;
   date: string;
+  title: string;
   events: Event[];
 }
 
@@ -26,7 +27,7 @@ export interface Sponsor {
   id: string;
   name: string;
   logo: string;
-  tier: 'title' | 'gold' | 'silver' | 'community';
+  tier: 'title' | 'gold' | 'silver' | 'community' | 'incubation' | 'technology' | 'media' | 'ecosystem';
 }
 
 export interface TeamMember {
@@ -54,6 +55,7 @@ export interface ExpoCategory {
   icon: string;
   description: string;
   color: string;
+  image?: string;
 }
 
 export interface GalleryImage {
@@ -74,28 +76,6 @@ export interface NavItem {
   href: string;
 }
 
-export interface RegistrationFormData {
-  name: string;
-  email: string;
-  phone: string;
-  college: string;
-  role: 'student' | 'professional' | 'investor' | 'founder';
-  startupName?: string;
-}
-
-export interface CountdownTime {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
-
-export interface Benefit {
-  icon: string;
-  title: string;
-  description: string;
-}
-
 export interface Highlight {
   id: string;
   title: string;
@@ -105,7 +85,8 @@ export interface Highlight {
 }
 
 export interface PitchStep {
-  step: number;
+  id: string;
+  stepNumber: number;
   title: string;
   description: string;
 }

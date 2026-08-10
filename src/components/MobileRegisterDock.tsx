@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { useRegistration } from '../context/RegistrationContext';
 
 /**
@@ -8,12 +8,12 @@ import { useRegistration } from '../context/RegistrationContext';
  * Hidden when the footer is in view (not mid-page over #register).
  */
 export default function MobileRegisterDock() {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   const { isOpen, isPartnerOpen, setMobileDockVisible } = useRegistration();
   const [show, setShow] = useState(false);
   const [overFooter, setOverFooter] = useState(false);
-  const isHome = location.pathname === '/';
+  const isHome = pathname === '/';
 
   useEffect(() => {
     if (!isHome) return;
@@ -93,7 +93,7 @@ export default function MobileRegisterDock() {
             </div>
             <motion.button
               type="button"
-              onClick={() => navigate('/register')}
+              onClick={() => router.push('/register')}
               className="min-h-11 shrink-0 rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-white"
               whileTap={{ scale: 0.96 }}
               data-cursor="link"

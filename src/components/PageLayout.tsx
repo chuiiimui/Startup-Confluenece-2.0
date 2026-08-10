@@ -1,7 +1,9 @@
-import React, { Suspense, lazy } from 'react';
-import { SEO, ScrollProgress } from './index';
+'use client';
+
+import { Suspense, lazy, type ReactNode } from 'react';
 import SectionReveal from './SectionReveal';
 import { usePerfMode } from '../hooks/usePerfMode';
+import { useRevealed } from '../context/RevealContext';
 
 const Footer = lazy(() =>
   import('../sections/Footer').then((m) => ({ default: m.Footer }))
@@ -11,7 +13,7 @@ export function Section({
   children,
   band,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   band?: 'cyan' | 'peach' | 'cream';
 }) {
   return (
@@ -24,26 +26,23 @@ export function Section({
 }
 
 interface PageLayoutProps {
-  children: React.ReactNode;
-  title?: string;
-  description?: string;
+  children: ReactNode;
   revealed?: boolean;
 }
 
 export default function PageLayout({
   children,
-  title,
-  description,
-  revealed = true,
+  revealed,
 }: PageLayoutProps) {
+  const contextRevealed = useRevealed();
   const { isMobile, reduceMotion } = usePerfMode();
+  const isRevealed = revealed ?? contextRevealed;
 
   return (
     <>
-      <SEO title={title} description={description} />
       <main
         className={`relative z-10 min-h-[60dvh] pb-[4.5rem] pt-20 transition-opacity duration-500 md:pb-0 md:pt-24 ${
-          revealed || reduceMotion || isMobile ? 'opacity-100' : 'opacity-90'
+          isRevealed || reduceMotion || isMobile ? 'opacity-100' : 'opacity-90'
         }`}
       >
         {children}
@@ -51,7 +50,6 @@ export default function PageLayout({
       <Suspense fallback={null}>
         <Footer />
       </Suspense>
-      {!isMobile && <ScrollProgress />}
     </>
   );
 }

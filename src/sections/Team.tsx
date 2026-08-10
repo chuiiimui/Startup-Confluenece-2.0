@@ -41,80 +41,78 @@ function PersonCard({
   member: TeamMember;
   size?: 'md' | 'lg';
 }) {
-  const avatar = size === 'lg' ? 'w-32 h-32' : 'w-28 h-28';
+  const photoHeight = size === 'lg' ? 'min-h-[220px] aspect-square' : 'min-h-[200px] aspect-square';
 
   return (
-    <div
-      className="clay-card group relative flex h-full flex-col items-center overflow-hidden rounded-2xl p-8 text-center transition-all duration-300"
-    >
-      <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-      <div className="relative mb-6">
-        <div
-          className={`${avatar} rounded-full bg-gradient-to-tr from-primary to-accent p-1 group-hover:scale-105 transition-transform duration-500`}
-        >
-          <div
-            className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full"
-            style={{ background: 'var(--bg-elevated)' }}
-          >
-            {member.image ? (
-              <img
-                src={member.image}
-                alt={member.name}
-                className="h-full w-full object-cover object-[center_18%]"
-              />
-            ) : (
-              <span
-                className="font-heading text-3xl font-bold"
-                style={{ color: 'var(--brand-orange)' }}
-              >
-                {getInitials(member.name)}
-              </span>
-            )}
+    <div className="clay-card group relative mx-auto flex h-full w-full max-w-[260px] flex-col overflow-hidden rounded-2xl transition-all duration-300">
+      {/* Full-bleed rectangular photo */}
+      <div
+        className={`relative w-full overflow-hidden ${photoHeight}`}
+        style={{ background: 'var(--bg-elevated)' }}
+      >
+        {member.image ? (
+          <img
+            src={member.image}
+            alt={member.name}
+            className="h-full w-full object-cover object-[center_20%] transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center">
+            <span
+              className="font-heading text-3xl font-bold"
+              style={{ color: 'var(--brand-orange)' }}
+            >
+              {getInitials(member.name)}
+            </span>
           </div>
-        </div>
-        <div
-          className="absolute -inset-2 rounded-full border scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500"
-          style={{ borderColor: 'var(--border)' }}
-        />
+        )}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent opacity-80" />
       </div>
 
-      <h3
-        className="text-xl font-heading font-semibold mb-1"
-        style={{ color: 'var(--text-primary)' }}
+      {/* Footer: name + role */}
+      <div
+        className="relative z-10 flex flex-col items-center gap-0.5 px-3 py-3 text-center sm:px-4 sm:py-3.5"
+        style={{ background: 'var(--bg-elevated)' }}
       >
-        {member.name}
-      </h3>
-      <p className="text-accent font-medium text-sm mb-4">{member.role}</p>
+        <h3
+          className="font-heading text-base font-semibold leading-snug sm:text-lg"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          {member.name}
+        </h3>
+        <p className="text-accent text-xs font-medium sm:text-sm">{member.role}</p>
 
-      {member.bio && (
-        <p className="text-sm mb-6 line-clamp-2" style={{ color: 'var(--text-muted)' }}>
-          {member.bio}
-        </p>
-      )}
-
-      <div className="flex items-center gap-4 mt-auto">
-        {member.social?.linkedin && (
-          <a
-            href={member.social.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="clay-chip w-10 h-10 rounded-full border flex items-center justify-center hover:text-[var(--text-primary)] transition-all"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
-          >
-            <FiLinkedin size={18} />
-          </a>
+        {member.bio && (
+          <p className="mt-1 line-clamp-2 text-xs sm:text-sm" style={{ color: 'var(--text-muted)' }}>
+            {member.bio}
+          </p>
         )}
-        {member.social?.twitter && (
-          <a
-            href={member.social.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="clay-chip w-10 h-10 rounded-full border flex items-center justify-center hover:text-[var(--text-primary)] transition-all"
-            style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
-          >
-            <FiTwitter size={18} />
-          </a>
+
+        {(member.social?.linkedin || member.social?.twitter) && (
+          <div className="mt-2 flex items-center gap-3">
+            {member.social?.linkedin && (
+              <a
+                href={member.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="clay-chip flex h-9 w-9 items-center justify-center rounded-full border transition-all hover:text-[var(--text-primary)]"
+                style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
+              >
+                <FiLinkedin size={16} />
+              </a>
+            )}
+            {member.social?.twitter && (
+              <a
+                href={member.social.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="clay-chip flex h-9 w-9 items-center justify-center rounded-full border transition-all hover:text-[var(--text-primary)]"
+                style={{ color: 'var(--text-muted)', borderColor: 'var(--border)' }}
+              >
+                <FiTwitter size={16} />
+              </a>
+            )}
+          </div>
         )}
       </div>
     </div>
@@ -135,7 +133,7 @@ function PeopleGrid({
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: '-100px' }}
-        className={`hidden md:grid gap-8 mt-12 ${
+        className={`hidden md:grid justify-items-center gap-6 mt-12 ${
           people.length <= 4
             ? 'md:grid-cols-2 lg:grid-cols-4'
             : 'md:grid-cols-2 lg:grid-cols-3'
@@ -166,7 +164,7 @@ function PeopleGrid({
           className="w-full"
         >
           {people.map((member) => (
-            <SwiperSlide key={member.id} className="!w-[280px]">
+            <SwiperSlide key={member.id} className="!w-[240px]">
               <PersonCard member={member} size={size} />
             </SwiperSlide>
           ))}

@@ -1,4 +1,5 @@
 import { GalleryImage } from '../types';
+import { assetSrc, type AssetSrc } from '../lib/utils';
 
 import full0 from '../assets/gallery/DSC_7889.jpg';
 import full1 from '../assets/gallery/DSC_7976.jpg';
@@ -50,14 +51,22 @@ import preview14 from '../assets/gallery/medium/whatsapp-3.webp';
 
 function entry(
   id: string,
-  src: string,
-  thumb: string,
-  preview: string,
+  src: AssetSrc,
+  thumb: AssetSrc,
+  preview: AssetSrc,
   category: GalleryImage['category'],
   n: number
 ): GalleryImage {
   const title = `Event Moment ${n}`;
-  return { id, src, thumb, preview, category, title, alt: title };
+  return {
+    id,
+    src: assetSrc(src),
+    thumb: assetSrc(thumb),
+    preview: assetSrc(preview),
+    category,
+    title,
+    alt: title,
+  };
 }
 
 export const gallery: GalleryImage[] = [

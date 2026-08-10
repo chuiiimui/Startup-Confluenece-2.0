@@ -1,3 +1,5 @@
+'use client';
+
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import type { PerfProfile } from '../../lib/perf';

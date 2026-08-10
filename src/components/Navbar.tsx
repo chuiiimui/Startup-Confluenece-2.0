@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
+'use client';
+
+import { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLenis } from 'lenis/react';
 import { Menu, X, ChevronRight } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { usePathname, useRouter } from 'next/navigation';
 import { NAV_ITEMS } from '../constants';
 import {
   getLenisInstance,
   parseNavHref,
   scrollToSection,
   scrollToTop,
+  assetSrc,
 } from '../lib/utils';
 import logo from '../assets/logo.png';
 import { usePerfMode } from '../hooks/usePerfMode';
@@ -35,18 +38,26 @@ export const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const { enableHeavyBlur } = usePerfMode();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const isHome = location.pathname === '/';
+  const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === '/';
 
   const syncHomeActive = useCallback(() => {
     const y = window.scrollY;
+    const vh = window.innerHeight;
+    const docHeight = document.documentElement.scrollHeight;
     setIsScrolled(y > 32);
 
     if (!isHome) return;
 
+    // Pin Contact while footer fills the lower viewport.
+    if (docHeight - (y + vh) <= 140) {
+      setActiveSection((prev) => (prev === 'contact' ? prev : 'contact'));
+      return;
+    }
+
     // Marker just under the floating nav
-    const marker = y + Math.min(140, window.innerHeight * 0.22);
+    const marker = y + Math.min(160, vh * 0.25);
     let next = 'home';
 
     for (const section of HOME_SCROLL_SPY) {
@@ -88,25 +99,57 @@ export const Navbar = () => {
     };
   }, [syncHomeActive]);
 
+  // Keep the active link visible inside the nav strip (not the page)
+  useEffect(() => {
+    if (!isHome || isOpen) return;
+    const active = document.querySelector(
+      'nav button[aria-current="page"]'
+    ) as HTMLElement | null;
+    const parent = active?.parentElement;
+    if (!active || !parent) return;
+
+    // Everything fits — reset any leftover horizontal offset.
+    if (parent.scrollWidth <= parent.clientWidth + 2) {
+      if (parent.scrollLeft !== 0) parent.scrollLeft = 0;
+      return;
+    }
+
+    const parentRect = parent.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const pad = 16;
+
+    if (activeRect.left < parentRect.left + pad) {
+      parent.scrollBy({
+        left: activeRect.left - parentRect.left - pad,
+        behavior: 'smooth',
+      });
+    } else if (activeRect.right > parentRect.right - pad) {
+      parent.scrollBy({
+        left: activeRect.right - parentRect.right + pad,
+        behavior: 'smooth',
+      });
+    }
+  }, [activeSection, isHome, isOpen]);
+
   // Route pages: highlight from path; home hash from location
   useEffect(() => {
     if (isHome) {
-      const hashId = location.hash.replace('#', '');
+      const hashId = window.location.hash.replace('#', '');
       if (hashId) setActiveSection(hashId);
       return;
     }
     setActiveSection('');
-  }, [isHome, location.pathname, location.hash]);
+  }, [isHome, pathname]);
 
   // Scroll to top (or hash) when route changes
   useEffect(() => {
-    const hashId = location.hash.replace('#', '');
+    const hashId = window.location.hash.replace('#', '');
     if (hashId) {
       window.setTimeout(() => scrollToSection(hashId), 160);
       return;
     }
     scrollToTop();
-  }, [location.pathname, location.hash]);
+  }, [pathname]);
 
   // Lock page scroll while mobile menu is open
   useEffect(() => {
@@ -131,7 +174,7 @@ export const Navbar = () => {
     if (path === '/' && hashId) {
       setActiveSection(hashId);
       if (!isHome) {
-        navigate(`/#${hashId}`);
+        router.push(`/#${hashId}`);
         return;
       }
       window.setTimeout(() => scrollToSection(hashId), 80);
@@ -141,19 +184,19 @@ export const Navbar = () => {
     if (path === '/') {
       setActiveSection('home');
       if (!isHome) {
-        navigate('/');
+        router.push('/');
         return;
       }
       window.setTimeout(() => scrollToSection('home'), 80);
       return;
     }
 
-    navigate(path);
+    router.push(path);
   };
 
   const isItemActive = (href: string) => {
     const { path, hashId } = parseNavHref(href);
-    if (path !== '/' && location.pathname === path) return true;
+    if (path !== '/' && pathname === path) return true;
     if (path === '/' && isHome && hashId) return activeSection === hashId;
     if (path === '/' && !hashId && isHome) return activeSection === 'home';
     return false;
@@ -161,14 +204,14 @@ export const Navbar = () => {
 
   const goRegister = () => {
     setIsOpen(false);
-    navigate('/register');
+    router.push('/register');
   };
 
   const compact = isScrolled && !isOpen;
 
   return (
     <>
-      <div className="pointer-events-none fixed left-0 right-0 top-2.5 z-50 flex w-full justify-center px-3 sm:top-3.5 sm:px-4">
+      <div className="pointer-events-none fixed left-0 right-0 top-3 z-50 flex w-full justify-center px-3 sm:top-4 sm:px-5">
         <motion.nav
           initial={{ y: -80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -203,17 +246,17 @@ export const Navbar = () => {
             isOpen
               ? 'max-h-[min(88dvh,calc(100dvh-1.5rem))] w-full max-w-md overflow-hidden rounded-[24px]'
               : compact
-                ? 'w-[min(100%,920px)] max-w-[920px] overflow-hidden rounded-full lg:w-fit'
-                : 'w-[min(100%,1000px)] max-w-[1000px] overflow-hidden rounded-full lg:w-fit'
+                ? 'w-[min(calc(100%-1.5rem),1520px)] max-w-[1520px] overflow-hidden rounded-full'
+                : 'w-[min(calc(100%-1.5rem),1560px)] max-w-[1560px] overflow-hidden rounded-full'
           }`}
         >
           <div
-            className={`flex w-full shrink-0 items-center justify-between transition-[padding] duration-300 ${
+            className={`flex w-full shrink-0 items-center justify-between gap-2 transition-[padding] duration-300 ${
               isOpen
                 ? 'px-4 py-3'
                 : compact
-                  ? 'px-3.5 py-1.5 sm:px-4'
-                  : 'px-4 py-2 sm:px-5'
+                  ? 'px-4 py-3 sm:px-5'
+                  : 'px-5 py-3.5 sm:px-6'
             }`}
           >
             <div
@@ -222,15 +265,15 @@ export const Navbar = () => {
               data-cursor="link"
             >
               <img
-                src={logo}
+                src={assetSrc(logo)}
                 alt="UIH Logo"
                 className={`brand-logo w-auto object-contain transition-[height] duration-300 ${
-                  compact ? 'h-[24px]' : 'h-[28px]'
+                  compact ? 'h-[30px]' : 'h-[34px]'
                 }`}
               />
             </div>
 
-            <div className="mx-3 hidden max-w-[min(62vw,46rem)] items-center gap-0.5 overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] lg:flex xl:mx-5 [&::-webkit-scrollbar]:hidden">
+            <div className="mx-2 hidden min-w-0 flex-1 items-stretch justify-evenly lg:flex xl:mx-3">
               {NAV_ITEMS.map((item) => {
                 const key = navKey(item.href);
                 const isActive = isItemActive(item.href);
@@ -240,7 +283,7 @@ export const Navbar = () => {
                     onClick={() => handleNavHref(item.href)}
                     data-cursor="link"
                     aria-current={isActive ? 'page' : undefined}
-                    className="relative shrink-0 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors duration-200 xl:px-3 xl:text-[13px]"
+                    className="relative flex min-w-0 flex-1 items-center justify-center rounded-full px-1.5 py-2.5 text-sm font-semibold tracking-tight transition-colors duration-200 xl:px-2 xl:text-[15px]"
                     style={{
                       color: isActive
                         ? 'var(--text-primary)'
@@ -250,7 +293,7 @@ export const Navbar = () => {
                     {isActive && (
                       <motion.div
                         layoutId="activeNav"
-                        className="absolute inset-0 rounded-full"
+                        className="absolute inset-y-1 inset-x-0.5 rounded-full"
                         transition={{
                           type: 'spring',
                           bounce: 0.18,
@@ -265,7 +308,7 @@ export const Navbar = () => {
                       />
                     )}
                     <span
-                      className="relative z-10"
+                      className="relative z-10 whitespace-nowrap"
                       style={
                         isActive
                           ? {
@@ -281,13 +324,13 @@ export const Navbar = () => {
               })}
             </div>
 
-            <div className="hidden items-center gap-2 lg:flex">
+            <div className="hidden shrink-0 items-center gap-2 lg:flex">
               <ThemeToggle />
               <motion.button
                 onClick={goRegister}
                 data-cursor="link"
                 className={`relative overflow-hidden rounded-full text-sm font-semibold text-white transition-[padding] duration-300 ${
-                  compact ? 'px-4 py-2' : 'px-5 py-2.5'
+                  compact ? 'px-5 py-2.5' : 'px-6 py-3'
                 }`}
                 style={{
                   background:

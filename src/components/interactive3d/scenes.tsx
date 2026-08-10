@@ -711,7 +711,7 @@ export function PitchCardSwarmScene() {
       }}
     >
       <SceneLights />
-      {cards.map((card, i) => (
+      {cards.map((card) => (
         <Float
           key={card.label}
           speed={card.speed}
