@@ -8,26 +8,26 @@ import shiveshImage from '../assets/organizers/Shivesh Gaur.jpeg';
 export const organizers: TeamMember[] = [
   {
     id: 'org-1',
-    name: 'Dr. Sanjay Srivastava',
-    role: 'Organizer',
+    name: 'Prof. Sanjay Srivastava',
+    role: 'Senior Technical Advisor UIH',
     image: assetSrc(sanjayImage),
   },
   {
     id: 'org-2',
     name: 'Shivesh Gaur',
-    role: 'Organizer',
+    role: 'CEO UIH',
     image: assetSrc(shiveshImage),
   },
   {
     id: 'org-3',
-    name: 'Mr. Amitabh Srivastava',
-    role: 'Organizer',
+    name: 'Amitabh Srivastava',
+    role: 'Senior Alumni and Head Entrepreneurship & Innovation UIH',
     image: assetSrc(amitabhImage),
   },
   {
     id: 'org-4',
-    name: 'Ms. Gargi Agrawal',
-    role: 'Organizer',
+    name: 'Ms. Gargi Agarwal',
+    role: 'Manager UIH',
     image: assetSrc(gargiImage),
   },
 ];

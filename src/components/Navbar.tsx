@@ -37,10 +37,15 @@ export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [mounted, setMounted] = useState(false);
   const { enableHeavyBlur } = usePerfMode();
   const router = useRouter();
   const pathname = usePathname();
   const isHome = pathname === '/';
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const syncHomeActive = useCallback(() => {
     const y = window.scrollY;
@@ -50,13 +55,11 @@ export const Navbar = () => {
 
     if (!isHome) return;
 
-    // Pin Contact while footer fills the lower viewport.
     if (docHeight - (y + vh) <= 140) {
       setActiveSection((prev) => (prev === 'contact' ? prev : 'contact'));
       return;
     }
 
-    // Marker just under the floating nav
     const marker = y + Math.min(160, vh * 0.25);
     let next = 'home';
 
@@ -70,7 +73,6 @@ export const Navbar = () => {
     setActiveSection((prev) => (prev === next ? prev : next));
   }, [isHome]);
 
-  // Lenis scroll (desktop) + native scroll (mobile) — rAF throttled
   useLenis(() => {
     syncHomeActive();
   });
@@ -88,7 +90,6 @@ export const Navbar = () => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
     syncHomeActive();
-    // Lazy sections mount after first paint — re-sync a few times
     const retries = [120, 400, 900, 1600].map((ms) =>
       window.setTimeout(syncHomeActive, ms)
     );
@@ -99,39 +100,6 @@ export const Navbar = () => {
     };
   }, [syncHomeActive]);
 
-  // Keep the active link visible inside the nav strip (not the page)
-  useEffect(() => {
-    if (!isHome || isOpen) return;
-    const active = document.querySelector(
-      'nav button[aria-current="page"]'
-    ) as HTMLElement | null;
-    const parent = active?.parentElement;
-    if (!active || !parent) return;
-
-    // Everything fits — reset any leftover horizontal offset.
-    if (parent.scrollWidth <= parent.clientWidth + 2) {
-      if (parent.scrollLeft !== 0) parent.scrollLeft = 0;
-      return;
-    }
-
-    const parentRect = parent.getBoundingClientRect();
-    const activeRect = active.getBoundingClientRect();
-    const pad = 16;
-
-    if (activeRect.left < parentRect.left + pad) {
-      parent.scrollBy({
-        left: activeRect.left - parentRect.left - pad,
-        behavior: 'smooth',
-      });
-    } else if (activeRect.right > parentRect.right - pad) {
-      parent.scrollBy({
-        left: activeRect.right - parentRect.right + pad,
-        behavior: 'smooth',
-      });
-    }
-  }, [activeSection, isHome, isOpen]);
-
-  // Route pages: highlight from path; home hash from location
   useEffect(() => {
     if (isHome) {
       const hashId = window.location.hash.replace('#', '');
@@ -141,7 +109,6 @@ export const Navbar = () => {
     setActiveSection('');
   }, [isHome, pathname]);
 
-  // Scroll to top (or hash) when route changes
   useEffect(() => {
     const hashId = window.location.hash.replace('#', '');
     if (hashId) {
@@ -151,7 +118,6 @@ export const Navbar = () => {
     scrollToTop();
   }, [pathname]);
 
-  // Lock page scroll while mobile menu is open
   useEffect(() => {
     const lenis = getLenisInstance();
     if (isOpen) {
@@ -166,6 +132,10 @@ export const Navbar = () => {
       getLenisInstance()?.start();
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
   const handleNavHref = (href: string) => {
     const { path, hashId } = parseNavHref(href);
@@ -211,7 +181,11 @@ export const Navbar = () => {
 
   return (
     <>
-      <div className="pointer-events-none fixed left-0 right-0 top-3 z-50 flex w-full justify-center px-3 sm:top-4 sm:px-5">
+      <div
+        className={`pointer-events-none fixed left-0 right-0 top-3 z-50 flex w-full justify-center px-3 sm:top-4 sm:px-4 ${
+          isOpen ? 'lg:px-4' : ''
+        }`}
+      >
         <motion.nav
           initial={{ y: -80, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -242,25 +216,24 @@ export const Navbar = () => {
                 : 'var(--nav-shadow)',
             color: 'var(--text-primary)',
           }}
-          className={`pointer-events-auto flex flex-col items-center transition-[width,border-radius,padding] duration-300 ${
+          className={`pointer-events-auto flex flex-col transition-[border-radius,width,max-width] duration-300 ${
             isOpen
-              ? 'max-h-[min(88dvh,calc(100dvh-1.5rem))] w-full max-w-md overflow-hidden rounded-[24px]'
-              : compact
-                ? 'w-[min(calc(100%-1.5rem),1520px)] max-w-[1520px] overflow-hidden rounded-full'
-                : 'w-[min(calc(100%-1.5rem),1560px)] max-w-[1560px] overflow-hidden rounded-full'
+              ? 'max-h-[min(92dvh,calc(100dvh-1.5rem))] w-full max-w-lg overflow-hidden rounded-3xl lg:max-w-[min(100%,1480px)]'
+              : 'w-fit max-w-[min(100%,1480px)] overflow-hidden rounded-full lg:w-full'
           }`}
         >
+          {/* Top bar: logo | all links (desktop) | actions / hamburger */}
           <div
-            className={`flex w-full shrink-0 items-center justify-between gap-2 transition-[padding] duration-300 ${
+            className={`flex w-full shrink-0 items-center transition-[padding] duration-300 ${
               isOpen
-                ? 'px-4 py-3'
+                ? 'justify-between gap-3 px-3.5 py-2.5 sm:px-4'
                 : compact
-                  ? 'px-4 py-3 sm:px-5'
-                  : 'px-5 py-3.5 sm:px-6'
+                  ? 'justify-between gap-1.5 px-2.5 py-1.5 lg:gap-3 lg:px-3 lg:py-2'
+                  : 'justify-between gap-2 px-3 py-2 lg:gap-3 lg:px-3.5 lg:py-2.5'
             }`}
           >
             <div
-              className="flex flex-shrink-0 cursor-pointer items-center"
+              className="flex shrink-0 cursor-pointer items-center"
               onClick={() => handleNavHref('/')}
               data-cursor="link"
             >
@@ -268,22 +241,24 @@ export const Navbar = () => {
                 src={assetSrc(logo)}
                 alt="UIH Logo"
                 className={`brand-logo w-auto object-contain transition-[height] duration-300 ${
-                  compact ? 'h-[30px]' : 'h-[34px]'
+                  compact ? 'h-[24px] lg:h-[26px]' : 'h-[26px] lg:h-[30px]'
                 }`}
               />
             </div>
 
-            <div className="mx-2 hidden min-w-0 flex-1 items-stretch justify-evenly lg:flex xl:mx-3">
+            {/* Desktop: every nav item in one aligned row */}
+            <div className="hidden min-w-0 flex-1 items-center justify-evenly lg:flex">
               {NAV_ITEMS.map((item) => {
                 const key = navKey(item.href);
                 const isActive = isItemActive(item.href);
                 return (
                   <button
                     key={key}
+                    type="button"
                     onClick={() => handleNavHref(item.href)}
                     data-cursor="link"
                     aria-current={isActive ? 'page' : undefined}
-                    className="relative flex min-w-0 flex-1 items-center justify-center rounded-full px-1.5 py-2.5 text-sm font-semibold tracking-tight transition-colors duration-200 xl:px-2 xl:text-[15px]"
+                    className="relative flex shrink items-center justify-center rounded-full px-1 py-1.5 text-[10px] font-semibold tracking-tight transition-colors duration-200 xl:px-1.5 xl:text-[11px] 2xl:px-2 2xl:text-[12px]"
                     style={{
                       color: isActive
                         ? 'var(--text-primary)'
@@ -292,8 +267,8 @@ export const Navbar = () => {
                   >
                     {isActive && (
                       <motion.div
-                        layoutId="activeNav"
-                        className="absolute inset-y-1 inset-x-0.5 rounded-full"
+                        layoutId={mounted ? 'activeNav' : undefined}
+                        className="absolute inset-y-0.5 inset-x-0 rounded-full"
                         transition={{
                           type: 'spring',
                           bounce: 0.18,
@@ -303,7 +278,7 @@ export const Navbar = () => {
                           background:
                             'linear-gradient(135deg, var(--nav-active-from) 0%, var(--nav-active-to) 100%)',
                           boxShadow:
-                            '0 0 0 1px var(--nav-active-ring), 0 0 18px var(--nav-active-glow), inset 0 1px 0 rgba(255,255,255,0.12)',
+                            '0 0 0 1px var(--nav-active-ring), 0 0 14px var(--nav-active-glow), inset 0 1px 0 rgba(255,255,255,0.12)',
                         }}
                       />
                     )}
@@ -311,9 +286,7 @@ export const Navbar = () => {
                       className="relative z-10 whitespace-nowrap"
                       style={
                         isActive
-                          ? {
-                              textShadow: '0 0 18px var(--nav-active-glow)',
-                            }
+                          ? { textShadow: '0 0 16px var(--nav-active-glow)' }
                           : undefined
                       }
                     >
@@ -324,13 +297,14 @@ export const Navbar = () => {
               })}
             </div>
 
-            <div className="hidden shrink-0 items-center gap-2 lg:flex">
+            <div className="hidden shrink-0 items-center gap-1.5 lg:flex xl:gap-2">
               <ThemeToggle />
               <motion.button
+                type="button"
                 onClick={goRegister}
                 data-cursor="link"
-                className={`relative overflow-hidden rounded-full text-sm font-semibold text-white transition-[padding] duration-300 ${
-                  compact ? 'px-5 py-2.5' : 'px-6 py-3'
+                className={`relative overflow-hidden rounded-full text-[11px] font-semibold text-white transition-[padding] duration-300 xl:text-xs 2xl:text-sm ${
+                  compact ? 'px-3.5 py-1.5' : 'px-4 py-2'
                 }`}
                 style={{
                   background:
@@ -344,49 +318,61 @@ export const Navbar = () => {
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               >
-                <span className="relative z-10">Register Now</span>
+                <span className="relative z-10 whitespace-nowrap">Register Now</span>
               </motion.button>
             </div>
 
-            <div className="flex items-center gap-1.5 lg:hidden">
-              <ThemeToggle />
-              <button
-                className="min-h-11 min-w-11 -mr-1 rounded-full p-2 transition-colors"
-                style={{ color: 'var(--text-muted)' }}
-                onClick={() => setIsOpen(!isOpen)}
-                aria-label="Toggle menu"
-                aria-expanded={isOpen}
-                data-cursor="link"
-              >
-                {isOpen ? <X size={22} /> : <Menu size={22} />}
-              </button>
-            </div>
+            {/* Mobile: hamburger only */}
+            <button
+              type="button"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors lg:hidden"
+              style={{ color: 'var(--text-muted)' }}
+              onClick={() => setIsOpen((v) => !v)}
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isOpen}
+              aria-controls="mobile-nav-menu"
+              data-cursor="link"
+            >
+              {isOpen ? <X size={20} strokeWidth={2.25} /> : <Menu size={20} strokeWidth={2.25} />}
+            </button>
           </div>
 
+          {/* Mobile drawer: all nav elements */}
           <AnimatePresence>
             {isOpen && (
               <motion.div
+                id="mobile-nav-menu"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                className="w-full min-h-0"
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full min-h-0 overflow-hidden lg:hidden"
               >
                 <div
                   data-lenis-prevent
-                  className="max-h-[calc(min(88dvh,100dvh-1.5rem)-3.75rem)] overflow-y-auto overscroll-contain px-3 pb-4 [-webkit-overflow-scrolling:touch] sm:px-5 sm:pb-5"
+                  className="max-h-[calc(min(92dvh,100dvh-1.5rem)-3.75rem)] overflow-y-auto overscroll-contain px-3 pb-4 [-webkit-overflow-scrolling:touch] sm:px-5 sm:pb-5"
                 >
                   <div className="mt-1 flex flex-col space-y-1">
+                    <div className="mb-2 flex items-center justify-between rounded-2xl px-1 py-1">
+                      <span
+                        className="text-xs font-semibold uppercase tracking-wider"
+                        style={{ color: 'var(--text-muted)' }}
+                      >
+                        Menu
+                      </span>
+                      <ThemeToggle />
+                    </div>
                     {NAV_ITEMS.map((item, index) => {
                       const key = navKey(item.href);
                       const isActive = isItemActive(item.href);
                       return (
                         <motion.button
                           key={key}
+                          type="button"
                           initial={{ opacity: 0, x: -12 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -12 }}
-                          transition={{ delay: index * 0.02, duration: 0.2 }}
+                          transition={{ delay: index * 0.018, duration: 0.2 }}
                           onClick={(e) => {
                             e.preventDefault();
                             handleNavHref(item.href);
@@ -417,11 +403,12 @@ export const Navbar = () => {
                       );
                     })}
                     <motion.button
+                      type="button"
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 8 }}
                       transition={{
-                        delay: NAV_ITEMS.length * 0.02,
+                        delay: NAV_ITEMS.length * 0.018,
                         duration: 0.2,
                       }}
                       onClick={(e) => {

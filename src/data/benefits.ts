@@ -5,7 +5,7 @@ export const benefits = [
     icon: 'Network',
     description: 'Connect with top-tier founders, leaders, and peers.',
     image:
-      'https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1528605105345-5344ea20e269?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-2',
@@ -13,7 +13,7 @@ export const benefits = [
     icon: 'BookOpen',
     description: 'Get one-on-one guidance from seasoned industry veterans.',
     image:
-      'https://images.unsplash.com/photo-1544531586-fde5298cdd40?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-3',
@@ -21,7 +21,7 @@ export const benefits = [
     icon: 'Users',
     description: 'Interact directly with active angel investors and VCs.',
     image:
-      'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-4',
@@ -29,7 +29,7 @@ export const benefits = [
     icon: 'Banknote',
     description: 'Pitch your breakthrough ideas and secure seed capital.',
     image:
-      'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-5',
@@ -37,7 +37,7 @@ export const benefits = [
     icon: 'Globe',
     description: 'Unlock pathways to expand your reach into new markets.',
     image:
-      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-6',
@@ -45,7 +45,7 @@ export const benefits = [
     icon: 'Rocket',
     description: 'Immerse yourself in a thriving entrepreneurial community.',
     image:
-      'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-7',
@@ -53,7 +53,7 @@ export const benefits = [
     icon: 'Briefcase',
     description: 'Forge powerful strategic partnerships and alliances.',
     image:
-      'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&w=1200&q=80',
   },
   {
     id: 'ben-8',
@@ -61,6 +61,6 @@ export const benefits = [
     icon: 'Shield',
     description: 'Gain long-term infrastructural support to scale rapidly.',
     image:
-      'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800',
+      'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
   },
 ];

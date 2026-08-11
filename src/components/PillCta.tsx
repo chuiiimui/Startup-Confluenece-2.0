@@ -75,6 +75,7 @@ export default function PillCta({
   } ${shell} ${className}`;
 
   if (href) {
+    const external = /^https?:\/\//i.test(href);
     return (
       <motion.a
         href={href}
@@ -83,6 +84,9 @@ export default function PillCta({
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         data-cursor="link"
+        {...(external
+          ? { target: '_blank', rel: 'noopener noreferrer' }
+          : {})}
       >
         {content}
       </motion.a>

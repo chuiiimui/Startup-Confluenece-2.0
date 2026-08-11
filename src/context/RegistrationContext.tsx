@@ -3,19 +3,20 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 type RegistrationType = 'startup' | 'speaker' | 'delegate' | null;
-export type PartnerMode = 'partner' | 'sponsor';
 
 interface RegistrationContextValue {
   isOpen: boolean;
   isPartnerOpen: boolean;
+  isSponsorOpen: boolean;
   registrationType: RegistrationType;
-  partnerMode: PartnerMode;
   mobileDockVisible: boolean;
   setMobileDockVisible: (visible: boolean) => void;
   openModal: (type?: RegistrationType) => void;
   closeModal: () => void;
-  openPartnerModal: (mode?: PartnerMode) => void;
+  openPartnerModal: () => void;
   closePartnerModal: () => void;
+  openSponsorModal: () => void;
+  closeSponsorModal: () => void;
 }
 
 const RegistrationContext = createContext<RegistrationContextValue | undefined>(undefined);
@@ -23,12 +24,13 @@ const RegistrationContext = createContext<RegistrationContextValue | undefined>(
 export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPartnerOpen, setIsPartnerOpen] = useState(false);
+  const [isSponsorOpen, setIsSponsorOpen] = useState(false);
   const [registrationType, setRegistrationType] = useState<RegistrationType>(null);
-  const [partnerMode, setPartnerMode] = useState<PartnerMode>('partner');
   const [mobileDockVisible, setMobileDockVisible] = useState(false);
 
   const openModal = useCallback((type?: RegistrationType) => {
     setIsPartnerOpen(false);
+    setIsSponsorOpen(false);
     setRegistrationType(type ?? null);
     setIsOpen(true);
   }, []);
@@ -37,9 +39,9 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsOpen(false);
   }, []);
 
-  const openPartnerModal = useCallback((mode: PartnerMode = 'partner') => {
+  const openPartnerModal = useCallback(() => {
     setIsOpen(false);
-    setPartnerMode(mode);
+    setIsSponsorOpen(false);
     setIsPartnerOpen(true);
   }, []);
 
@@ -47,19 +49,31 @@ export const RegistrationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsPartnerOpen(false);
   }, []);
 
+  const openSponsorModal = useCallback(() => {
+    setIsOpen(false);
+    setIsPartnerOpen(false);
+    setIsSponsorOpen(true);
+  }, []);
+
+  const closeSponsorModal = useCallback(() => {
+    setIsSponsorOpen(false);
+  }, []);
+
   return (
     <RegistrationContext.Provider
       value={{
         isOpen,
         isPartnerOpen,
+        isSponsorOpen,
         registrationType,
-        partnerMode,
         mobileDockVisible,
         setMobileDockVisible,
         openModal,
         closeModal,
         openPartnerModal,
         closePartnerModal,
+        openSponsorModal,
+        closeSponsorModal,
       }}
     >
       {children}

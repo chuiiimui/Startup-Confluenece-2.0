@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import Providers from '@/components/Providers';
 import AppShell from '@/components/AppShell';
 import 'lenis/dist/lenis.css';
@@ -90,12 +91,14 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
       </head>
       <body
         className="antialiased"
         style={{ backgroundColor: 'var(--bg)', color: 'var(--text-primary)' }}
       >
+        <Script id="theme-perf-boot" strategy="beforeInteractive">
+          {THEME_BOOT_SCRIPT}
+        </Script>
         <Providers>
           <AppShell>{children}</AppShell>
         </Providers>

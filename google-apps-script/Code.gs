@@ -6,7 +6,8 @@
  *
  * Frontend sources:
  *   - RegistrationModal.tsx  → startup, speaker, delegate
- *   - PartnerModal.tsx       → partner, sponsor
+ *   - PartnerModal.tsx       → partner
+ *   - SponsorModal.tsx       → sponsor
  *
  * RECOMMENDED SETUP:
  * 1. Create a NEW Google Sheet under YOUR Google account

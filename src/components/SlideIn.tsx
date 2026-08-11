@@ -1,4 +1,5 @@
 import { motion, type HTMLMotionProps } from 'framer-motion';
+import { usePerfMode } from '../hooks/usePerfMode';
 
 type Direction = 'up' | 'down' | 'left' | 'right';
 
@@ -26,17 +27,37 @@ export default function SlideIn({
   className = '',
   ...props
 }: SlideInProps) {
+  const { reduceMotion, enableHeavyBlur } = usePerfMode();
   const base = offsets[direction];
   const x = distance != null ? Math.sign(base.x || 1) * (base.x ? distance : 0) : base.x;
   const y = distance != null ? Math.sign(base.y || 1) * (base.y ? distance : 0) : base.y;
 
+  if (reduceMotion) {
+    return <div className={className}>{children}</div>;
+  }
+
+  const travelX = enableHeavyBlur ? x : x * 0.45;
+  const travelY = enableHeavyBlur ? y : y * 0.45;
+
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, x, y, filter: 'blur(8px)' }}
-      whileInView={{ opacity: 1, x: 0, y: 0, filter: 'blur(0px)' }}
+      initial={
+        enableHeavyBlur
+          ? { opacity: 0, x: travelX, y: travelY, filter: 'blur(8px)' }
+          : { opacity: 0, x: travelX, y: travelY }
+      }
+      whileInView={
+        enableHeavyBlur
+          ? { opacity: 1, x: 0, y: 0, filter: 'blur(0px)' }
+          : { opacity: 1, x: 0, y: 0 }
+      }
       viewport={{ once: true, margin: '-80px' }}
-      transition={{ duration: 0.85, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: enableHeavyBlur ? 0.85 : 0.45,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
       {...props}
     >
       {children}

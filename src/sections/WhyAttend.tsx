@@ -68,9 +68,19 @@ export default function WhyAttend() {
               >
                 {benefit.image && (
                   <div className="absolute inset-0 z-0 h-full w-full overflow-hidden rounded-[32px]">
+                    <img
+                      src={benefit.image}
+                      alt={benefit.title}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
+                    />
                     <div
-                      className="absolute inset-0 bg-cover bg-center transition-transform duration-[800ms] ease-out group-hover:scale-[1.03]"
-                      style={{ backgroundImage: `url('${benefit.image}')` }}
+                      className="pointer-events-none absolute inset-0"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--bg) 55%, transparent) 100%)',
+                      }}
                     />
                   </div>
                 )}

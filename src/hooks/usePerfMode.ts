@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { applyPerfToDocument, getPerfProfile, type PerfProfile } from '../lib/perf';
+import {
+  applyPerfToDocument,
+  getPerfProfile,
+  PERF_SSR_DEFAULT,
+  type PerfProfile,
+} from '../lib/perf';
 
 let cached: PerfProfile | null = null;
 
@@ -13,13 +18,11 @@ function readProfile(): PerfProfile {
 
 /**
  * Shared performance profile for low-end / Android / mobile.
- * Synchronous first paint uses a conservative mobile guess; effect refreshes.
+ * First paint always uses PERF_SSR_DEFAULT so SSR HTML matches the client
+ * hydrate tree; the real device profile is applied after mount.
  */
 export function usePerfMode(): PerfProfile {
-  const [profile, setProfile] = useState<PerfProfile>(() => {
-    if (typeof window === 'undefined') return getPerfProfile();
-    return readProfile();
-  });
+  const [profile, setProfile] = useState<PerfProfile>(PERF_SSR_DEFAULT);
 
   useEffect(() => {
     cached = null;

@@ -18,6 +18,7 @@ import { applyPerfToDocument } from '../lib/perf';
 
 const RegistrationModal = lazy(() => import('./RegistrationModal'));
 const PartnerModal = lazy(() => import('./PartnerModal'));
+const SponsorModal = lazy(() => import('./SponsorModal'));
 
 // Run once on the client as early as this module loads.
 if (typeof window !== 'undefined') {
@@ -81,6 +82,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </Suspense>
         <Suspense fallback={null}>
           <PartnerModal />
+        </Suspense>
+        <Suspense fallback={null}>
+          <SponsorModal />
         </Suspense>
       </div>
 

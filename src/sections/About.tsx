@@ -4,7 +4,6 @@ import AnimatedCounter from '../components/AnimatedCounter';
 import GlassCard from '../components/GlassCard';
 import PillCta from '../components/PillCta';
 import SlideIn from '../components/SlideIn';
-import { scrollToSection } from '../lib/utils';
 
 const stats = [
   { value: 1000, suffix: '+', label: 'Attendees' },
@@ -84,10 +83,10 @@ export default function About() {
         <SlideIn direction="up" delay={0.35} className="mt-8">
           <PillCta
             tone="gradient"
-            onClick={() => scrollToSection('team')}
+            href="https://www.unitedincubationhub.in/"
             icon={<ArrowRight className="h-5 w-5" />}
           >
-            Meet Team
+            Know About UNITED INCUBATION HUB
           </PillCta>
         </SlideIn>
 

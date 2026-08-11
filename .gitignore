@@ -31,3 +31,8 @@ src/AppScript/
 .next/
 out/
 
+# Temp / build leftovers
+.tmp-*/
+*.tsbuildinfo
+scratch/
+

@@ -3,44 +3,54 @@ import * as LucideIcons from 'lucide-react';
 import SectionHeading from '../components/SectionHeading';
 import TiltCard from '../components/TiltCard';
 import { highlights } from '../data/highlights';
+import { usePerfMode } from '../hooks/usePerfMode';
 
 export default function EventHighlights() {
+  const { enableHeavyBlur } = usePerfMode();
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 }
-    }
-  };
-
-  const cardVariants = {
-    hidden: { opacity: 0, x: 80, y: 24, filter: 'blur(10px)', scale: 0.96 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      y: 0,
-      filter: 'blur(0px)',
-      scale: 1,
-      transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] },
+      transition: { staggerChildren: enableHeavyBlur ? 0.15 : 0.08 },
     },
   };
 
-
+  const cardVariants = enableHeavyBlur
+    ? {
+        hidden: { opacity: 0, x: 80, y: 24, filter: 'blur(10px)', scale: 0.96 },
+        visible: {
+          opacity: 1,
+          x: 0,
+          y: 0,
+          filter: 'blur(0px)',
+          scale: 1,
+          transition: { duration: 0.95, ease: [0.16, 1, 0.3, 1] as const },
+        },
+      }
+    : {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.45, ease: [0.16, 1, 0.3, 1] as const },
+        },
+      };
 
   return (
     <section className="py-24 relative overflow-hidden" id="highlights" >
-      {/* Mesh Gradient Background Effect */}
+      {/* Soft field accents — no giant live blur filters */}
       <div className="absolute inset-0 z-0 opacity-50 pointer-events-none">
         <div
-          className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
+          className="absolute top-[-10%] left-[-10%] h-[40%] w-[40%] rounded-full"
           style={{ background: 'color-mix(in srgb, var(--brand-blue-deep) 18%, transparent)' }}
         />
         <div
-          className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full blur-[120px]"
+          className="absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full"
           style={{ background: 'color-mix(in srgb, var(--brand-orange) 16%, transparent)' }}
         />
         <div
-          className="absolute left-[60%] top-[40%] h-[30%] w-[30%] rounded-full blur-[120px]"
+          className="absolute left-[60%] top-[40%] h-[30%] w-[30%] rounded-full"
           style={{ background: 'color-mix(in srgb, var(--brand-sky) 18%, transparent)' }}
         />
       </div>

@@ -17,6 +17,20 @@ export interface PerfProfile {
   dpr: [number, number];
 }
 
+/** Conservative profile used for SSR + first client paint (must match). */
+export const PERF_SSR_DEFAULT: PerfProfile = {
+  mode: 'low',
+  isMobile: false,
+  isAndroid: false,
+  isLowEnd: false,
+  reduceMotion: false,
+  enable3D: false,
+  enableParallax: false,
+  enableHeavyBlur: false,
+  enableTilt: false,
+  dpr: [1, 1],
+};
+
 function readConnectionSaveData(): boolean {
   const conn = (navigator as Navigator & {
     connection?: { saveData?: boolean };
@@ -30,18 +44,7 @@ function readConnectionSaveData(): boolean {
  */
 export function getPerfProfile(): PerfProfile {
   if (typeof window === 'undefined') {
-    return {
-      mode: 'high',
-      isMobile: false,
-      isAndroid: false,
-      isLowEnd: false,
-      reduceMotion: false,
-      enable3D: true,
-      enableParallax: true,
-      enableHeavyBlur: true,
-      enableTilt: true,
-      dpr: [1, 1.25],
-    };
+    return PERF_SSR_DEFAULT;
   }
 
   const isMobile =

@@ -46,7 +46,7 @@ export default function SectionReveal({
   className = '',
   delay = 0,
 }: SectionRevealProps) {
-  const { reduceMotion } = usePerfMode();
+  const { reduceMotion, enableHeavyBlur } = usePerfMode();
 
   if (reduceMotion) {
     return <div className={className}>{children}</div>;
@@ -55,7 +55,7 @@ export default function SectionReveal({
   return (
     <motion.div
       className={className}
-      variants={heavyVariants}
+      variants={enableHeavyBlur ? heavyVariants : lightVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.12, margin: '0px 0px -8% 0px' }}

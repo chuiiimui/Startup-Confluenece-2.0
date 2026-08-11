@@ -5,20 +5,24 @@ import { useForm } from 'react-hook-form';
 import { useRegistration } from '../context/RegistrationContext';
 import { getLenisInstance } from '../lib/utils';
 
-const PARTNER_CATEGORIES = [
-  'Incubation Partner',
-  'Technology Partner',
-  'Media Partner',
+const SPONSORSHIP_TIERS = [
+  { type: 'Title Sponsor', indicativeAmount: 200000 },
+  { type: 'Food Sponsor', indicativeAmount: 10000 },
+  { type: 'Brand Sponsor', indicativeAmount: 100000 },
+  { type: 'Event Sponsor', indicativeAmount: 50000 },
 ] as const;
 
-interface PartnerFormData {
+interface SponsorFormData {
   orgName: string;
   contactPerson: string;
   email: string;
   phone: string;
   website: string;
-  partnerCategory: string;
+  sponsorshipCategory: string;
+  sponsorshipType: string;
+  sponsorshipAmount: number;
   companyDescription: string;
+  expectedContribution: string;
   additionalNotes: string;
 }
 
@@ -27,14 +31,22 @@ const inputErrorClass = 'form-glass-input form-glass-input-error font-body';
 const labelClass = 'form-glass-label font-body';
 const errorTextClass = 'text-xs mt-1 font-body text-[color:var(--badge-text)]';
 
-function getSavedPartnerData(): Partial<PartnerFormData> {
+function formatINR(amount: number): string {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
+
+function getSavedSponsorData(): Partial<SponsorFormData> {
   try {
-    const saved = localStorage.getItem('partnerFormAutoSave');
+    const saved = localStorage.getItem('sponsorFormAutoSave');
     if (!saved) return {};
-    const parsed = JSON.parse(saved) as Partial<PartnerFormData>;
+    const parsed = JSON.parse(saved) as Partial<SponsorFormData>;
     return Object.fromEntries(
       Object.entries(parsed).filter(([, v]) => v !== undefined && v !== null)
-    ) as Partial<PartnerFormData>;
+    ) as Partial<SponsorFormData>;
   } catch {
     return {};
   }
@@ -43,17 +55,17 @@ function getSavedPartnerData(): Partial<PartnerFormData> {
 function scrollFormToFirstError() {
   requestAnimationFrame(() => {
     document
-      .querySelector('.partner-form-scroll .form-glass-input-error')
+      .querySelector('.sponsor-form-scroll .form-glass-input-error')
       ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 }
 
-function PartnerApplicationForm({
+function SponsorApplicationForm({
   isSubmitting,
   onSubmit,
 }: {
   isSubmitting: boolean;
-  onSubmit: (data: PartnerFormData) => void;
+  onSubmit: (data: SponsorFormData) => void;
 }) {
   const {
     register,
@@ -61,22 +73,49 @@ function PartnerApplicationForm({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<PartnerFormData>({
+  } = useForm<SponsorFormData>({
     defaultValues: {
-      partnerCategory: '',
-      ...getSavedPartnerData(),
+      sponsorshipType: '',
+      sponsorshipCategory: '',
+      sponsorshipAmount: 0,
+      expectedContribution: '',
+      ...getSavedSponsorData(),
     },
     shouldFocusError: true,
   });
 
-  const partnerCategory = watch('partnerCategory');
+  const sponsorshipType = watch('sponsorshipType');
+  const sponsorshipAmount = watch('sponsorshipAmount');
+  const selectedTier = SPONSORSHIP_TIERS.find((t) => t.type === sponsorshipType);
 
   useEffect(() => {
     const subscription = watch((value) => {
-      localStorage.setItem('partnerFormAutoSave', JSON.stringify(value));
+      localStorage.setItem('sponsorFormAutoSave', JSON.stringify(value));
     });
     return () => subscription.unsubscribe();
   }, [watch]);
+
+  useEffect(() => {
+    const amount = Number(sponsorshipAmount) || 0;
+    if (amount > 0) {
+      setValue('expectedContribution', formatINR(amount), { shouldValidate: false });
+    } else {
+      setValue(
+        'expectedContribution',
+        'Negotiable after mutual discussion with the organizers',
+        { shouldValidate: false }
+      );
+    }
+  }, [sponsorshipAmount, setValue]);
+
+  const selectTier = (type: string) => {
+    const tier = SPONSORSHIP_TIERS.find((t) => t.type === type);
+    const amount = tier?.indicativeAmount ?? 0;
+    setValue('sponsorshipType', type, { shouldValidate: true });
+    setValue('sponsorshipCategory', type, { shouldValidate: true });
+    setValue('sponsorshipAmount', amount, { shouldValidate: true, shouldDirty: true });
+    setValue('expectedContribution', formatINR(amount), { shouldValidate: false });
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit, scrollFormToFirstError)} className="space-y-2.5">
@@ -89,9 +128,7 @@ function PartnerApplicationForm({
             type="text"
             className={errors.orgName ? inputErrorClass : inputClass}
             placeholder="Company / Organization"
-            {...register('orgName', {
-              required: 'Organization name is required',
-            })}
+            {...register('orgName', { required: 'Organization name is required' })}
           />
           {errors.orgName && <p className={errorTextClass}>{errors.orgName.message}</p>}
         </div>
@@ -140,9 +177,7 @@ function PartnerApplicationForm({
             type="tel"
             className={errors.phone ? inputErrorClass : inputClass}
             placeholder="+91 XXXXX XXXXX"
-            {...register('phone', {
-              required: 'Phone number is required',
-            })}
+            {...register('phone', { required: 'Phone number is required' })}
           />
           {errors.phone && <p className={errorTextClass}>{errors.phone.message}</p>}
         </div>
@@ -161,56 +196,95 @@ function PartnerApplicationForm({
       <div className="clay-card space-y-3 rounded-xl p-3">
         <div>
           <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-            Partner Category <span className="text-red-400">*</span>
+            Sponsorship Category <span className="text-red-400">*</span>
           </p>
           <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
-            Choose how you want to partner with us.
+            Choose a category. Contribution is negotiable after mutual discussion with the
+            organizers — no fixed upper or lower limit.
           </p>
         </div>
 
         <input
           type="hidden"
-          {...register('partnerCategory', {
-            required: 'Please select a partner category',
+          {...register('sponsorshipType', {
+            required: 'Please select a sponsorship category',
           })}
         />
+        <input type="hidden" {...register('sponsorshipCategory')} />
+        <input type="hidden" {...register('expectedContribution')} />
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          {PARTNER_CATEGORIES.map((category) => {
-            const selected = partnerCategory === category;
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {SPONSORSHIP_TIERS.map((tier) => {
+            const selected = sponsorshipType === tier.type;
+            const isTitle = tier.type === 'Title Sponsor';
             return (
               <button
-                key={category}
+                key={tier.type}
                 type="button"
-                onClick={() =>
-                  setValue('partnerCategory', category, {
-                    shouldValidate: true,
-                  })
-                }
-                className={`form-glass-option rounded-xl px-3 py-3 text-center text-sm font-semibold transition-colors ${
+                onClick={() => selectTier(tier.type)}
+                className={`form-glass-option rounded-xl px-4 py-3 text-left transition-colors ${
                   selected ? 'is-selected' : ''
-                }`}
+                } ${isTitle ? 'sm:col-span-2' : ''}`}
               >
-                {category}
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
+                      {tier.type}
+                      {isTitle ? ' — Flagship Partnership' : ''}
+                    </p>
+                    <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+                      Negotiable after mutual discussion with the organizers
+                    </p>
+                  </div>
+                  <span
+                    className="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold"
+                    style={{
+                      background: 'var(--badge-bg)',
+                      color: 'var(--badge-text)',
+                      border: '1px solid var(--badge-border)',
+                    }}
+                  >
+                    Negotiable
+                  </span>
+                </div>
               </button>
             );
           })}
         </div>
-        {errors.partnerCategory && (
-          <p className={errorTextClass}>{errors.partnerCategory.message}</p>
+
+        {errors.sponsorshipType && (
+          <p className={errorTextClass}>{errors.sponsorshipType.message}</p>
+        )}
+
+        {selectedTier && (
+          <div>
+            <label className={labelClass}>Contribution amount (₹)</label>
+            <div
+              className={`${inputClass} cursor-not-allowed select-none opacity-90`}
+              aria-readonly="true"
+              onMouseDown={(e) => e.preventDefault()}
+            >
+              {formatINR(selectedTier.indicativeAmount)}
+            </div>
+            <input type="hidden" {...register('sponsorshipAmount', { valueAsNumber: true })} />
+            <p className="mt-1 text-xs" style={{ color: 'var(--text-muted)' }}>
+              Fixed suggestion for {selectedTier.type}. Final amount is negotiable after mutual
+              discussion with the organizers.
+            </p>
+          </div>
         )}
       </div>
 
       <div>
         <label className={labelClass}>
-          Organization Description <span className="text-red-400">*</span>
+          Company Description <span className="text-red-400">*</span>
         </label>
         <textarea
           rows={3}
           className={errors.companyDescription ? inputErrorClass : inputClass}
-          placeholder="Brief description of your organization and partnership interest"
+          placeholder="Brief description of your company"
           {...register('companyDescription', {
-            required: 'Organization description is required',
+            required: 'Company description is required',
           })}
         />
         {errors.companyDescription && (
@@ -241,7 +315,7 @@ function PartnerApplicationForm({
             Submitting…
           </span>
         ) : (
-          'Submit Partner Application'
+          'Become a Sponsor'
         )}
       </motion.button>
     </form>
@@ -249,35 +323,35 @@ function PartnerApplicationForm({
 }
 
 /**
- * Partner application modal — posts to /api/partner.
+ * Sponsor application modal — posts to /api/sponsor.
  */
-export default function PartnerModal() {
-  const { isPartnerOpen, closePartnerModal } = useRegistration();
+export default function SponsorModal() {
+  const { isSponsorOpen, closeSponsorModal } = useRegistration();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isPartnerOpen) {
+    if (isSponsorOpen) {
       setIsSuccess(false);
       setSubmitError(null);
       setIsSubmitting(false);
       requestAnimationFrame(() => scrollRef.current?.scrollTo({ top: 0 }));
     }
-  }, [isPartnerOpen]);
+  }, [isSponsorOpen]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closePartnerModal();
+      if (e.key === 'Escape') closeSponsorModal();
     };
-    if (isPartnerOpen) window.addEventListener('keydown', onKey);
+    if (isSponsorOpen) window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [isPartnerOpen, closePartnerModal]);
+  }, [isSponsorOpen, closeSponsorModal]);
 
   useEffect(() => {
     const lenis = getLenisInstance();
-    if (isPartnerOpen) {
+    if (isSponsorOpen) {
       document.body.style.overflow = 'hidden';
       lenis?.stop();
     } else {
@@ -288,7 +362,7 @@ export default function PartnerModal() {
       document.body.style.overflow = '';
       getLenisInstance()?.start();
     };
-  }, [isPartnerOpen]);
+  }, [isSponsorOpen]);
 
   useEffect(() => {
     if (!submitError) return;
@@ -296,18 +370,25 @@ export default function PartnerModal() {
     return () => clearTimeout(t);
   }, [submitError]);
 
-  const onPartnerSubmit = useCallback(async (data: PartnerFormData) => {
+  const onSponsorSubmit = useCallback(async (data: SponsorFormData) => {
     setIsSubmitting(true);
     setSubmitError(null);
 
     try {
-      const response = await fetch('/api/partner', {
+      const response = await fetch('/api/sponsor', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...data,
           organizationName: data.orgName,
-          partnerCategory: data.partnerCategory,
+          sponsorshipType: data.sponsorshipType,
+          sponsorshipAmount: data.sponsorshipAmount,
+          sponsorshipCategory: data.sponsorshipType || data.sponsorshipCategory,
+          expectedContribution:
+            data.expectedContribution ||
+            (data.sponsorshipAmount > 0
+              ? formatINR(data.sponsorshipAmount)
+              : 'Negotiable after mutual discussion with the organizers'),
           timestamp: new Date().toISOString(),
         }),
       });
@@ -324,7 +405,7 @@ export default function PartnerModal() {
       }
 
       setIsSuccess(true);
-      localStorage.removeItem('partnerFormAutoSave');
+      localStorage.removeItem('sponsorFormAutoSave');
     } catch (err) {
       const detail =
         err instanceof Error && err.message
@@ -338,7 +419,7 @@ export default function PartnerModal() {
 
   return (
     <AnimatePresence>
-      {isPartnerOpen && (
+      {isSponsorOpen && (
         <motion.div
           className="fixed inset-0 z-[80] flex items-stretch justify-center p-0 sm:items-center sm:p-4"
           initial={{ opacity: 0 }}
@@ -349,7 +430,7 @@ export default function PartnerModal() {
           <motion.div
             className="absolute inset-0 backdrop-blur-xl"
             style={{ background: 'var(--overlay-bg)' }}
-            onClick={closePartnerModal}
+            onClick={closeSponsorModal}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -364,7 +445,7 @@ export default function PartnerModal() {
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
-            aria-labelledby="partner-modal-title"
+            aria-labelledby="sponsor-modal-title"
           >
             <div
               className="relative z-20 shrink-0 border-b px-6 pb-4 pt-[max(1.25rem,env(safe-area-inset-top))] sm:pt-5"
@@ -374,25 +455,25 @@ export default function PartnerModal() {
               }}
             >
               <h2
-                id="partner-modal-title"
+                id="sponsor-modal-title"
                 className="pr-12 font-heading text-xl font-bold md:text-2xl"
                 style={{ color: 'var(--text-primary)' }}
               >
-                Partner Application
+                Sponsor Application
               </h2>
               <p className="mt-1 text-sm" style={{ color: 'var(--text-muted)' }}>
-                Apply as a partner for Startup Confluence 2.0
+                Apply as a sponsor for Startup Confluence 2.0
               </p>
               <button
                 type="button"
-                onClick={closePartnerModal}
+                onClick={closeSponsorModal}
                 className="absolute right-4 top-4 z-30 flex h-9 w-9 items-center justify-center rounded-full border transition-colors"
                 style={{
                   borderColor: 'var(--border)',
                   background: 'var(--surface)',
                   color: 'var(--text-secondary)',
                 }}
-                aria-label="Close partner form"
+                aria-label="Close sponsor form"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -401,7 +482,7 @@ export default function PartnerModal() {
             <div
               ref={scrollRef}
               data-lenis-prevent
-              className="partner-form-scroll registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 md:px-8 md:py-6"
+              className="sponsor-form-scroll registration-form-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 sm:px-6 md:px-8 md:py-6"
             >
               <AnimatePresence mode="wait">
                 {isSuccess ? (
@@ -417,15 +498,16 @@ export default function PartnerModal() {
                       className="font-heading text-2xl font-bold"
                       style={{ color: 'var(--text-primary)' }}
                     >
-                      Partner Application Received
+                      Sponsorship Enquiry Received
                     </h3>
                     <p className="mt-2 max-w-sm text-sm" style={{ color: 'var(--text-secondary)' }}>
-                      Thanks for applying as a partner. A confirmation email with your partner
-                      category and next steps has been sent — check Inbox and Spam.
+                      Thanks for your sponsorship interest. A confirmation email with your
+                      sponsorship type, amount, and next steps has been sent — check Inbox and
+                      Spam.
                     </p>
                     <button
                       type="button"
-                      onClick={closePartnerModal}
+                      onClick={closeSponsorModal}
                       className="mt-6 rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white"
                     >
                       Close
@@ -438,9 +520,9 @@ export default function PartnerModal() {
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                   >
-                    <PartnerApplicationForm
+                    <SponsorApplicationForm
                       isSubmitting={isSubmitting}
-                      onSubmit={onPartnerSubmit}
+                      onSubmit={onSponsorSubmit}
                     />
                   </motion.div>
                 )}

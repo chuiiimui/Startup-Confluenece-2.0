@@ -62,25 +62,25 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
       };
     }
 
-    const beat = compact ? 0.72 : 1;
+    const beat = compact ? 0.55 : 0.65;
 
     const sequence = async () => {
-      await wait(200 * beat);
+      await wait(160 * beat);
       if (cancelled) return;
       setStep(1);
-      await wait(850 * beat);
+      await wait(520 * beat);
       if (cancelled) return;
       setStep(2);
-      await wait(850 * beat);
+      await wait(520 * beat);
       if (cancelled) return;
       setStep(3);
-      await wait(900 * beat);
+      await wait(560 * beat);
       if (cancelled) return;
       setStep(4);
-      await wait(700 * beat);
+      await wait(420 * beat);
       if (cancelled) return;
       setStep(5);
-      await wait(1500 * beat);
+      await wait(700 * beat);
       if (cancelled) return;
       endIntro();
     };
@@ -102,14 +102,13 @@ export const PremiumLoader = ({ onComplete }: PremiumLoaderProps) => {
         <motion.div
           className="fixed inset-0 z-[200] flex flex-col items-center justify-center overflow-hidden"
           style={{ backgroundColor: 'var(--bg)' }}
-          initial={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          initial={{ opacity: 1, scale: 1 }}
+          animate={{ opacity: 1, scale: 1 }}
           exit={{
             opacity: 0,
-            scale: 1.06,
-            filter: 'blur(14px)',
+            scale: 1.03,
           }}
-          transition={{ duration: 0.7, ease }}
+          transition={{ duration: 0.45, ease }}
         >
           {/* Soft accent bloom during finale / exit */}
           <motion.div

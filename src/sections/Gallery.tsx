@@ -51,11 +51,11 @@ const Gallery = () => {
               }
             >
               <DepthFrame
-                className="clay-card group cursor-pointer overflow-hidden rounded-2xl"
+                className="clay-card clay-card--media group cursor-pointer overflow-hidden rounded-2xl"
                 data-cursor="image"
                 onClick={() => setSelectedImage(image)}
               >
-                <div className="clay-surface relative aspect-[4/3] w-full overflow-hidden">
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
                   <ImageReveal
                     src={image.thumb || image.src}
                     alt={image.alt || image.title}

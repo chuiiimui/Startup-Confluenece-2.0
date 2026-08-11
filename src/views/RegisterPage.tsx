@@ -176,9 +176,14 @@ function RegisterPageContent() {
                 Continue to form
               </Button>
               <p className="mt-3 hidden text-center text-xs sm:block" style={{ color: 'var(--text-muted)' }}>
-                Looking to sponsor or partner?{' '}
+                Looking to sponsor?{' '}
+                <Link href="/sponsors" className="font-semibold text-accent hover:underline">
+                  Sponsorship offerings
+                </Link>
+                {' · '}
+                Partner?{' '}
                 <Link href="/partner" className="font-semibold text-accent hover:underline">
-                  View offerings
+                  Partnership offerings
                 </Link>
               </p>
             </div>
@@ -202,9 +207,12 @@ function RegisterPageContent() {
           Continue as {active.title}
         </Button>
         <p className="mt-2 text-center text-[11px]" style={{ color: 'var(--text-muted)' }}>
-          Sponsor or partner?{' '}
+          <Link href="/sponsors" className="font-semibold text-accent">
+            Sponsor
+          </Link>
+          {' · '}
           <Link href="/partner" className="font-semibold text-accent">
-            View offerings
+            Partner
           </Link>
         </p>
       </div>

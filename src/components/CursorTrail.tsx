@@ -11,6 +11,7 @@ export default function CursorTrail() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef<Point[]>([]);
   const rafRef = useRef(0);
+  const runningRef = useRef(false);
   const { isLight } = useTheme();
   const strokeRef = useRef('#BF00FF');
   const glowRef = useRef('rgba(191,0,255,0.95)');
@@ -31,7 +32,7 @@ export default function CursorTrail() {
     canvas.classList.remove('hidden');
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       canvas.width = Math.floor(window.innerWidth * dpr);
       canvas.height = Math.floor(window.innerHeight * dpr);
       canvas.style.width = `${window.innerWidth}px`;
@@ -42,19 +43,11 @@ export default function CursorTrail() {
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    let lastSample = 0;
-    const onMove = (e: MouseEvent) => {
-      const now = performance.now();
-      if (now - lastSample < 8) return;
-      lastSample = now;
-      const pts = pointsRef.current;
-      const last = pts[pts.length - 1];
-      if (last && Math.hypot(e.clientX - last.x, e.clientY - last.y) < 2) return;
-      pts.push({ x: e.clientX, y: e.clientY, t: now });
-      if (pts.length > MAX_POINTS) pts.shift();
+    const stopLoop = () => {
+      runningRef.current = false;
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     };
-
-    window.addEventListener('mousemove', onMove, { passive: true });
 
     const draw = () => {
       const now = performance.now();
@@ -87,14 +80,14 @@ export default function CursorTrail() {
         ctx.strokeStyle = glow;
         ctx.lineWidth = 5.5;
         ctx.shadowColor = glow;
-        ctx.shadowBlur = 16;
+        ctx.shadowBlur = 12;
         ctx.globalAlpha = 0.4;
         ctx.stroke();
 
         ctx.strokeStyle = stroke;
         ctx.lineWidth = 1.75;
         ctx.shadowColor = stroke;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 6;
         ctx.globalAlpha = 1;
         ctx.stroke();
 
@@ -102,19 +95,44 @@ export default function CursorTrail() {
         ctx.arc(tip.x, tip.y, 2, 0, Math.PI * 2);
         ctx.fillStyle = isLight ? '#3E2922' : '#fff7ed';
         ctx.shadowColor = stroke;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 10;
         ctx.fill();
       }
 
       ctx.globalAlpha = 1;
       ctx.shadowBlur = 0;
+
+      if (pts.length === 0) {
+        stopLoop();
+        return;
+      }
+
       rafRef.current = requestAnimationFrame(draw);
     };
 
-    rafRef.current = requestAnimationFrame(draw);
+    const startLoop = () => {
+      if (runningRef.current) return;
+      runningRef.current = true;
+      rafRef.current = requestAnimationFrame(draw);
+    };
+
+    let lastSample = 0;
+    const onMove = (e: MouseEvent) => {
+      const now = performance.now();
+      if (now - lastSample < 12) return;
+      lastSample = now;
+      const pts = pointsRef.current;
+      const last = pts[pts.length - 1];
+      if (last && Math.hypot(e.clientX - last.x, e.clientY - last.y) < 2) return;
+      pts.push({ x: e.clientX, y: e.clientY, t: now });
+      if (pts.length > MAX_POINTS) pts.shift();
+      startLoop();
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
 
     return () => {
-      cancelAnimationFrame(rafRef.current);
+      stopLoop();
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', onMove);
     };

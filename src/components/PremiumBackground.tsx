@@ -435,9 +435,10 @@ function TechCurves({ reduceMotion }: { reduceMotion: boolean }) {
  * waves, stripes, curves, atoms, hex/chips, circuit nodes.
  */
 export default function PremiumBackground() {
-  const { enableParallax, isMobile, reduceMotion } = usePerfMode();
+  const { enableParallax, isMobile, reduceMotion, mode } = usePerfMode();
   const { isLight } = useTheme();
   const decor = useMemo(() => getBackgroundDecor(isLight), [isLight]);
+  const lite = mode === 'low' || reduceMotion || !enableParallax;
 
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
@@ -455,9 +456,7 @@ export default function PremiumBackground() {
   const fieldY2 = useTransform(smoothScroll, [0, 1], ['0%', '-12%']);
   const fieldY3 = useTransform(smoothScroll, [0, 1], ['0%', '10%']);
   useEffect(() => {
-    // Always track cursor on fine-pointer devices so neon follower stays alive
-    // even when perf mode disables parallax transforms.
-    if (window.matchMedia('(pointer: coarse)').matches) return;
+    if (lite || window.matchMedia('(pointer: coarse)').matches) return;
 
     const onMove = (e: MouseEvent) => {
       mouseX.set(e.clientX / window.innerWidth);
@@ -466,27 +465,28 @@ export default function PremiumBackground() {
 
     window.addEventListener('mousemove', onMove, { passive: true });
     return () => window.removeEventListener('mousemove', onMove);
-  }, [mouseX, mouseY]);
+  }, [lite, mouseX, mouseY]);
 
-  const bubbles = isMobile ? decor.bubbles.slice(0, 6) : decor.bubbles;
-  const shapes = isMobile ? decor.shapes.slice(0, 5) : decor.shapes;
-  const nodes = isMobile ? decor.nodes.slice(0, 6) : decor.nodes;
-  const stripes = isMobile ? decor.stripes.slice(0, 3) : decor.stripes;
-  const bars = isMobile ? decor.bars.slice(0, 3) : decor.bars;
+  const bubbles = lite ? decor.bubbles.slice(0, 3) : isMobile ? decor.bubbles.slice(0, 6) : decor.bubbles.slice(0, 8);
+  const shapes = lite ? decor.shapes.slice(0, 2) : isMobile ? decor.shapes.slice(0, 5) : decor.shapes.slice(0, 6);
+  const nodes = lite ? decor.nodes.slice(0, 3) : isMobile ? decor.nodes.slice(0, 6) : decor.nodes.slice(0, 8);
+  const stripes = lite ? [] : isMobile ? decor.stripes.slice(0, 3) : decor.stripes.slice(0, 4);
+  const bars = lite ? [] : isMobile ? decor.bars.slice(0, 3) : decor.bars.slice(0, 4);
   const hexStroke = isLight ? '%2306B6D4' : '%23A855F7';
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
       <div className="absolute inset-0" style={{ background: 'var(--bg-canvas)' }} />
 
+      {/* Soft fields use large radial fills — avoid live filter:blur() compositor cost */}
       <motion.div
         className="absolute -left-[18%] -top-[20%] h-[60vmax] w-[60vmax] rounded-full"
         style={{
           y: enableParallax ? fieldY1 : 0,
           background: 'var(--bg-field-1)',
-          filter: 'blur(28px)',
+          opacity: 0.85,
         }}
-        animate={reduceMotion ? undefined : { opacity: [0.7, 1, 0.7] }}
+        animate={lite ? undefined : { opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
@@ -494,9 +494,9 @@ export default function PremiumBackground() {
         style={{
           y: enableParallax ? fieldY2 : 0,
           background: 'var(--bg-field-2)',
-          filter: 'blur(26px)',
+          opacity: 0.8,
         }}
-        animate={reduceMotion ? undefined : { opacity: [0.65, 0.95, 0.65] }}
+        animate={lite ? undefined : { opacity: [0.65, 0.95, 0.65] }}
         transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
       <motion.div
@@ -504,9 +504,9 @@ export default function PremiumBackground() {
         style={{
           y: enableParallax ? fieldY3 : 0,
           background: 'var(--bg-field-3)',
-          filter: 'blur(30px)',
+          opacity: 0.75,
         }}
-        animate={reduceMotion ? undefined : { opacity: [0.55, 0.9, 0.55] }}
+        animate={lite ? undefined : { opacity: [0.55, 0.9, 0.55] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
       />
 
@@ -531,10 +531,9 @@ export default function PremiumBackground() {
         }}
       />
 
-      {/* Waves, DNA curves, radar arcs, circuit traces */}
-      <TechCurves reduceMotion={reduceMotion} />
+      {/* Waves / atoms only on high-perf desktops */}
+      {!lite && <TechCurves reduceMotion={reduceMotion} />}
 
-      {/* Neon stripes */}
       {stripes.map((stripe) => (
         <NeonStripe
           key={stripe.id}
@@ -542,7 +541,7 @@ export default function PremiumBackground() {
           mx={springX}
           my={springY}
           parallax={enableParallax}
-          reduceMotion={reduceMotion}
+          reduceMotion={reduceMotion || lite}
         />
       ))}
 
@@ -553,7 +552,7 @@ export default function PremiumBackground() {
           mx={springX}
           my={springY}
           parallax={enableParallax}
-          reduceMotion={reduceMotion}
+          reduceMotion={reduceMotion || lite}
         />
       ))}
 
@@ -567,7 +566,7 @@ export default function PremiumBackground() {
         />
       ))}
 
-      {!isMobile && (
+      {!lite && !isMobile && (
         <>
           <AtomOrbital
             className="left-[8%] top-[62%] sm:left-[10%]"
@@ -608,7 +607,7 @@ export default function PremiumBackground() {
           mx={springX}
           my={springY}
           parallax={enableParallax}
-          reduceMotion={reduceMotion}
+          reduceMotion={reduceMotion || lite}
         />
       ))}
 

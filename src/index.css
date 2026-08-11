@@ -427,114 +427,6 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
-  /* Text gradients - theme aware */
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent;
-  }
-
-  .text-gradient-light {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(to right, var(--text-secondary), var(--text-muted));
-  }
-
-  /* Glass aliases → claymorphism (unified surface language) */
-  .glass-card,
-  .glass {
-    background: linear-gradient(
-      155deg,
-      var(--clay-from) 0%,
-      var(--clay-mid) 45%,
-      var(--clay-to) 100%
-    );
-    backdrop-filter: blur(var(--glass-blur)) saturate(165%);
-    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(165%);
-    border: 1px solid var(--clay-border);
-    box-shadow: var(--clay-shadow);
-    color: var(--clay-text);
-    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s ease, background 0.35s ease, border-color 0.35s ease;
-  }
-
-  .glass-card:hover,
-  .glass:hover {
-    background: linear-gradient(
-      155deg,
-      var(--clay-hover-from) 0%,
-      var(--clay-hover-mid) 45%,
-      var(--clay-hover-to) 100%
-    );
-    border-color: var(--clay-border-hover);
-    box-shadow: var(--clay-shadow-hover);
-    transform: translateY(-3px);
-  }
-
-  /* Premium glow hover utility */
-  .glow-hover {
-    transition: box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .glow-hover:hover {
-    box-shadow: 0 0 40px rgba(255, 122, 0, 0.28);
-    transform: translateY(-3px);
-  }
-
-  /* Glassmorphism — structure preserved, colors via theme tokens */
-  .clay-timer-shell {
-    background: linear-gradient(
-      145deg,
-      var(--timer-shell-from) 0%,
-      var(--timer-shell-mid) 45%,
-      var(--timer-shell-to) 100%
-    );
-    backdrop-filter: blur(22px) saturate(160%);
-    -webkit-backdrop-filter: blur(22px) saturate(160%);
-    border: 1px solid var(--clay-border);
-    box-shadow:
-      var(--clay-shadow),
-      inset 0 1px 0 var(--glass-highlight),
-      0 0 0 1px rgba(255, 255, 255, 0.04);
-  }
-
-  .clay-timer-cell {
-    background: linear-gradient(
-      155deg,
-      var(--timer-cell-from) 0%,
-      var(--timer-cell-mid) 50%,
-      var(--timer-cell-to) 100%
-    );
-    backdrop-filter: blur(18px) saturate(170%);
-    -webkit-backdrop-filter: blur(18px) saturate(170%);
-    border: 1px solid var(--clay-border);
-    box-shadow:
-      0 10px 28px rgba(0, 0, 0, 0.10),
-      inset 0 1px 0 var(--glass-highlight-strong),
-      0 0 20px rgba(255, 122, 0, 0.12);
-  }
-
-  .clay-timer-cell:hover {
-    background: linear-gradient(
-      155deg,
-      var(--timer-cell-hover-from) 0%,
-      var(--timer-cell-hover-mid) 50%,
-      var(--timer-cell-hover-to) 100%
-    );
-    border-color: var(--clay-border-hover);
-    box-shadow:
-      0 14px 36px rgba(0, 0, 0, 0.14),
-      inset 0 1px 0 var(--glass-highlight-strong),
-      0 0 28px rgba(255, 122, 0, 0.24);
-  }
-
-  .clay-timer-value {
-    color: var(--timer-value);
-    text-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.12),
-      0 0 14px rgba(255, 122, 0, 0.22);
-  }
-
-  .clay-timer-label {
-    color: var(--timer-label);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
-  }
 
   /* Claymorphism — hard extruded panels */
   .clay-card {
@@ -576,11 +468,8 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(
-      180deg,
-      transparent 55%,
-      rgba(0, 0, 0, 0.08) 100%
-    );
+    /* Single soft edge only — avoid a second color band at card footers */
+    background: none;
     z-index: 1;
   }
 
@@ -602,11 +491,7 @@
   }
 
   [data-theme='light'] .clay-card::after {
-    background: linear-gradient(
-      180deg,
-      transparent 58%,
-      rgba(62, 41, 34, 0.05) 100%
-    );
+    background: none;
   }
 
   .clay-card:hover,
@@ -709,14 +594,6 @@
     color: var(--clay-text);
   }
 
-  .clay-card--peach,
-  .clay-chip--peach,
-  .clay-pill--peach {
-    background: linear-gradient(155deg, var(--clay-peach-from), var(--clay-peach-mid), var(--clay-peach-to));
-    border-color: rgba(251, 146, 60, 0.45);
-    color: var(--clay-text);
-  }
-
   .clay-card--blue,
   .clay-chip--blue,
   .clay-pill--blue {
@@ -743,8 +620,6 @@
   /* Force readable text inside every card / panel */
   .clay-card,
   .clay-surface,
-  .glass-card,
-  .glass,
   .form-glass-panel {
     color: var(--clay-text);
   }
@@ -758,9 +633,6 @@
   .clay-surface h1,
   .clay-surface h2,
   .clay-surface h3,
-  .glass-card h1,
-  .glass-card h2,
-  .glass-card h3,
   .form-glass-panel h1,
   .form-glass-panel h2,
   .form-glass-panel h3 {
@@ -769,14 +641,12 @@
 
   .clay-card p,
   .clay-surface p,
-  .glass-card p,
   .form-glass-panel p,
   .clay-card li {
     color: var(--text-secondary);
   }
 
   .clay-card .font-heading,
-  .glass-card .font-heading,
   .form-glass-panel .font-heading {
     color: var(--text-primary);
   }
@@ -909,69 +779,6 @@
     background: transparent;
   }
 
-  /* Hero title glows — theme-tuned */
-  .hero-glow-startup {
-    color: var(--text-primary);
-    text-shadow: var(--hero-startup-glow);
-    animation: heroTitleGlow 4.5s ease-in-out infinite;
-  }
-
-  .hero-glow-confluence {
-    background-image: linear-gradient(
-      90deg,
-      var(--hero-confluence-from),
-      var(--hero-confluence-via),
-      var(--hero-confluence-to)
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    /* Avoid filter + bg-clip (creates a gray rectangle, esp. in light mode) */
-    filter: none;
-    text-shadow: none;
-    animation: none;
-  }
-
-  .hero-glow-version {
-    background-image: linear-gradient(
-      135deg,
-      var(--hero-version-from),
-      var(--hero-version-to)
-    );
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    filter: none;
-    animation: none;
-  }
-
-  /* Soft glow avoided in light mode — filter + bg-clip can muddy text */
-  .hero-glow-confluence,
-  .hero-glow-version {
-    filter: none;
-    animation: none;
-  }
-
-  @keyframes heroTitleGlow {
-    0%, 100% {
-      text-shadow: var(--hero-startup-glow);
-    }
-    50% {
-      text-shadow:
-        0 0 18px rgba(255, 122, 0, 0.24),
-        0 0 36px rgba(234, 88, 12, 0.14);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-glow-startup,
-    .hero-glow-confluence,
-    .hero-glow-version {
-      animation: none !important;
-      filter: none !important;
-    }
-  }
-
   /* Safe area padding */
   .safe-area-pt {
     padding-top: env(safe-area-inset-top);
@@ -1006,17 +813,13 @@
     border-color: var(--border);
   }
 
-  /* Ensure clay/glass content inherits readable theme text */
+  /* Ensure clay content inherits readable theme text */
   .clay-card,
-  .glass,
-  .glass-card,
   .form-glass-panel {
     color: var(--text-primary);
   }
 
-  .clay-card p,
-  .glass p,
-  .glass-card p {
+  .clay-card p {
     color: var(--text-secondary);
   }
 }
@@ -1129,24 +932,13 @@ html[data-perf='low'] {
   --glass-blur: 0px;
 }
 
-html[data-perf='low'] .glass-card,
-html[data-perf='low'] .glass,
 html[data-perf='low'] .clay-card,
 html[data-perf='low'] .clay-chip,
 html[data-perf='low'] .clay-pill,
-html[data-perf='low'] .clay-timer-shell,
-html[data-perf='low'] .clay-timer-cell,
 html[data-perf='low'] .form-glass-panel,
 html[data-perf='low'] .form-glass-input {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-}
-
-html[data-perf='low'] .hero-glow-startup,
-html[data-perf='low'] .hero-glow-confluence,
-html[data-perf='low'] .hero-glow-version {
-  animation: none !important;
-  filter: none !important;
 }
 
 html[data-perf='low'] .backdrop-blur-xl,
@@ -1174,12 +966,7 @@ html[data-mobile='true'] main > section:first-of-type,
 }
 
 @media (pointer: coarse), (max-width: 768px) {
-  .glass-card:hover,
   .clay-card:hover {
-    transform: none;
-  }
-
-  .glow-hover:hover {
     transform: none;
   }
 }
@@ -1352,11 +1139,6 @@ html.lenis body {
 .clay-pill.is-active,
 .clay-icon,
 .clay-surface,
-.clay-timer-shell,
-.clay-timer-cell,
-.clay-timer-cell:hover,
-.glass-card,
-.glass,
 .form-glass-panel,
 [class*='clay-card'],
 [class*='clay-chip'],
@@ -1366,4 +1148,30 @@ html.lenis body {
 
 .swiper-pagination-bullet-active {
   background: var(--brand-orange) !important;
+}
+
+@keyframes hero-marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.hero-marquee {
+  animation: hero-marquee-x 22s linear infinite;
+  will-change: transform;
+}
+
+html[data-perf='low'] .hero-marquee {
+  animation: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-marquee {
+    animation: none;
+    will-change: auto;
+  }
 }

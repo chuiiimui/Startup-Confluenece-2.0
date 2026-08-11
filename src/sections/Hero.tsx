@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight, Calendar, MapPin } from 'lucide-react';
 import { FaLinkedin, FaInstagram, FaFacebook } from 'react-icons/fa';
@@ -9,8 +9,18 @@ import { SOCIAL_LINKS } from '../constants';
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const Hero = () => {
-  const router = useRouter();
+const MARQUEE_ITEMS = [
+  'Pitch Arena',
+  'Startup Expo',
+  'Investor Lounge',
+  'Mentorship',
+  'Networking',
+  'Keynotes',
+  'UIH Prayagraj',
+] as const;
+
+/** Isolated so the 1s timer does not re-render the whole hero tree. */
+const HeroCountdown = memo(function HeroCountdown() {
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -37,6 +47,46 @@ const Hero = () => {
   }, []);
 
   return (
+    <div className="clay-card clay-card--blue inline-flex gap-2.5 rounded-[1.75rem] px-3.5 py-3.5 sm:gap-4 sm:rounded-[2rem] sm:px-6 sm:py-5">
+      {[
+        { label: 'Days', value: timeLeft.days },
+        { label: 'Hrs', value: timeLeft.hours },
+        { label: 'Min', value: timeLeft.minutes },
+        { label: 'Sec', value: timeLeft.seconds },
+      ].map((item, i) => (
+        <Fragment key={item.label}>
+          {i > 0 && (
+            <span
+              className="self-center font-heading text-xl font-bold sm:text-3xl"
+              style={{ color: 'var(--text-muted)', opacity: 0.45 }}
+            >
+              :
+            </span>
+          )}
+          <div className="flex min-w-[3.25rem] flex-col items-center sm:min-w-[4.5rem]">
+            <span
+              className="font-heading text-3xl font-extrabold tabular-nums leading-none sm:text-5xl md:text-6xl"
+              style={{ color: 'var(--timer-value)' }}
+            >
+              {String(item.value).padStart(2, '0')}
+            </span>
+            <span
+              className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.18em] sm:mt-2 sm:text-[11px]"
+              style={{ color: 'var(--timer-label)' }}
+            >
+              {item.label}
+            </span>
+          </div>
+        </Fragment>
+      ))}
+    </div>
+  );
+});
+
+const Hero = () => {
+  const router = useRouter();
+
+  return (
     <section
       id="home"
       className="relative flex min-h-[100dvh] w-full items-center overflow-hidden pb-28 pt-28 lg:pb-20 lg:pt-32"
@@ -48,28 +98,48 @@ const Hero = () => {
       />
 
       <div className="relative z-20 mx-auto flex w-full max-w-7xl flex-col items-center px-4 sm:px-8 lg:px-12">
-        <motion.p
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease }}
-          className="mb-4 text-[10px] font-bold uppercase tracking-[0.42em] sm:text-xs"
-          style={{ color: 'var(--brand-sky)' }}
+          className="mb-4 flex flex-col items-center gap-1.5 text-center"
         >
-          We Are
-        </motion.p>
+          <p
+            className="text-sm font-bold uppercase tracking-[0.16em] sm:text-base sm:tracking-[0.2em] md:text-lg"
+            style={{ color: 'var(--text-primary)' }}
+          >
+            United Institute of Technology
+          </p>
+          <p
+            className="text-xs font-semibold uppercase tracking-[0.28em] sm:text-sm sm:tracking-[0.32em] md:text-base"
+            style={{ color: 'var(--brand-sky)' }}
+          >
+            Presents
+          </p>
+        </motion.div>
 
         {/* Single-line brand title — matches pin giant headline */}
         <motion.h1
-          initial={{ opacity: 0, y: 40, filter: 'blur(10px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          transition={{ duration: 1, delay: 0.08, ease }}
-          className="w-full text-center font-heading font-black uppercase leading-none tracking-[-0.04em]"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.85, delay: 0.08, ease }}
+          className="w-full text-center font-heading font-black uppercase leading-[0.92] tracking-[-0.045em]"
           style={{ color: 'var(--text-primary)' }}
         >
-          <span className="inline-block whitespace-nowrap text-[clamp(1.05rem,4.6vw,5.5rem)]">
-            Startup Confluence{' '}
+          <span className="inline-block whitespace-nowrap text-[clamp(1.55rem,6.85vw,8rem)] font-black">
             <span
-              className="bg-clip-text text-transparent"
+              className="font-black"
+              style={{
+                color: '#FF5F1F',
+                textShadow:
+                  '0 0 12px rgba(255, 95, 31, 0.65), 0 0 28px rgba(255, 122, 0, 0.45)',
+              }}
+            >
+              Startup
+            </span>{' '}
+            Confluence{' '}
+            <span
+              className="bg-clip-text font-black text-transparent"
               style={{
                 backgroundImage:
                   'linear-gradient(105deg, var(--hero-confluence-from) 0%, var(--hero-confluence-via) 45%, var(--hero-confluence-to) 100%)',
@@ -84,11 +154,10 @@ const Hero = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.2, ease }}
-          className="mx-auto mt-6 max-w-xl text-center text-xs font-medium uppercase leading-relaxed tracking-[0.08em] sm:mt-8 sm:text-sm"
+          className="mx-auto mt-6 max-w-2xl text-center text-sm font-bold uppercase leading-relaxed tracking-[0.08em] sm:mt-8 sm:text-base md:text-lg"
           style={{ color: 'var(--text-secondary)' }}
         >
-          India&apos;s premier startup summit — crafting bold connections between founders,
-          investors &amp; innovators.
+          An Initiative of UNITED INCUBATION HUB
         </motion.p>
 
         <motion.div
@@ -113,39 +182,7 @@ const Hero = () => {
           transition={{ duration: 0.75, delay: 0.3, ease }}
           className="mt-8 flex flex-col items-center gap-6 sm:mt-10 sm:gap-7"
         >
-          <div className="clay-card clay-card--blue inline-flex gap-3 rounded-[2rem] px-4 py-4 sm:gap-5 sm:rounded-[2.25rem] sm:px-8 sm:py-6">
-            {[
-              { label: 'Days', value: timeLeft.days },
-              { label: 'Hrs', value: timeLeft.hours },
-              { label: 'Min', value: timeLeft.minutes },
-              { label: 'Sec', value: timeLeft.seconds },
-            ].map((item, i) => (
-              <Fragment key={item.label}>
-                {i > 0 && (
-                  <span
-                    className="self-center font-heading text-2xl font-bold sm:text-4xl"
-                    style={{ color: 'var(--text-muted)', opacity: 0.45 }}
-                  >
-                    :
-                  </span>
-                )}
-                <div className="flex min-w-[3.75rem] flex-col items-center sm:min-w-[5.25rem]">
-                  <span
-                    className="font-heading text-4xl font-extrabold tabular-nums leading-none sm:text-6xl md:text-7xl"
-                    style={{ color: 'var(--timer-value)' }}
-                  >
-                    {String(item.value).padStart(2, '0')}
-                  </span>
-                  <span
-                    className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] sm:text-xs"
-                    style={{ color: 'var(--timer-label)' }}
-                  >
-                    {item.label}
-                  </span>
-                </div>
-              </Fragment>
-            ))}
-          </div>
+          <HeroCountdown />
 
           <PillCta
             tone="gradient"
@@ -157,7 +194,7 @@ const Hero = () => {
           </PillCta>
         </motion.div>
 
-        {/* Sliding marquee strip */}
+        {/* Sliding marquee strip — CSS animation (cheaper than Framer infinite x) */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
@@ -165,23 +202,13 @@ const Hero = () => {
           className="relative mt-14 w-full overflow-hidden py-3"
           style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}
         >
-          <motion.div
-            className="flex w-max gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.28em] sm:text-sm"
+          <div
+            className="hero-marquee flex w-max gap-10 whitespace-nowrap text-xs font-bold uppercase tracking-[0.28em] sm:text-sm"
             style={{ color: 'var(--text-muted)' }}
-            animate={{ x: ['0%', '-50%'] }}
-            transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
           >
             {[0, 1].map((copy) => (
-              <div key={copy} className="flex gap-10">
-                {[
-                  'Pitch Arena',
-                  'Startup Expo',
-                  'Investor Lounge',
-                  'Mentorship',
-                  'Networking',
-                  'Keynotes',
-                  'UIH Prayagraj',
-                ].map((item) => (
+              <div key={copy} className="flex gap-10" aria-hidden={copy === 1}>
+                {MARQUEE_ITEMS.map((item) => (
                   <span key={`${copy}-${item}`} className="flex items-center gap-10">
                     {item}
                     <span style={{ color: 'var(--brand-orange)', opacity: 0.75 }}>✦</span>
@@ -189,7 +216,7 @@ const Hero = () => {
                 ))}
               </div>
             ))}
-          </motion.div>
+          </div>
         </motion.div>
       </div>
 

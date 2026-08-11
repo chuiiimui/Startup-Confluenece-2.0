@@ -1,11 +1,10 @@
 import { NavItem } from '../types';
 
 /**
- * Nav follows homepage scroll order first, then satellite pages.
+ * Full nav — shown as one aligned row on desktop; hamburger list on mobile.
  * Hash hrefs scroll on `/`; path hrefs navigate.
  */
 export const NAV_ITEMS: NavItem[] = [
-  // Homepage flow
   { label: 'Home', href: '/' },
   { label: 'About', href: '/#about' },
   { label: 'Highlights', href: '/#highlights' },
@@ -13,13 +12,13 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Team', href: '/#team' },
   { label: 'Register', href: '/#register' },
   { label: 'Contact', href: '/#contact' },
-  // More pages
   { label: 'Speakers', href: '/speakers' },
   { label: 'Experience', href: '/experience' },
   { label: 'Schedule', href: '/schedule' },
   { label: 'Expo', href: '/expo' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'Sponsors', href: '/sponsors' },
+  { label: 'Partner', href: '/partner' },
   { label: 'Venue', href: '/venue' },
 ];
 
