@@ -19,7 +19,7 @@ interface PartnerFormData {
   website: string;
   partnerCategory: string;
   companyDescription: string;
-  additionalNotes: string;
+  yourOffering: string;
 }
 
 const inputClass = 'form-glass-input font-body';
@@ -219,12 +219,12 @@ function PartnerApplicationForm({
       </div>
 
       <div>
-        <label className={labelClass}>Additional Notes</label>
+        <label className={labelClass}>Your Offering</label>
         <textarea
           rows={2}
           className={inputClass}
-          placeholder="Any specific requirements or notes"
-          {...register('additionalNotes')}
+          placeholder="Describe what you can offer as a partner"
+          {...register('yourOffering')}
         />
       </div>
 
@@ -308,6 +308,8 @@ export default function PartnerModal() {
           ...data,
           organizationName: data.orgName,
           partnerCategory: data.partnerCategory,
+          yourOffering: data.yourOffering,
+          additionalNotes: data.yourOffering,
           timestamp: new Date().toISOString(),
         }),
       });

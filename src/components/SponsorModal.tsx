@@ -23,7 +23,7 @@ interface SponsorFormData {
   sponsorshipAmount: number;
   companyDescription: string;
   expectedContribution: string;
-  additionalNotes: string;
+  yourOffering: string;
 }
 
 const inputClass = 'form-glass-input font-body';
@@ -293,12 +293,12 @@ function SponsorApplicationForm({
       </div>
 
       <div>
-        <label className={labelClass}>Additional Notes</label>
+        <label className={labelClass}>Your Offering</label>
         <textarea
           rows={2}
           className={inputClass}
-          placeholder="Any specific requirements or notes"
-          {...register('additionalNotes')}
+          placeholder="Describe what you can offer as a sponsor"
+          {...register('yourOffering')}
         />
       </div>
 
@@ -389,6 +389,8 @@ export default function SponsorModal() {
             (data.sponsorshipAmount > 0
               ? formatINR(data.sponsorshipAmount)
               : 'Negotiable after mutual discussion with the organizers'),
+          yourOffering: data.yourOffering,
+          additionalNotes: data.yourOffering,
           timestamp: new Date().toISOString(),
         }),
       });

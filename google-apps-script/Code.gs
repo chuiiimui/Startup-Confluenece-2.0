@@ -295,7 +295,7 @@ function appendToSheet_(type, data, emailMeta) {
       'Sponsorship Category',
       'Company Description',
       'Expected Contribution',
-      'Additional Notes',
+      'Your Offering',
       'Email Sent',
       'Sponsorship Type',
       'Sponsorship Amount',
@@ -311,7 +311,7 @@ function appendToSheet_(type, data, emailMeta) {
       data.sponsorshipCategory || data.sponsorshipType || '',
       data.companyDescription || '',
       formatSponsorAmount_(data),
-      data.additionalNotes || '',
+      data.yourOffering || data.additionalNotes || '',
       emailSent,
       data.sponsorshipType || data.sponsorshipCategory || '',
       data.sponsorshipAmount || '',
@@ -330,7 +330,7 @@ function appendToSheet_(type, data, emailMeta) {
       'Website',
       'Partner Category',
       'Company Description',
-      'Additional Notes',
+      'Your Offering',
       'Email Sent',
     ];
     ensureHeaders_(sheet, partnerHeaders);
@@ -343,7 +343,7 @@ function appendToSheet_(type, data, emailMeta) {
       data.website || '',
       data.partnerCategory || '',
       data.companyDescription || '',
-      data.additionalNotes || '',
+      data.yourOffering || data.additionalNotes || '',
       emailSent,
     ]);
     lockTextCellsOnLastRow_(sheet, partnerHeaders, ['Phone']);
@@ -613,7 +613,9 @@ function buildFormEmailContent_(type, data) {
         data.companyDescription
           ? 'About organization: ' + data.companyDescription
           : '',
-        data.additionalNotes ? 'Notes: ' + data.additionalNotes : '',
+        data.yourOffering || data.additionalNotes
+          ? 'Your offering: ' + (data.yourOffering || data.additionalNotes)
+          : '',
       ].filter(Boolean),
       nextSteps: [
         'Our partnerships team will review your sponsorship category and proposed amount.',
@@ -641,7 +643,9 @@ function buildFormEmailContent_(type, data) {
         data.companyDescription
           ? 'About organization: ' + data.companyDescription
           : '',
-        data.additionalNotes ? 'Notes: ' + data.additionalNotes : '',
+        data.yourOffering || data.additionalNotes
+          ? 'Your offering: ' + (data.yourOffering || data.additionalNotes)
+          : '',
       ].filter(Boolean),
       nextSteps: [
         'Our team will review your partnership category and collaboration interest.',
