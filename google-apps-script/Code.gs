@@ -2,7 +2,7 @@
  * Startup Confluence 2.0 — Registration Web App
  *
  * Accepts POST JSON (Content-Type: text/plain is OK) with:
- *   registrationType: "startup" | "sponsor" | "partner" | "speaker" | "delegate"
+ *   registrationType: "startup" | "ideaPitch" | "sponsor" | "partner" | "speaker" | "delegate"
  *
  * Frontend sources:
  *   - RegistrationModal.tsx  → startup, speaker, delegate
@@ -29,6 +29,7 @@ var SPREADSHEET_ID = '11mb5ve-0zL5jlt4KhEjHgnNdlH9tlfULf7u7Z1o8Qmw';
 
 var SHEET_NAMES = {
   startup: 'Startup',
+  ideapitch: 'Idea Pitch',
   sponsor: 'Sponsor',
   partner: 'Partner',
   speaker: 'Speaker',
@@ -42,7 +43,7 @@ function doGet() {
     ok: true,
     service: 'Startup Confluence 2.0 Registration',
     message: 'Web app is live. Use POST to submit forms.',
-    expectedTabs: ['Startup', 'Sponsor', 'Partner', 'Speaker', 'Delegate'],
+    expectedTabs: ['Startup', 'Idea Pitch', 'Sponsor', 'Partner', 'Speaker', 'Delegate'],
   };
 
   try {
@@ -59,7 +60,7 @@ function doGet() {
       payload.error =
         'Missing sheet tab(s): ' +
         payload.missingTabs.join(', ') +
-        '. Create tabs named Startup, Sponsor, Partner, Speaker, and Delegate.';
+        '. Create tabs named Startup, Idea Pitch, Sponsor, Partner, Speaker, and Delegate.';
     }
   } catch (err) {
     payload.ok = false;
@@ -84,7 +85,7 @@ function doPost(e) {
       return json_({
         ok: false,
         error:
-          'Invalid registrationType. Use startup, sponsor, partner, speaker, or delegate.',
+          'Invalid registrationType. Use startup, ideaPitch, sponsor, partner, speaker, or delegate.',
       });
     }
 
@@ -95,11 +96,23 @@ function doPost(e) {
       emailResult = { sent: false, reason: String(mailErr) };
     }
 
-    appendToSheet_(type, data, {
-      emailSent: emailResult.sent
-        ? 'Yes'
-        : 'No' + (emailResult.reason ? ' (' + emailResult.reason + ')' : ''),
-    });
+    // Acquire a script-wide lock so concurrent submissions don't collide
+    var lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(15000); // wait up to 15 seconds
+    } catch (lockErr) {
+      return json_({ ok: false, error: 'Server busy, please try again in a moment.' });
+    }
+
+    try {
+      appendToSheet_(type, data, {
+        emailSent: emailResult.sent
+          ? 'Yes'
+          : 'No' + (emailResult.reason ? ' (' + emailResult.reason + ')' : ''),
+      });
+    } finally {
+      lock.releaseLock();
+    }
 
     return json_({
       ok: true,
@@ -148,7 +161,7 @@ function getSheet_(type) {
     throw new Error(
       'Missing sheet tab "' +
         name +
-        '". Create tabs named Startup, Sponsor, Partner, Speaker, and Delegate.'
+        '". Create tabs named Startup, Idea Pitch, Sponsor, Partner, Speaker, and Delegate.'
     );
   }
   return sheet;
@@ -241,6 +254,11 @@ function appendToSheet_(type, data, emailMeta) {
       'Timestamp',
       'Startup Name',
       'Founder Name',
+      'Company Name',
+      'Company Registration Number',
+      'DPIIT Number',
+      'Startup UP Number',
+      'Company Address',
       'Email',
       'Phone',
       'Website',
@@ -263,6 +281,11 @@ function appendToSheet_(type, data, emailMeta) {
       ts,
       data.startupName || '',
       data.founderName || '',
+      data.companyName || '',
+      data.companyRegistrationNumber || '',
+      data.dpiitNumber || '',
+      data.startupUpNumber || '',
+      data.companyAddress || '',
       data.email || '',
       asSheetText_(data.phone),
       data.website || '',
@@ -281,6 +304,55 @@ function appendToSheet_(type, data, emailMeta) {
       data.accommodationDetails || '',
     ]);
     lockTextCellsOnLastRow_(sheet, startupHeaders, ['Phone']);
+    return;
+  }
+
+  if (type === 'ideapitch') {
+    var ideaPitchDeckLink = savePitchDeck_(data);
+    var ideaPitchHeaders = [
+      'Timestamp',
+      'Startup / Idea Name',
+      'Founder Name',
+      'Email',
+      'Phone',
+      'Website',
+      'Stage',
+      'Industry',
+      'Description',
+      'Team Size',
+      'Need Stall',
+      'Received Funding',
+      'Want Pitch',
+      'Pitch Deck',
+      'LinkedIn',
+      'Email Sent',
+      'Stall Required',
+      'Accommodation Required',
+      'Accommodation Details',
+    ];
+    ensureHeaders_(sheet, ideaPitchHeaders);
+    sheet.appendRow([
+      ts,
+      data.startupName || '',
+      data.founderName || '',
+      data.email || '',
+      asSheetText_(data.phone),
+      data.website || '',
+      data.startupStage || '',
+      data.industry || '',
+      data.description || '',
+      data.teamSize || '',
+      data.needStall || data.stallRequired || '',
+      data.fundingGrant || '',
+      data.wantPitch || '',
+      ideaPitchDeckLink || data.pitchDeckUrl || '',
+      data.linkedIn || data.linkedin || '',
+      emailSent,
+      data.stallRequired || data.needStall || '',
+      data.accommodationRequired || '',
+      data.accommodationDetails || '',
+    ]);
+    lockTextCellsOnLastRow_(sheet, ideaPitchHeaders, ['Phone']);
     return;
   }
 
@@ -565,6 +637,11 @@ function buildFormEmailContent_(type, data) {
       detailLines: [
         'Startup: ' + (data.startupName || '—'),
         'Founder: ' + (data.founderName || '—'),
+        'Company: ' + (data.companyName || '—'),
+        'Registration No: ' + (data.companyRegistrationNumber || '—'),
+        'DPIIT No: ' + (data.dpiitNumber || '—'),
+        data.startupUpNumber ? 'Startup UP No: ' + data.startupUpNumber : '',
+        'Address: ' + (data.companyAddress || '—'),
         'Email: ' + (data.email || '—'),
         'Phone: ' + (data.phone || '—'),
         'Stage: ' + (data.startupStage || '—'),
@@ -592,6 +669,46 @@ function buildFormEmailContent_(type, data) {
       ],
       closing:
         'We are excited to have your venture at the confluence. See you in Prayagraj.',
+    };
+  }
+
+  if (type === 'ideapitch') {
+    return {
+      subject: 'Idea pitch registration received — Startup Confluence 2.0',
+      greetingName: data.founderName || 'Founder',
+      intro:
+        'Thank you for registering your idea pitch for Startup Confluence 2.0. We have received your application and the details below.',
+      summaryTitle: 'Your idea pitch registration',
+      detailLines: [
+        'Idea / Startup: ' + (data.startupName || '—'),
+        'Founder: ' + (data.founderName || '—'),
+        'Email: ' + (data.email || '—'),
+        'Phone: ' + (data.phone || '—'),
+        'Stage: ' + (data.startupStage || '—'),
+        'Industry: ' + (data.industry || '—'),
+        'Team size: ' + (data.teamSize || '—'),
+        'Stall booking: ' +
+          (data.stallRequired || data.needStall || '—') +
+          ' (FCFS)',
+        'Accommodation: ' + (data.accommodationRequired || '—'),
+        data.accommodationRequired === 'Yes'
+          ? 'Accommodation details: ' + (data.accommodationDetails || '—')
+          : '',
+        'Received funding: ' + (data.fundingGrant || '—'),
+        'Want to pitch: ' + (data.wantPitch || '—'),
+      ].filter(Boolean),
+      nextSteps: [
+        'Our team will review your idea pitch and expo requirements.',
+        data.stallRequired === 'Yes' || data.needStall === 'Yes'
+          ? 'Stall allotment is First Come, First Served — early registrants get priority.'
+          : 'If you later need a stall, reply to this email as early as possible (FCFS).',
+        data.wantPitch === 'Yes'
+          ? 'Pitch applications will be screened and shortlisted pitchers will be notified.'
+          : 'You will receive event updates closer to 23–24 Oct 2026.',
+        'Keep this email for your records.',
+      ],
+      closing:
+        'We are excited to have your idea at the confluence. See you in Prayagraj.',
     };
   }
 

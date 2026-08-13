@@ -1,4 +1,4 @@
-export type GuidelineRole = 'startup' | 'speaker' | 'delegate';
+export type GuidelineRole = 'startup' | 'ideaPitch' | 'speaker' | 'delegate';
 
 export interface RoleGuideline {
   type: GuidelineRole;
@@ -26,10 +26,34 @@ export const REGISTRATION_GUIDELINES: RoleGuideline[] = [
     ],
     checklist: [
       'Startup name, stage, industry, and short description',
+      'Company name, registration number, DPIIT number',
       'Founder name, email, phone, and LinkedIn',
       'Team size and website (if available)',
       'Stall / accommodation preferences',
       'Pitch interest + pitch deck (optional but recommended)',
+    ],
+  },
+  {
+    type: 'ideaPitch',
+    title: 'Idea Pitching',
+    subtitle: 'For budding entrepreneurs',
+    summary:
+      'Have a brilliant idea but haven\'t incorporated yet? Register to pitch your concept, get feedback from mentors, and connect with potential co-founders and investors.',
+    guidelines: [
+      'Open to individuals or teams at the idea or early concept stage — no company registration required.',
+      'Prepare a clear description of the problem you\'re solving and your proposed solution.',
+      'If you want to pitch, a concise pitch deck (PDF/PPT, max ~3.5 MB) is recommended.',
+      'Expo stall bookings are available on a first-come, first-served basis.',
+      'Accommodation support for out-station participants is available on request.',
+      'Shortlisted pitchers may be contacted for a brief screening call before the event.',
+    ],
+    checklist: [
+      'Idea / startup name, stage, and industry',
+      'Founder name, email, phone, and LinkedIn',
+      'Team size and website (if available)',
+      'Short description of your idea (max 500 characters)',
+      'Stall / accommodation preferences',
+      'Pitch deck (optional but recommended)',
     ],
   },
   {

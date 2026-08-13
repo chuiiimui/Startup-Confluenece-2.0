@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
-type RegistrationType = 'startup' | 'speaker' | 'delegate' | null;
+type RegistrationType = 'startup' | 'ideaPitch' | 'speaker' | 'delegate' | null;
 
 interface RegistrationContextValue {
   isOpen: boolean;

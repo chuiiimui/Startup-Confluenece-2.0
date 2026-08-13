@@ -8,6 +8,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Lightbulb,
   Mic,
   Rocket,
   Users,
@@ -22,12 +23,13 @@ import {
 
 const ICONS: Record<GuidelineRole, ElementType> = {
   startup: Rocket,
+  ideaPitch: Lightbulb,
   speaker: Mic,
   delegate: Users,
 };
 
 function isGuidelineRole(value: string | null): value is GuidelineRole {
-  return value === 'startup' || value === 'speaker' || value === 'delegate';
+  return value === 'startup' || value === 'ideaPitch' || value === 'speaker' || value === 'delegate';
 }
 
 function RegisterPageContent() {
@@ -101,7 +103,7 @@ function RegisterPageContent() {
         </div>
 
         {/* Role chips: horizontal scroll on small phones, grid from sm */}
-        <div className="-mx-4 mt-8 flex gap-3 overflow-x-auto px-4 pb-1 hide-scrollbar sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0">
+        <div className="-mx-4 mt-8 flex gap-3 overflow-x-auto px-4 pb-1 hide-scrollbar sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-4">
           {REGISTRATION_GUIDELINES.map((role) => {
             const Icon = ICONS[role.type];
             const isActive = selected === role.type;

@@ -5,6 +5,7 @@ import {
   Rocket,
   Users,
   Mic,
+  Lightbulb,
   CheckCircle2,
   Loader2,
 } from 'lucide-react';
@@ -49,11 +50,16 @@ const GOOGLE_SCRIPT_URL =
   (process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL as string | undefined)?.trim() ||
   'https://script.google.com/macros/s/AKfycbx3KEix1mtaKzco5pj-8ut-VjChYhanuxUt_JPxHPbHPq0d6VZBT5PvhVm7o6qjrqAZ2g/exec';
 
-type RegistrationType = 'startup' | 'speaker' | 'delegate';
+type RegistrationType = 'startup' | 'ideaPitch' | 'speaker' | 'delegate';
 
 interface StartupFormData {
   startupName: string;
   founderName: string;
+  companyName: string;
+  companyRegistrationNumber: string;
+  dpiitNumber: string;
+  startupUpNumber?: string;
+  companyAddress: string;
   email: string;
   phone: string;
   website: string;
@@ -97,6 +103,28 @@ interface SpeakerFormData {
   personalWebsite: string;
 }
 
+interface IdeaPitchFormData {
+  startupName: string;
+  founderName: string;
+  email: string;
+  phone: string;
+  website: string;
+  startupStage: string;
+  industry: string;
+  description: string;
+  teamSize: number;
+  needStall: string;
+  accommodationRequired: string;
+  accommodationDetails?: string;
+  fundingGrant: string;
+  wantPitch: string;
+  pitchDeckUrl?: string;
+  pitchDeckFileName?: string;
+  pitchDeckMimeType?: string;
+  pitchDeckBase64?: string;
+  linkedin: string;
+}
+
 const CONFETTI_COLORS = ['#FF7A1A', '#0A2E6D', '#16B8CC', '#22C55E', '#FFD700'];
 
 const SPEAKER_TOPIC_OPTIONS = [
@@ -110,12 +138,8 @@ const SPEAKER_TOPIC_OPTIONS = [
 const DELEGATE_EVENT_OPTIONS = [
   'Inauguration Ceremony',
   'Keynote Sessions',
-  'Workshops',
   'Startup Expo',
-  'Pitching Sessions',
-  'Investor Meetup',
   'Closing Ceremony & Awards',
-  'Full Event (Both Days)',
 ] as const;
 
 const categories: {
@@ -131,6 +155,13 @@ const categories: {
     emoji: '🚀',
     title: 'Startup',
     subtitle: 'Register your venture',
+  },
+  {
+    type: 'ideaPitch',
+    icon: Lightbulb,
+    emoji: '💡',
+    title: 'Idea Pitching',
+    subtitle: 'For budding entrepreneurs',
   },
   {
     type: 'speaker',
@@ -358,6 +389,82 @@ function StartupForm({
           )}
         </FieldWrapper>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Company Name <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            className={errors.companyName ? inputErrorClass : inputClass}
+            placeholder="Registered company name"
+            {...register('companyName', { required: 'Company name is required' })}
+          />
+          {errors.companyName && (
+            <p className={errorTextClass}>{errors.companyName.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Company Registration Number <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            className={errors.companyRegistrationNumber ? inputErrorClass : inputClass}
+            placeholder="e.g. U72900UP2024PTC123456"
+            {...register('companyRegistrationNumber', { required: 'Registration number is required' })}
+          />
+          {errors.companyRegistrationNumber && (
+            <p className={errorTextClass}>{errors.companyRegistrationNumber.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            DPIIT Number <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            className={errors.dpiitNumber ? inputErrorClass : inputClass}
+            placeholder="e.g. DIPP12345"
+            {...register('dpiitNumber', { required: 'DPIIT number is required' })}
+          />
+          {errors.dpiitNumber && (
+            <p className={errorTextClass}>{errors.dpiitNumber.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Startup UP Number <span className="text-xs font-normal" style={{ color: 'var(--text-muted)' }}>(Optional)</span>
+          </label>
+          <input
+            type="text"
+            className={inputClass}
+            placeholder="e.g. SUP/2024/00123"
+            {...register('startupUpNumber')}
+          />
+        </FieldWrapper>
+      </div>
+
+      <FieldWrapper>
+        <label className={labelClass}>
+          Company Address <span className="text-red-400">*</span>
+        </label>
+        <textarea
+          rows={2}
+          className={errors.companyAddress ? inputErrorClass : inputClass}
+          placeholder="Registered office address"
+          {...register('companyAddress', { required: 'Company address is required' })}
+        />
+        {errors.companyAddress && (
+          <p className={errorTextClass}>{errors.companyAddress.message}</p>
+        )}
+      </FieldWrapper>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
@@ -1118,6 +1225,490 @@ function SpeakerForm({
   );
 }
 
+/* ─── Idea Pitching Form ───────────────────────────────────── */
+function IdeaPitchForm({
+  onSubmit,
+  isSubmitting,
+}: {
+  onSubmit: (data: IdeaPitchFormData) => void;
+  isSubmitting: boolean;
+}) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    setError,
+    clearErrors,
+    formState: { errors },
+  } = useForm<IdeaPitchFormData>({
+    defaultValues: {
+      fundingGrant: '',
+      wantPitch: '',
+      needStall: '',
+      accommodationRequired: '',
+      accommodationDetails: '',
+      ...getSavedFormData<IdeaPitchFormData>('ideaPitchFormAutoSave'),
+    },
+    shouldFocusError: true,
+  });
+
+  const wantPitch = watch('wantPitch');
+  const needStall = watch('needStall');
+  const accommodationRequired = watch('accommodationRequired');
+  const pitchDeckFileName = watch('pitchDeckFileName');
+
+  useEffect(() => {
+    const subscription = watch((value) => {
+      const {
+        pitchDeckBase64: _b64,
+        pitchDeckFileName: _name,
+        pitchDeckMimeType: _mime,
+        ...rest
+      } = value;
+      localStorage.setItem('ideaPitchFormAutoSave', JSON.stringify(rest));
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
+  useEffect(() => {
+    if (wantPitch !== 'Yes') {
+      setValue('pitchDeckUrl', '');
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      clearErrors(['pitchDeckUrl', 'pitchDeckFileName']);
+    }
+  }, [wantPitch, setValue, clearErrors]);
+
+  useEffect(() => {
+    if (accommodationRequired !== 'Yes') {
+      setValue('accommodationDetails', '');
+      clearErrors(['accommodationDetails']);
+    }
+  }, [accommodationRequired, setValue, clearErrors]);
+
+  const handlePitchDeckChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    clearErrors(['pitchDeckFileName', 'pitchDeckUrl']);
+
+    if (!file) {
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      return;
+    }
+
+    if (file.size > PITCH_DECK_MAX_BYTES) {
+      setError('pitchDeckFileName', {
+        type: 'manual',
+        message: 'Pitch deck must be under 3.5 MB. Upload a smaller file or paste a Drive/URL link instead.',
+      });
+      e.target.value = '';
+      setValue('pitchDeckFileName', '');
+      setValue('pitchDeckMimeType', '');
+      setValue('pitchDeckBase64', '');
+      return;
+    }
+
+    try {
+      const base64 = await readFileAsBase64(file);
+      setValue('pitchDeckFileName', file.name, { shouldValidate: true });
+      setValue('pitchDeckMimeType', file.type || 'application/octet-stream');
+      setValue('pitchDeckBase64', base64);
+    } catch {
+      setError('pitchDeckFileName', {
+        type: 'manual',
+        message: 'Could not read that file. Try again or use a link instead.',
+      });
+      e.target.value = '';
+    }
+  };
+
+  const submitIdeaPitch = (data: IdeaPitchFormData) => {
+    if (data.wantPitch === 'Yes') {
+      const hasFile = Boolean(data.pitchDeckBase64 && data.pitchDeckFileName);
+      const hasUrl = Boolean(data.pitchDeckUrl?.trim());
+      if (!hasFile && !hasUrl) {
+        setError('pitchDeckFileName', {
+          type: 'manual',
+          message: 'Add a pitch deck file or paste a deck URL to continue.',
+        });
+        scrollFormToFirstError();
+        return;
+      }
+    }
+    onSubmit(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(submitIdeaPitch, scrollFormToFirstError)} className="space-y-2.5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Startup / Idea Name <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            className={errors.startupName ? inputErrorClass : inputClass}
+            placeholder="Your idea or startup name"
+            {...register('startupName', { required: 'Name is required' })}
+          />
+          {errors.startupName && (
+            <p className={errorTextClass}>{errors.startupName.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Founder Name <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            className={errors.founderName ? inputErrorClass : inputClass}
+            placeholder="Full name"
+            {...register('founderName', { required: 'Founder name is required' })}
+          />
+          {errors.founderName && (
+            <p className={errorTextClass}>{errors.founderName.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Email <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="email"
+            className={errors.email ? inputErrorClass : inputClass}
+            placeholder="you@example.com"
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Invalid email address',
+              },
+            })}
+          />
+          {errors.email && (
+            <p className={errorTextClass}>{errors.email.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Phone <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="tel"
+            className={errors.phone ? inputErrorClass : inputClass}
+            placeholder="+91 XXXXX XXXXX"
+            {...register('phone', { required: 'Phone number is required' })}
+          />
+          {errors.phone && (
+            <p className={errorTextClass}>{errors.phone.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      <FieldWrapper>
+        <label className={labelClass}>Website</label>
+        <input
+          type="url"
+          className={inputClass}
+          placeholder="https://yourstartup.com"
+          {...register('website')}
+        />
+      </FieldWrapper>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Stage <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.startupStage ? inputErrorClass : inputClass}
+            {...register('startupStage', { required: 'Please select a stage' })}
+          >
+            <option value="">Select stage</option>
+            <option value="Idea">Idea</option>
+            <option value="MVP">MVP</option>
+            <option value="Early Stage">Early Stage</option>
+            <option value="Growth">Growth</option>
+          </select>
+          {errors.startupStage && (
+            <p className={errorTextClass}>{errors.startupStage.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Industry <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.industry ? inputErrorClass : inputClass}
+            {...register('industry', { required: 'Please select an industry' })}
+          >
+            <option value="">Select industry</option>
+            <option value="AI & ML">AI &amp; ML</option>
+            <option value="FinTech">FinTech</option>
+            <option value="HealthTech">HealthTech</option>
+            <option value="AgriTech">AgriTech</option>
+            <option value="EdTech">EdTech</option>
+            <option value="CleanTech">CleanTech</option>
+            <option value="E-Commerce">E-Commerce</option>
+            <option value="Manufacturing">Manufacturing</option>
+            <option value="Sustainability">Sustainability</option>
+            <option value="Construction Tech">Construction Tech</option>
+            <option value="Other">Other</option>
+          </select>
+          {errors.industry && (
+            <p className={errorTextClass}>{errors.industry.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      <FieldWrapper>
+        <label className={labelClass}>
+          Description <span className="text-red-400">*</span>
+        </label>
+        <textarea
+          rows={3}
+          className={errors.description ? inputErrorClass : inputClass}
+          placeholder="Describe your idea in a few lines (max 500 characters)"
+          {...register('description', {
+            required: 'Description is required',
+            maxLength: { value: 500, message: 'Max 500 characters' },
+          })}
+        />
+        {errors.description && (
+          <p className={errorTextClass}>{errors.description.message}</p>
+        )}
+      </FieldWrapper>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Team Size <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="number"
+            min={1}
+            className={errors.teamSize ? inputErrorClass : inputClass}
+            placeholder="e.g. 5"
+            {...register('teamSize', {
+              required: 'Team size is required',
+              valueAsNumber: true,
+            })}
+          />
+          {errors.teamSize && (
+            <p className={errorTextClass}>{errors.teamSize.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Do you require accommodation? <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.accommodationRequired ? inputErrorClass : inputClass}
+            {...register('accommodationRequired', {
+              required: 'Please select an accommodation option',
+            })}
+          >
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+          {errors.accommodationRequired && (
+            <p className={errorTextClass}>{errors.accommodationRequired.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      {accommodationRequired === 'Yes' && (
+        <div
+          className="clay-card space-y-2.5 rounded-xl p-3"
+        >
+          <FieldWrapper>
+            <label className={labelClass}>
+              Accommodation details <span className="text-red-400">*</span>
+            </label>
+            <textarea
+              rows={3}
+              className={errors.accommodationDetails ? inputErrorClass : inputClass}
+              placeholder="Number of guests, check-in / check-out dates, room preference, special requests…"
+              {...register('accommodationDetails', {
+                required:
+                  accommodationRequired === 'Yes'
+                    ? 'Please share accommodation details'
+                    : false,
+              })}
+            />
+            {errors.accommodationDetails && (
+              <p className={errorTextClass}>{errors.accommodationDetails.message}</p>
+            )}
+          </FieldWrapper>
+        </div>
+      )}
+
+      {/* Stall Booking — FCFS */}
+      <div
+        className="clay-card space-y-3 rounded-xl p-3 sm:p-4"
+        style={{
+          borderColor: errors.needStall
+            ? 'rgba(248, 113, 113, 0.65)'
+            : undefined,
+        }}
+      >
+        <div>
+          <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+            Stall Booking <span className="text-red-400">*</span>
+          </p>
+          <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            Stalls are allotted on a{' '}
+            <strong style={{ color: 'var(--badge-text)' }}>
+              First Come, First Served (FCFS)
+            </strong>{' '}
+            basis. Book early to secure your spot at the Startup Expo.
+          </p>
+        </div>
+
+        <input
+          type="hidden"
+          {...register('needStall', { required: 'Please select a stall option' })}
+        />
+
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {(
+            [
+              { value: 'Yes', label: 'Book a Stall' },
+              { value: 'No', label: 'No Stall Needed' },
+            ] as const
+          ).map((option) => {
+            const selected = needStall === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() =>
+                  setValue('needStall', option.value, { shouldValidate: true })
+                }
+                className={`form-glass-option flex min-h-[3rem] w-full items-center justify-center rounded-xl px-4 py-3 text-center text-sm font-semibold transition-colors ${
+                  selected ? 'is-selected' : ''
+                }`}
+                aria-pressed={selected}
+              >
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+        {errors.needStall && (
+          <p className={errorTextClass}>{errors.needStall.message}</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <FieldWrapper>
+          <label className={labelClass}>
+            Has your startup received any funding?{' '}
+            <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.fundingGrant ? inputErrorClass : inputClass}
+            {...register('fundingGrant', {
+              required: 'Please select whether you have received funding',
+            })}
+          >
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+          {errors.fundingGrant && (
+            <p className={errorTextClass}>{errors.fundingGrant.message}</p>
+          )}
+        </FieldWrapper>
+
+        <FieldWrapper>
+          <label className={labelClass}>
+            Want to Pitch? <span className="text-red-400">*</span>
+          </label>
+          <select
+            className={errors.wantPitch ? inputErrorClass : inputClass}
+            {...register('wantPitch', { required: 'Please select an option' })}
+          >
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+          {errors.wantPitch && (
+            <p className={errorTextClass}>{errors.wantPitch.message}</p>
+          )}
+        </FieldWrapper>
+      </div>
+
+      {wantPitch === 'Yes' && (
+        <div
+          className="clay-card space-y-2.5 rounded-xl p-3"
+        >
+          <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+            Pitch deck <span className="text-red-400">*</span>
+          </p>
+          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            Upload a PDF/PPT (max 3.5 MB) or paste a Drive / public deck link.
+          </p>
+
+          <FieldWrapper>
+            <label className={labelClass}>Upload pitch deck</label>
+            <input
+              type="file"
+              accept={PITCH_DECK_ACCEPT}
+              className={errors.pitchDeckFileName ? inputErrorClass : inputClass}
+              onChange={handlePitchDeckChange}
+            />
+            {pitchDeckFileName && (
+              <p className="mt-1 text-xs" style={{ color: 'var(--badge-text)' }}>
+                Selected: {pitchDeckFileName}
+              </p>
+            )}
+            {errors.pitchDeckFileName && (
+              <p className={errorTextClass}>{errors.pitchDeckFileName.message}</p>
+            )}
+          </FieldWrapper>
+
+          <FieldWrapper>
+            <label className={labelClass}>Or pitch deck URL</label>
+            <input
+              type="url"
+              className={errors.pitchDeckUrl ? inputErrorClass : inputClass}
+              placeholder="https://drive.google.com/... or public deck link"
+              {...register('pitchDeckUrl')}
+            />
+            {errors.pitchDeckUrl && (
+              <p className={errorTextClass}>{errors.pitchDeckUrl.message}</p>
+            )}
+          </FieldWrapper>
+        </div>
+      )}
+
+      <FieldWrapper>
+        <label className={labelClass}>LinkedIn Profile</label>
+        <input
+          type="url"
+          className={inputClass}
+          placeholder="https://linkedin.com/in/yourprofile"
+          {...register('linkedin')}
+        />
+      </FieldWrapper>
+
+      <SubmitButton label="Submit Idea Pitch" isSubmitting={isSubmitting} />
+    </form>
+  );
+}
+
 /* ─── Submit Button ────────────────────────────────────────── */
 function SubmitButton({
   label,
@@ -1220,12 +1811,13 @@ export const RegistrationModal: React.FC = () => {
 
   const clearFormDrafts = () => {
     localStorage.removeItem('startupFormAutoSave');
+    localStorage.removeItem('ideaPitchFormAutoSave');
     localStorage.removeItem('delegateFormAutoSave');
     localStorage.removeItem('speakerFormAutoSave');
   };
 
   const handleFormSubmit = useCallback(
-    async (data: StartupFormData | DelegateFormData | SpeakerFormData) => {
+    async (data: StartupFormData | IdeaPitchFormData | DelegateFormData | SpeakerFormData) => {
       setIsSubmitting(true);
       setSubmitError(null);
 
@@ -1242,6 +1834,11 @@ export const RegistrationModal: React.FC = () => {
         ...data,
         // Remap field names to match Google Apps Script + required new keys
         ...(selectedType === 'startup' && {
+          companyName: (data as StartupFormData).companyName,
+          companyRegistrationNumber: (data as StartupFormData).companyRegistrationNumber,
+          dpiitNumber: (data as StartupFormData).dpiitNumber,
+          startupUpNumber: (data as StartupFormData).startupUpNumber || '',
+          companyAddress: (data as StartupFormData).companyAddress,
           linkedIn: (data as StartupFormData).linkedin,
           fundingGrant: (data as StartupFormData).fundingGrant,
           stallRequired: (data as StartupFormData).needStall,
@@ -1254,6 +1851,20 @@ export const RegistrationModal: React.FC = () => {
           pitchDeckFileName: (data as StartupFormData).pitchDeckFileName || '',
           pitchDeckMimeType: (data as StartupFormData).pitchDeckMimeType || '',
           pitchDeckBase64: (data as StartupFormData).pitchDeckBase64 || '',
+        }),
+        ...(selectedType === 'ideaPitch' && {
+          linkedIn: (data as IdeaPitchFormData).linkedin,
+          fundingGrant: (data as IdeaPitchFormData).fundingGrant,
+          stallRequired: (data as IdeaPitchFormData).needStall,
+          accommodationRequired: (data as IdeaPitchFormData).accommodationRequired,
+          accommodationDetails:
+            (data as IdeaPitchFormData).accommodationRequired === 'Yes'
+              ? (data as IdeaPitchFormData).accommodationDetails || ''
+              : '',
+          pitchDeckUrl: (data as IdeaPitchFormData).pitchDeckUrl || '',
+          pitchDeckFileName: (data as IdeaPitchFormData).pitchDeckFileName || '',
+          pitchDeckMimeType: (data as IdeaPitchFormData).pitchDeckMimeType || '',
+          pitchDeckBase64: (data as IdeaPitchFormData).pitchDeckBase64 || '',
         }),
         ...(selectedType === 'delegate' && {
           fullName: (data as DelegateFormData).fullName,
@@ -1434,9 +2045,11 @@ export const RegistrationModal: React.FC = () => {
                     >
                       {selectedType === 'startup'
                         ? 'Startup Registration Received!'
-                        : selectedType === 'speaker'
-                          ? 'Speaker Application Received!'
-                          : 'Delegate Registration Received!'}
+                        : selectedType === 'ideaPitch'
+                          ? 'Idea Pitch Registration Received!'
+                          : selectedType === 'speaker'
+                            ? 'Speaker Application Received!'
+                            : 'Delegate Registration Received!'}
                     </motion.h2>
 
                     <motion.p
@@ -1448,9 +2061,11 @@ export const RegistrationModal: React.FC = () => {
                     >
                       {selectedType === 'startup'
                         ? 'Thanks for registering your startup. A confirmation email with your startup details, stall/pitch summary, and next steps has been sent — check Inbox and Spam.'
-                        : selectedType === 'speaker'
-                          ? 'Thanks for applying to speak. A confirmation email with your topic and next curation steps has been sent — check Inbox and Spam.'
-                          : 'Thanks for registering as a Delegate / Visitor. A confirmation email with your selected events and check-in steps has been sent — check Inbox and Spam.'}
+                        : selectedType === 'ideaPitch'
+                          ? 'Thanks for submitting your idea pitch. A confirmation email with your pitch details and next steps has been sent — check Inbox and Spam.'
+                          : selectedType === 'speaker'
+                            ? 'Thanks for applying to speak. A confirmation email with your topic and next curation steps has been sent — check Inbox and Spam.'
+                            : 'Thanks for registering as a Delegate / Visitor. A confirmation email with your selected events and check-in steps has been sent — check Inbox and Spam.'}
                     </motion.p>
 
                     <motion.button
@@ -1496,7 +2111,7 @@ export const RegistrationModal: React.FC = () => {
                     </div>
 
                     {/* Category Cards */}
-                    <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                    <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                       {categories.map((cat) => {
                         const isSelected = selectedType === cat.type;
                         const Icon = cat.icon;
@@ -1560,6 +2175,12 @@ export const RegistrationModal: React.FC = () => {
                       >
                         {selectedType === 'startup' && (
                           <StartupForm
+                            onSubmit={handleFormSubmit}
+                            isSubmitting={isSubmitting}
+                          />
+                        )}
+                        {selectedType === 'ideaPitch' && (
+                          <IdeaPitchForm
                             onSubmit={handleFormSubmit}
                             isSubmitting={isSubmitting}
                           />
