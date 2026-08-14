@@ -75,6 +75,12 @@ export const teamMembers: TeamMember[] = [
 /** Extended team revealed via View More. */
 export const extendedTeamMembers: TeamMember[] = [
   {
+    id: 'tm-ext-5',
+    name: 'Hemant',
+    role: 'Editor Team',
+    image: assetSrc(hemantImage),
+  },
+  {
     id: 'tm-ext-1',
     name: 'Shiksha',
     role: 'Design Team',
@@ -97,12 +103,6 @@ export const extendedTeamMembers: TeamMember[] = [
     name: 'Vanshika Dayal',
     role: 'Content Team',
     image: '',
-  },
-  {
-    id: 'tm-ext-5',
-    name: 'Hemant',
-    role: 'Editor Team',
-    image: assetSrc(hemantImage),
   },
   {
     id: 'tm-ext-6',

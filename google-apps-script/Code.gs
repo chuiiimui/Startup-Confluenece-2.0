@@ -316,17 +316,12 @@ function appendToSheet_(type, data, emailMeta) {
       'Email',
       'Phone',
       'Website',
-      'Stage',
       'Industry',
       'Description',
       'Team Size',
-      'Need Stall',
-      'Received Funding',
-      'Want Pitch',
       'Pitch Deck',
       'LinkedIn',
       'Email Sent',
-      'Stall Required',
       'Accommodation Required',
       'Accommodation Details',
     ];
@@ -338,17 +333,12 @@ function appendToSheet_(type, data, emailMeta) {
       data.email || '',
       asSheetText_(data.phone),
       data.website || '',
-      data.startupStage || '',
       data.industry || '',
       data.description || '',
       data.teamSize || '',
-      data.needStall || data.stallRequired || '',
-      data.fundingGrant || '',
-      data.wantPitch || '',
       ideaPitchDeckLink || data.pitchDeckUrl || '',
       data.linkedIn || data.linkedin || '',
       emailSent,
-      data.stallRequired || data.needStall || '',
       data.accommodationRequired || '',
       data.accommodationDetails || '',
     ]);
@@ -684,27 +674,16 @@ function buildFormEmailContent_(type, data) {
         'Founder: ' + (data.founderName || '—'),
         'Email: ' + (data.email || '—'),
         'Phone: ' + (data.phone || '—'),
-        'Stage: ' + (data.startupStage || '—'),
         'Industry: ' + (data.industry || '—'),
         'Team size: ' + (data.teamSize || '—'),
-        'Stall booking: ' +
-          (data.stallRequired || data.needStall || '—') +
-          ' (FCFS)',
         'Accommodation: ' + (data.accommodationRequired || '—'),
         data.accommodationRequired === 'Yes'
           ? 'Accommodation details: ' + (data.accommodationDetails || '—')
           : '',
-        'Received funding: ' + (data.fundingGrant || '—'),
-        'Want to pitch: ' + (data.wantPitch || '—'),
       ].filter(Boolean),
       nextSteps: [
-        'Our team will review your idea pitch and expo requirements.',
-        data.stallRequired === 'Yes' || data.needStall === 'Yes'
-          ? 'Stall allotment is First Come, First Served — early registrants get priority.'
-          : 'If you later need a stall, reply to this email as early as possible (FCFS).',
-        data.wantPitch === 'Yes'
-          ? 'Pitch applications will be screened and shortlisted pitchers will be notified.'
-          : 'You will receive event updates closer to 23–24 Oct 2026.',
+        'Our team will review your idea pitch application.',
+        'Pitch applications will be screened and shortlisted pitchers will be notified.',
         'Keep this email for your records.',
       ],
       closing:

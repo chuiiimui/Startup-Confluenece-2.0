@@ -109,15 +109,11 @@ interface IdeaPitchFormData {
   email: string;
   phone: string;
   website: string;
-  startupStage: string;
   industry: string;
   description: string;
   teamSize: number;
-  needStall: string;
   accommodationRequired: string;
   accommodationDetails?: string;
-  fundingGrant: string;
-  wantPitch: string;
   pitchDeckUrl?: string;
   pitchDeckFileName?: string;
   pitchDeckMimeType?: string;
@@ -1243,9 +1239,6 @@ function IdeaPitchForm({
     formState: { errors },
   } = useForm<IdeaPitchFormData>({
     defaultValues: {
-      fundingGrant: '',
-      wantPitch: '',
-      needStall: '',
       accommodationRequired: '',
       accommodationDetails: '',
       ...getSavedFormData<IdeaPitchFormData>('ideaPitchFormAutoSave'),
@@ -1253,8 +1246,6 @@ function IdeaPitchForm({
     shouldFocusError: true,
   });
 
-  const wantPitch = watch('wantPitch');
-  const needStall = watch('needStall');
   const accommodationRequired = watch('accommodationRequired');
   const pitchDeckFileName = watch('pitchDeckFileName');
 
@@ -1270,16 +1261,6 @@ function IdeaPitchForm({
     });
     return () => subscription.unsubscribe();
   }, [watch]);
-
-  useEffect(() => {
-    if (wantPitch !== 'Yes') {
-      setValue('pitchDeckUrl', '');
-      setValue('pitchDeckFileName', '');
-      setValue('pitchDeckMimeType', '');
-      setValue('pitchDeckBase64', '');
-      clearErrors(['pitchDeckUrl', 'pitchDeckFileName']);
-    }
-  }, [wantPitch, setValue, clearErrors]);
 
   useEffect(() => {
     if (accommodationRequired !== 'Yes') {
@@ -1326,17 +1307,15 @@ function IdeaPitchForm({
   };
 
   const submitIdeaPitch = (data: IdeaPitchFormData) => {
-    if (data.wantPitch === 'Yes') {
-      const hasFile = Boolean(data.pitchDeckBase64 && data.pitchDeckFileName);
-      const hasUrl = Boolean(data.pitchDeckUrl?.trim());
-      if (!hasFile && !hasUrl) {
-        setError('pitchDeckFileName', {
-          type: 'manual',
-          message: 'Add a pitch deck file or paste a deck URL to continue.',
-        });
-        scrollFormToFirstError();
-        return;
-      }
+    const hasFile = Boolean(data.pitchDeckBase64 && data.pitchDeckFileName);
+    const hasUrl = Boolean(data.pitchDeckUrl?.trim());
+    if (!hasFile && !hasUrl) {
+      setError('pitchDeckFileName', {
+        type: 'manual',
+        message: 'Add a pitch deck file or paste a deck URL to continue.',
+      });
+      scrollFormToFirstError();
+      return;
     }
     onSubmit(data);
   };
@@ -1423,52 +1402,31 @@ function IdeaPitchForm({
         />
       </FieldWrapper>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-        <FieldWrapper>
-          <label className={labelClass}>
-            Stage <span className="text-red-400">*</span>
-          </label>
-          <select
-            className={errors.startupStage ? inputErrorClass : inputClass}
-            {...register('startupStage', { required: 'Please select a stage' })}
-          >
-            <option value="">Select stage</option>
-            <option value="Idea">Idea</option>
-            <option value="MVP">MVP</option>
-            <option value="Early Stage">Early Stage</option>
-            <option value="Growth">Growth</option>
-          </select>
-          {errors.startupStage && (
-            <p className={errorTextClass}>{errors.startupStage.message}</p>
-          )}
-        </FieldWrapper>
-
-        <FieldWrapper>
-          <label className={labelClass}>
-            Industry <span className="text-red-400">*</span>
-          </label>
-          <select
-            className={errors.industry ? inputErrorClass : inputClass}
-            {...register('industry', { required: 'Please select an industry' })}
-          >
-            <option value="">Select industry</option>
-            <option value="AI & ML">AI &amp; ML</option>
-            <option value="FinTech">FinTech</option>
-            <option value="HealthTech">HealthTech</option>
-            <option value="AgriTech">AgriTech</option>
-            <option value="EdTech">EdTech</option>
-            <option value="CleanTech">CleanTech</option>
-            <option value="E-Commerce">E-Commerce</option>
-            <option value="Manufacturing">Manufacturing</option>
-            <option value="Sustainability">Sustainability</option>
-            <option value="Construction Tech">Construction Tech</option>
-            <option value="Other">Other</option>
-          </select>
-          {errors.industry && (
-            <p className={errorTextClass}>{errors.industry.message}</p>
-          )}
-        </FieldWrapper>
-      </div>
+      <FieldWrapper>
+        <label className={labelClass}>
+          Industry <span className="text-red-400">*</span>
+        </label>
+        <select
+          className={errors.industry ? inputErrorClass : inputClass}
+          {...register('industry', { required: 'Please select an industry' })}
+        >
+          <option value="">Select industry</option>
+          <option value="AI & ML">AI &amp; ML</option>
+          <option value="FinTech">FinTech</option>
+          <option value="HealthTech">HealthTech</option>
+          <option value="AgriTech">AgriTech</option>
+          <option value="EdTech">EdTech</option>
+          <option value="CleanTech">CleanTech</option>
+          <option value="E-Commerce">E-Commerce</option>
+          <option value="Manufacturing">Manufacturing</option>
+          <option value="Sustainability">Sustainability</option>
+          <option value="Construction Tech">Construction Tech</option>
+          <option value="Other">Other</option>
+        </select>
+        {errors.industry && (
+          <p className={errorTextClass}>{errors.industry.message}</p>
+        )}
+      </FieldWrapper>
 
       <FieldWrapper>
         <label className={labelClass}>
@@ -1554,145 +1512,47 @@ function IdeaPitchForm({
         </div>
       )}
 
-      {/* Stall Booking — FCFS */}
       <div
-        className="clay-card space-y-3 rounded-xl p-3 sm:p-4"
-        style={{
-          borderColor: errors.needStall
-            ? 'rgba(248, 113, 113, 0.65)'
-            : undefined,
-        }}
+        className="clay-card space-y-2.5 rounded-xl p-3"
       >
-        <div>
-          <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-            Stall Booking <span className="text-red-400">*</span>
-          </p>
-          <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-            Stalls are allotted on a{' '}
-            <strong style={{ color: 'var(--badge-text)' }}>
-              First Come, First Served (FCFS)
-            </strong>{' '}
-            basis. Book early to secure your spot at the Startup Expo.
-          </p>
-        </div>
+        <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+          Pitch deck <span className="text-red-400">*</span>
+        </p>
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+          Upload a PDF/PPT (max 3.5 MB) or paste a Drive / public deck link.
+        </p>
 
-        <input
-          type="hidden"
-          {...register('needStall', { required: 'Please select a stall option' })}
-        />
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {(
-            [
-              { value: 'Yes', label: 'Book a Stall' },
-              { value: 'No', label: 'No Stall Needed' },
-            ] as const
-          ).map((option) => {
-            const selected = needStall === option.value;
-            return (
-              <button
-                key={option.value}
-                type="button"
-                onClick={() =>
-                  setValue('needStall', option.value, { shouldValidate: true })
-                }
-                className={`form-glass-option flex min-h-[3rem] w-full items-center justify-center rounded-xl px-4 py-3 text-center text-sm font-semibold transition-colors ${
-                  selected ? 'is-selected' : ''
-                }`}
-                aria-pressed={selected}
-              >
-                {option.label}
-              </button>
-            );
-          })}
-        </div>
-        {errors.needStall && (
-          <p className={errorTextClass}>{errors.needStall.message}</p>
-        )}
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
         <FieldWrapper>
-          <label className={labelClass}>
-            Has your startup received any funding?{' '}
-            <span className="text-red-400">*</span>
-          </label>
-          <select
-            className={errors.fundingGrant ? inputErrorClass : inputClass}
-            {...register('fundingGrant', {
-              required: 'Please select whether you have received funding',
-            })}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          {errors.fundingGrant && (
-            <p className={errorTextClass}>{errors.fundingGrant.message}</p>
+          <label className={labelClass}>Upload pitch deck</label>
+          <input
+            type="file"
+            accept={PITCH_DECK_ACCEPT}
+            className={errors.pitchDeckFileName ? inputErrorClass : inputClass}
+            onChange={handlePitchDeckChange}
+          />
+          {pitchDeckFileName && (
+            <p className="mt-1 text-xs" style={{ color: 'var(--badge-text)' }}>
+              Selected: {pitchDeckFileName}
+            </p>
+          )}
+          {errors.pitchDeckFileName && (
+            <p className={errorTextClass}>{errors.pitchDeckFileName.message}</p>
           )}
         </FieldWrapper>
 
         <FieldWrapper>
-          <label className={labelClass}>
-            Want to Pitch? <span className="text-red-400">*</span>
-          </label>
-          <select
-            className={errors.wantPitch ? inputErrorClass : inputClass}
-            {...register('wantPitch', { required: 'Please select an option' })}
-          >
-            <option value="">Select</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-          {errors.wantPitch && (
-            <p className={errorTextClass}>{errors.wantPitch.message}</p>
+          <label className={labelClass}>Or pitch deck URL</label>
+          <input
+            type="url"
+            className={errors.pitchDeckUrl ? inputErrorClass : inputClass}
+            placeholder="https://drive.google.com/... or public deck link"
+            {...register('pitchDeckUrl')}
+          />
+          {errors.pitchDeckUrl && (
+            <p className={errorTextClass}>{errors.pitchDeckUrl.message}</p>
           )}
         </FieldWrapper>
       </div>
-
-      {wantPitch === 'Yes' && (
-        <div
-          className="clay-card space-y-2.5 rounded-xl p-3"
-        >
-          <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-            Pitch deck <span className="text-red-400">*</span>
-          </p>
-          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-            Upload a PDF/PPT (max 3.5 MB) or paste a Drive / public deck link.
-          </p>
-
-          <FieldWrapper>
-            <label className={labelClass}>Upload pitch deck</label>
-            <input
-              type="file"
-              accept={PITCH_DECK_ACCEPT}
-              className={errors.pitchDeckFileName ? inputErrorClass : inputClass}
-              onChange={handlePitchDeckChange}
-            />
-            {pitchDeckFileName && (
-              <p className="mt-1 text-xs" style={{ color: 'var(--badge-text)' }}>
-                Selected: {pitchDeckFileName}
-              </p>
-            )}
-            {errors.pitchDeckFileName && (
-              <p className={errorTextClass}>{errors.pitchDeckFileName.message}</p>
-            )}
-          </FieldWrapper>
-
-          <FieldWrapper>
-            <label className={labelClass}>Or pitch deck URL</label>
-            <input
-              type="url"
-              className={errors.pitchDeckUrl ? inputErrorClass : inputClass}
-              placeholder="https://drive.google.com/... or public deck link"
-              {...register('pitchDeckUrl')}
-            />
-            {errors.pitchDeckUrl && (
-              <p className={errorTextClass}>{errors.pitchDeckUrl.message}</p>
-            )}
-          </FieldWrapper>
-        </div>
-      )}
 
       <FieldWrapper>
         <label className={labelClass}>LinkedIn Profile</label>
@@ -1854,8 +1714,9 @@ export const RegistrationModal: React.FC = () => {
         }),
         ...(selectedType === 'ideaPitch' && {
           linkedIn: (data as IdeaPitchFormData).linkedin,
-          fundingGrant: (data as IdeaPitchFormData).fundingGrant,
-          stallRequired: (data as IdeaPitchFormData).needStall,
+          fundingGrant: 'N/A',
+          stallRequired: 'N/A',
+          wantPitch: 'Yes',
           accommodationRequired: (data as IdeaPitchFormData).accommodationRequired,
           accommodationDetails:
             (data as IdeaPitchFormData).accommodationRequired === 'Yes'
