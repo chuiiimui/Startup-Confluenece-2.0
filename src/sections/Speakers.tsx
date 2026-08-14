@@ -30,9 +30,15 @@ export default function Speakers() {
   };
 
   const renderSpeaker = (speaker: any) => {
+    // On mobile, cards are inside Swiper (no parent motion container to
+    // orchestrate hidden→visible), so skip the motion wrapper to avoid
+    // cards being stuck at opacity: 0.
+    if (isMobile) {
+      return <SpeakerRevealCard speaker={speaker} isMobile />;
+    }
     return (
       <motion.div variants={itemVariants}>
-        <SpeakerRevealCard speaker={speaker} isMobile={isMobile} />
+        <SpeakerRevealCard speaker={speaker} isMobile={false} />
       </motion.div>
     );
   };

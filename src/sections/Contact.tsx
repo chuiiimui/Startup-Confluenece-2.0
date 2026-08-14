@@ -43,10 +43,10 @@ export const Contact: React.FC = () => {
             </span>
             <br />
             <a
-              href="mailto:incubation@united.edu.in"
+              href="mailto:incubation@ugi.edu.in"
               className="break-all transition-colors hover:text-accent"
             >
-              incubation@united.edu.in
+              incubation@ugi.edu.in
             </a>
           </div>
         </div>

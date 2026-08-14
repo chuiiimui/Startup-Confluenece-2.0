@@ -146,8 +146,8 @@ export const Footer = () => {
                 <a href="mailto:startupconfluence@ugi.edu.in" className="text-sm font-medium mb-1 transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
                   startupconfluence@ugi.edu.in
                 </a>
-                <a href="mailto:incubation@united.edu.in" className="text-sm font-medium transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
-                  incubation@united.edu.in
+                <a href="mailto:incubation@ugi.edu.in" className="text-sm font-medium transition-all active:scale-95 block" style={{ color: 'var(--text-primary)' }}>
+                  incubation@ugi.edu.in
                 </a>
               </div>
 

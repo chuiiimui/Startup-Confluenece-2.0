@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect, memo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown, ArrowRight, Calendar, MapPin } from 'lucide-react';
-import { FaLinkedin, FaInstagram, FaFacebook } from 'react-icons/fa';
+import { FaLinkedin, FaInstagram, FaFacebook, FaYoutube } from 'react-icons/fa';
 import PillCta from '../components/PillCta';
 import { useRouter } from 'next/navigation';
 import { scrollToSection } from '../lib/utils';
@@ -224,10 +224,8 @@ const Hero = () => {
         {[
           { icon: <FaLinkedin className="h-4 w-4" />, href: SOCIAL_LINKS.linkedin },
           { icon: <FaInstagram className="h-4 w-4" />, href: SOCIAL_LINKS.instagram },
-          {
-            icon: <FaFacebook className="h-4 w-4" />,
-            href: 'https://www.facebook.com/share/1B7u65PANq/',
-          },
+          { icon: <FaFacebook className="h-4 w-4" />, href: SOCIAL_LINKS.facebook },
+          { icon: <FaYoutube className="h-4 w-4" />, href: SOCIAL_LINKS.youtube },
         ].map((s) => (
           <a
             key={s.href}

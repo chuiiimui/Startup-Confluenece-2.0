@@ -23,6 +23,8 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS = {
-  linkedin: 'https://linkedin.com/company/startupconfluence',
-  instagram: 'https://instagram.com/startupconfluence',
+  linkedin: 'https://www.linkedin.com/company/united-incubation-hub/',
+  instagram: 'https://www.instagram.com/united_incubationhub?igsh=dGNxdTl6amwxbWJy',
+  facebook: 'https://www.facebook.com/share/1B7u65PANq/',
+  youtube: 'https://youtube.com/@unitedincubationhub?si=phJkowpp_LhV8pGu',
 };
